@@ -11,6 +11,8 @@
 #' @param var_resp Response variable name in character
 #' @param var_exposure Exposure variable names in character
 #' @param var_cov Covariate variable names in character vector
+#' @param var_placebo Placebo group indicator variable in character
+#' @param exclude_placebo Should placebo group be ignored when fitting the model?
 #' @param prior,prior_intercept,prior_aux See [rstanarm::stan_glm()]
 #' @param verbosity_level Verbosity level. 0: No output, 1: Display steps,
 #' 2: Display progress in each step, 3: Display MCMC sampling.
@@ -38,6 +40,8 @@ dev_ermod_bin <- function(
     var_resp,
     var_exposure,
     var_cov = NULL,
+    var_placebo = NULL,
+    exclude_placebo = FALSE,
     prior = rstanarm::default_prior_coef(stats::binomial()),
     prior_intercept = rstanarm::default_prior_intercept(stats::binomial()),
     verbosity_level = 1,
@@ -66,13 +70,23 @@ dev_ermod_bin <- function(
       paste(var_resp, "~", paste(var_full, collapse = " + "))
     )
 
+  # if user specifies a placebo group to be ignored in the model,
+  # drop the corresponding rows when passing data to stan (but 
+  # retain all rows in the ermod object for future plotting)
+  if (!is.null(var_placebo) & exclude_placebo) {
+    keep <- !data[[var_placebo]]
+    stan_data <- data[keep, ]
+  } else {
+    stan_data <- data
+  }
+    
   # Need to construct call and then evaluate. Directly calling
   # rstanarm::stan_glm with formula_final does not work for the cross-validation
   call_stan_glm <- rlang::call2(
     rstanarm::stan_glm,
     formula = formula_final,
     family = stats::binomial(),
-    data = quote(data),
+    data = quote(stan_data),
     prior = prior,
     prior_intercept = prior_intercept,
     QR = dplyr::if_else(length(var_full) > 1, TRUE, FALSE),
@@ -86,6 +100,8 @@ dev_ermod_bin <- function(
     var_resp = var_resp,
     var_exposure = var_exposure,
     var_cov = var_cov,
+    var_placebo = var_placebo,
+    exclude_placebo = exclude_placebo,
     input_args = input_args
   )
 }
