@@ -115,23 +115,27 @@ new_ermod_lin_cov_sel <- function(
 #' @param var_resp Name of the response variable
 #' @param var_exposure Name of the exposure variable
 #' @param var_cov Name of the covariate variable
-#' @param var_placebo Name of the placebo indicator variable
-#' @param exclude_placebo Logical: are placebo data are passed to the model
+#' @param options_placebo_handling List specifying how placebo groups are handled
 new_ermod_bin <- function(
     mod,
     data,
     var_resp = character(),
     var_exposure = character(),
     var_cov = NULL,
-    var_placebo = character(),
-    exclude_placebo = FALSE,
-    input_args = list()) {
+    input_args = list(),
+    options_placebo_handling = list()
+  ) {
+  
   coef_exp_draws <- .get_coef_exp_draws(mod, var_exposure)
-
-  # TODO: var_placebo and exclude_placebo would need to be checked
+  options_placebo_handling <- .apply_placebo_handling_defaults(options_placebo_handling)
+  
   check_input_new_ermod(
-    mod = mod, data = data, var_resp = var_resp,
-    input_args = input_args, coef_exp_draws = coef_exp_draws,
+    mod = mod, 
+    data = data, 
+    var_resp = var_resp,
+    input_args = input_args, 
+    options_placebo_handling = options_placebo_handling,
+    coef_exp_draws = coef_exp_draws,
     basemodclass = "stanreg"
   )
 
@@ -142,8 +146,8 @@ new_ermod_bin <- function(
       var_resp = var_resp,
       var_exposure = var_exposure,
       var_cov = var_cov,
-      var_placebo = var_placebo,
       input_args = input_args,
+      options_placebo_handling = options_placebo_handling,
       coef_exp_draws = coef_exp_draws,
       endpoint_type = "binary"
     ),
@@ -234,6 +238,7 @@ new_ermod_emax <- function(
     var_exposure = character(),
     l_var_cov = NULL,
     input_args = list()) {
+  
   check_input_new_ermod(
     mod = mod, data = data, var_resp = var_resp, var_exposure = var_exposure,
     l_var_cov = l_var_cov, basemodclass = "stanemax"
@@ -323,6 +328,7 @@ new_ermod_bin_emax_exp_sel <- function(l_ermod_exp_sel) {
 
 # utils -----------------------------------------------------------------------
 
+# TODO: add checks for options_placebo_handling()
 check_input_new_ermod <- function(
     mod,
     data,
@@ -337,6 +343,7 @@ check_input_new_ermod <- function(
     cvvs = NULL,
     rk = NULL,
     input_args = list(),
+    options_placebo_handling = list(),
     coef_exp_draws = NULL,
     basemodclass = "stanreg") {
   stopifnot(inherits(mod, basemodclass))
@@ -368,4 +375,15 @@ check_l_ermod_exp_sel <- function(l_ermod_exp_sel, basemodclass = "stanreg") {
 
 .get_coef_exp_draws <- function(mod, var_exposure) {
   posterior::as_draws_df(mod)[[var_exposure]]
+}
+
+.apply_placebo_handling_defaults <- function(options) {
+  utils::modifyList(
+    list(
+      include_placebo = FALSE,
+      method = "zero_exposure_as_placebo", # alternatives: "var_placebo", "none"
+      var_placebo = NULL # if specified must be a string referring to a logical vector
+    ),
+    options
+  )
 }

@@ -7,7 +7,8 @@ dat <- dplyr::bind_rows(
 ) |> 
   dplyr::mutate(placebo = dose == 0) # represent the placebo group explicitly
 
-# scenario 1: nothing should change if the user doesn't specify placebo group
+# scenario 1: default is to implicitly drop placebo, assuming that the placebo
+# group maps onto the zero exposure rows
 mod1 <- dat |> 
   dev_ermod_bin(
     var_resp = "response_2",
@@ -22,13 +23,16 @@ mod1 |>
   )
 
 
-# scenario 2: model should not pass placebo data to stan if user requests
+# scenario 2: model should n
 mod2 <- dat |> 
   dev_ermod_bin(
     var_resp = "response_2",
     var_exposure = "exposure",
-    var_placebo = "placebo",
-    exclude_placebo = TRUE
+    options_placebo_handling = list(
+      include_placebo = TRUE,
+      method = "var_placebo",
+      var_placebo = "placebo"
+    )
   )
 
 mod2 |> 

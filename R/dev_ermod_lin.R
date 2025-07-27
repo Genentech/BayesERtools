@@ -11,8 +11,7 @@
 #' @param var_resp Response variable name in character
 #' @param var_exposure Exposure variable names in character
 #' @param var_cov Covariate variable names in character vector
-#' @param var_placebo Placebo group indicator variable in character
-#' @param exclude_placebo Should placebo group be ignored when fitting the model?
+#' @param options_placebo_handling List containing options for placebo handling
 #' @param prior,prior_intercept,prior_aux See [rstanarm::stan_glm()]
 #' @param verbosity_level Verbosity level. 0: No output, 1: Display steps,
 #' 2: Display progress in each step, 3: Display MCMC sampling.
@@ -40,13 +39,13 @@ dev_ermod_bin <- function(
     var_resp,
     var_exposure,
     var_cov = NULL,
-    var_placebo = NULL,
-    exclude_placebo = FALSE,
+    options_placebo_handling = list(),
     prior = rstanarm::default_prior_coef(stats::binomial()),
     prior_intercept = rstanarm::default_prior_intercept(stats::binomial()),
     verbosity_level = 1,
     chains = 4,
     iter = 2000) {
+  
   stopifnot(verbosity_level %in% c(0, 1, 2, 3))
   refresh <- dplyr::if_else(verbosity_level >= 3, iter %/% 4, 0)
 
@@ -54,6 +53,8 @@ dev_ermod_bin <- function(
     c("chains", "iter"),
     environment()
   )
+  
+  options_placebo_handling <- .apply_placebo_handling_defaults(options_placebo_handling)
 
   check_data_columns(
     data = data,
@@ -69,17 +70,9 @@ dev_ermod_bin <- function(
     stats::formula(
       paste(var_resp, "~", paste(var_full, collapse = " + "))
     )
+  
+  stan_data <- .apply_placebo_handling(data, options_placebo_handling, var_exposure)
 
-  # if user specifies a placebo group to be ignored in the model,
-  # drop the corresponding rows when passing data to stan (but 
-  # retain all rows in the ermod object for future plotting)
-  if (!is.null(var_placebo) & exclude_placebo) {
-    keep <- !data[[var_placebo]]
-    stan_data <- data[keep, ]
-  } else {
-    stan_data <- data
-  }
-    
   # Need to construct call and then evaluate. Directly calling
   # rstanarm::stan_glm with formula_final does not work for the cross-validation
   call_stan_glm <- rlang::call2(
@@ -100,8 +93,7 @@ dev_ermod_bin <- function(
     var_resp = var_resp,
     var_exposure = var_exposure,
     var_cov = var_cov,
-    var_placebo = var_placebo,
-    exclude_placebo = exclude_placebo,
+    options_placebo_handling = options_placebo_handling,
     input_args = input_args
   )
 }
@@ -838,4 +830,27 @@ capture_selected_args <- function(arg_names, env) {
 
 .if_run_ex_covsel <- function() {
   requireNamespace("projpred", quietly = TRUE)
+}
+
+.apply_placebo_handling <- function(data, options, var_exposure = NULL) {
+
+  # do nothing if user wants to retain placebo
+  if (options$include_placebo) return(data)
+  
+  # "none" method: no filtering, also do nothing
+  if (options$method == "none") return(data)
+
+  # "var_placebo" method: filter rows using named column
+  if (options$method == "var_placebo") {
+    keep <- !data[[options$var_placebo]]
+    return(data[keep, ])
+  }
+
+  # "zero_exposure_as_placebo" method: drop zero-exposure rows
+  if (options$method == "zero_exposure_as_placebo") {
+    keep <- data[[var_exposure]] != 0
+    return(data[keep, ])
+  }
+
+  stop("unknown placebo handling method", call. = FALSE)
 }
