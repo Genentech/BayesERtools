@@ -11,7 +11,22 @@
 #' @param var_resp Response variable name in character
 #' @param var_exposure Exposure variable names in character
 #' @param var_cov Covariate variable names in character vector
-#' @param options_placebo_handling List containing options for placebo handling
+#' @param options_placebo_handling List of for placebo handling.
+#' Possible options include:
+#'   - `include_placebo`: Logical, whether the placebo group should be 
+#'   used when estimating the model. Default is observed data. Default 
+#'   is `FALSE`.
+#'   - `method`: Character, specifying the method used to detect placebo
+#'   group samples. Possible values include `"zero_exposure_as_placebo"`
+#'   (the default), in which rows with zero values for the exposure 
+#'   variable are automatically assigned to a placebo group, 
+#'   `"var_placebo"`, indicating that the user will supply the name of 
+#'   a data column specifying the placebo group, and `"none"`, in which
+#'   case no placebo handling takes place.
+#'   - `var_placebo`: Character, specifying the name of a column in the
+#'   data set that indicates which rows belong to the placebo group. This
+#'   column is interpreted as a logical vector. This value is ignored 
+#'   unless `method = "var_placebo"`.
 #' @param prior,prior_intercept,prior_aux See [rstanarm::stan_glm()]
 #' @param verbosity_level Verbosity level. 0: No output, 1: Display steps,
 #' 2: Display progress in each step, 3: Display MCMC sampling.
