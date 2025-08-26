@@ -54,6 +54,7 @@ dev_ermod_emax <- function(
     data,
     var_resp,
     var_exposure,
+    options_placebo_handling = list(),
     l_var_cov = NULL,
     gamma_fix = 1,
     e0_fix = NULL,
@@ -63,6 +64,7 @@ dev_ermod_emax <- function(
     chains = 4,
     iter = 2000,
     seed = sample.int(.Machine$integer.max, 1)) {
+  
   input_args <- capture_selected_args(
     c(
       "gamma_fix", "e0_fix", "emax_fix",
@@ -71,6 +73,8 @@ dev_ermod_emax <- function(
     environment()
   )
 
+  options_placebo_handling <- .apply_placebo_handling_defaults(options_placebo_handling)
+
   stopifnot(verbosity_level %in% c(0, 1, 2, 3))
   refresh <- dplyr::if_else(verbosity_level >= 3, iter %/% 4, 0)
 
@@ -78,15 +82,18 @@ dev_ermod_emax <- function(
     data = data,
     var_exposure = var_exposure,
     var_resp = var_resp,
-    var_cov = unlist(l_var_cov)
+    var_cov = unlist(l_var_cov),
+    options_placebo_handling = options_placebo_handling
   )
 
   formula <-
     stats::formula(paste(var_resp, "~", var_exposure))
 
+  stan_data <- .apply_placebo_handling(data, options_placebo_handling, var_exposure)
+
   mod <- rstanemax::stan_emax(
     formula,
-    data = data,
+    data = stan_data,
     gamma.fix = gamma_fix,
     e0.fix = e0_fix,
     emax.fix = emax_fix,
@@ -103,6 +110,7 @@ dev_ermod_emax <- function(
     data = data,
     var_resp = var_resp,
     var_exposure = var_exposure,
+    options_placebo_handling = options_placebo_handling,
     l_var_cov = l_var_cov,
     input_args = input_args
   )
@@ -142,6 +150,7 @@ dev_ermod_emax_exp_sel <- function(
     data,
     var_resp,
     var_exp_candidates,
+    options_placebo_handling = list(),
     verbosity_level = 1,
     chains = 4,
     iter = 2000,
@@ -150,9 +159,11 @@ dev_ermod_emax_exp_sel <- function(
     emax_fix = NULL,
     priors = NULL,
     seed = sample.int(.Machine$integer.max, 1)) {
+  
   fun_dev_ermod <-
     purrr::partial(
       dev_ermod_emax,
+      options_placebo_handling = options_placebo_handling,
       gamma_fix = gamma_fix,
       e0_fix = e0_fix,
       emax_fix = emax_fix,
@@ -204,6 +215,7 @@ dev_ermod_bin_emax <- function(
     data,
     var_resp,
     var_exposure,
+    options_placebo_handling = list(),
     l_var_cov = NULL,
     gamma_fix = 1,
     e0_fix = NULL,
@@ -213,6 +225,7 @@ dev_ermod_bin_emax <- function(
     chains = 4,
     iter = 2000,
     seed = sample.int(.Machine$integer.max, 1)) {
+  
   # Warn when e0_fix is set
   if (!is.null(e0_fix) && e0_fix == 0) {
     warning(
@@ -249,6 +262,8 @@ dev_ermod_bin_emax <- function(
     environment()
   )
 
+  options_placebo_handling <- .apply_placebo_handling_defaults(options_placebo_handling)
+
   stopifnot(verbosity_level %in% c(0, 1, 2, 3))
   refresh <- dplyr::if_else(verbosity_level >= 3, iter %/% 4, 0)
 
@@ -257,15 +272,18 @@ dev_ermod_bin_emax <- function(
     var_exposure = var_exposure,
     var_resp = var_resp,
     var_cov = unlist(l_var_cov),
+    options_placebo_handling = options_placebo_handling,
     is_binary = TRUE
   )
 
   formula <-
     stats::formula(paste(var_resp, "~", var_exposure))
 
+  stan_data <- .apply_placebo_handling(data, options_placebo_handling, var_exposure)
+
   mod <- rstanemax::stan_emax_binary(
     formula,
-    data = data,
+    data = stan_data,
     gamma.fix = gamma_fix,
     e0.fix = e0_fix,
     emax.fix = emax_fix,
@@ -282,6 +300,7 @@ dev_ermod_bin_emax <- function(
     data = data,
     var_resp = var_resp,
     var_exposure = var_exposure,
+    options_placebo_handling = options_placebo_handling,
     l_var_cov = l_var_cov,
     input_args = input_args
   )
@@ -311,6 +330,7 @@ dev_ermod_bin_emax_exp_sel <- function(
     data,
     var_resp,
     var_exp_candidates,
+    options_placebo_handling = list(),
     verbosity_level = 1,
     chains = 4,
     iter = 2000,
@@ -319,9 +339,11 @@ dev_ermod_bin_emax_exp_sel <- function(
     emax_fix = NULL,
     priors = NULL,
     seed = sample.int(.Machine$integer.max, 1)) {
+  
   fun_dev_ermod <-
     purrr::partial(
       dev_ermod_bin_emax,
+      options_placebo_handling = options_placebo_handling,
       gamma_fix = gamma_fix,
       e0_fix = e0_fix,
       emax_fix = emax_fix,

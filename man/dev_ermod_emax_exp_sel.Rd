@@ -9,6 +9,7 @@ dev_ermod_emax_exp_sel(
   data,
   var_resp,
   var_exp_candidates,
+  options_placebo_handling = list(),
   verbosity_level = 1,
   chains = 4,
   iter = 2000,
@@ -23,6 +24,7 @@ dev_ermod_bin_emax_exp_sel(
   data,
   var_resp,
   var_exp_candidates,
+  options_placebo_handling = list(),
   verbosity_level = 1,
   chains = 4,
   iter = 2000,
@@ -40,6 +42,25 @@ dev_ermod_bin_emax_exp_sel(
 
 \item{var_exp_candidates}{Candidate exposure variable names
 in character vector}
+
+\item{options_placebo_handling}{List of for placebo handling.
+Possible options include:
+\itemize{
+\item \code{include_placebo}: Logical, whether the placebo group should be
+used when estimating the model. Default is observed data. Default
+is \code{FALSE}.
+\item \code{method}: Character, specifying the method used to detect placebo
+group samples. Possible values include \code{"zero_exposure_as_placebo"}
+(the default), in which rows with zero values for the exposure
+variable are automatically assigned to a placebo group,
+\code{"var_placebo"}, indicating that the user will supply the name of
+a data column specifying the placebo group, and \code{"none"}, in which
+case no placebo handling takes place.
+\item \code{var_placebo}: Character, specifying the name of a column in the
+data set that indicates which rows belong to the placebo group. This
+column is interpreted as a logical vector. This value is ignored
+unless \code{method = "var_placebo"}.
+}}
 
 \item{verbosity_level}{Verbosity level. 0: No output, 1: Display steps,
 2: Display progress in each step, 3: Display MCMC sampling.}
