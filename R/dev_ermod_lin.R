@@ -145,18 +145,23 @@ dev_ermod_bin_exp_sel <- function(
     data,
     var_resp,
     var_exp_candidates,
+    options_placebo_handling = list(),
     prior = rstanarm::default_prior_coef(stats::binomial()),
     prior_intercept = rstanarm::default_prior_intercept(stats::binomial()),
     verbosity_level = 1,
     chains = 4,
     iter = 2000) {
+  
+  options_placebo_handling <- .apply_placebo_handling_defaults(options_placebo_handling)
+  
   fun_dev_ermod <-
     purrr::partial(
       dev_ermod_bin,
+      options_placebo_handling = options_placebo_handling,
       prior = prior,
       prior_intercept = prior_intercept
     )
-
+  
   l_out <-
     .dev_ermod_exp_sel(
       data = data,
@@ -218,6 +223,7 @@ dev_ermod_bin_cov_sel <- function(
     var_resp,
     var_exposure,
     var_cov_candidates,
+    options_placebo_handling = list(),
     cv_method = c("LOO", "kfold"),
     k = 5,
     validate_search = FALSE,
@@ -228,9 +234,13 @@ dev_ermod_bin_cov_sel <- function(
     verbosity_level = 1,
     chains = 4,
     iter = 2000) {
+
+  options_placebo_handling <- .apply_placebo_handling_defaults(options_placebo_handling)
+  
   fun_dev_ermod <-
     purrr::partial(
       dev_ermod_bin,
+      options_placebo_handling = options_placebo_handling,
       prior = prior,
       prior_intercept = prior_intercept
     )
@@ -292,12 +302,14 @@ dev_ermod_lin <- function(
     var_resp,
     var_exposure,
     var_cov = NULL,
+    options_placebo_handling = list(),
     prior = rstanarm::default_prior_coef(stats::binomial()),
     prior_intercept = rstanarm::default_prior_intercept(stats::binomial()),
     prior_aux = rstanarm::exponential(autoscale = TRUE),
     verbosity_level = 1,
     chains = 4,
     iter = 2000) {
+  
   stopifnot(verbosity_level %in% c(0, 1, 2, 3))
   refresh <- dplyr::if_else(verbosity_level >= 3, iter %/% 4, 0)
 
@@ -305,6 +317,8 @@ dev_ermod_lin <- function(
     c("chains", "iter"),
     environment()
   )
+
+  options_placebo_handling <- .apply_placebo_handling_defaults(options_placebo_handling)
 
   check_data_columns(
     data = data,
@@ -320,10 +334,12 @@ dev_ermod_lin <- function(
       paste(var_resp, "~", paste(var_full, collapse = " + "))
     )
 
+  stan_data <- .apply_placebo_handling(data, options_placebo_handling, var_exposure)
+  
   mod <- rstanarm::stan_glm(
     formula_final,
     family = stats::gaussian(),
-    data = data,
+    data = stan_data,
     prior = prior,
     prior_intercept = prior_intercept,
     prior_aux = prior_aux,
@@ -339,6 +355,7 @@ dev_ermod_lin <- function(
     var_resp = var_resp,
     var_exposure = var_exposure,
     var_cov = var_cov,
+    options_placebo_handling = options_placebo_handling,
     input_args = input_args
   )
 }
@@ -363,15 +380,20 @@ dev_ermod_lin_exp_sel <- function(
     data,
     var_resp,
     var_exp_candidates,
+    options_placebo_handling = list(),
     prior = rstanarm::default_prior_coef(stats::binomial()),
     prior_intercept = rstanarm::default_prior_intercept(stats::binomial()),
     prior_aux = rstanarm::exponential(autoscale = TRUE),
     verbosity_level = 1,
     chains = 4,
     iter = 2000) {
+  
+  options_placebo_handling <- .apply_placebo_handling_defaults(options_placebo_handling)
+
   fun_dev_ermod <-
     purrr::partial(
       dev_ermod_lin,
+      options_placebo_handling = options_placebo_handling,
       prior = prior,
       prior_intercept = prior_intercept,
       prior_aux = prior_aux
@@ -413,6 +435,7 @@ dev_ermod_lin_cov_sel <- function(
     var_resp,
     var_exposure,
     var_cov_candidates,
+    options_placebo_handling = list(),
     cv_method = c("LOO", "kfold"),
     k = 5,
     validate_search = FALSE,
@@ -424,9 +447,13 @@ dev_ermod_lin_cov_sel <- function(
     verbosity_level = 1,
     chains = 4,
     iter = 2000) {
+  
+  options_placebo_handling <- .apply_placebo_handling_defaults(options_placebo_handling)
+  
   fun_dev_ermod <-
     purrr::partial(
       dev_ermod_lin,
+      options_placebo_handling = options_placebo_handling,
       prior = prior,
       prior_intercept = prior_intercept,
       prior_aux = prior_aux
@@ -470,9 +497,14 @@ dev_ermod_lin_cov_sel <- function(
 # Internal functions ----------------------------------------------------------
 
 .dev_ermod_exp_sel <- function(
-    data, var_resp, var_exp_candidates,
-    verbosity_level = 1, chains = 4, iter = 2000,
+    data, 
+    var_resp, 
+    var_exp_candidates,
+    verbosity_level = 1, 
+    chains = 4, 
+    iter = 2000,
     fun_dev_ermod) {
+  
   stopifnot(verbosity_level %in% c(0, 1, 2, 3))
 
   verbose <- dplyr::if_else(verbosity_level == 2, TRUE, FALSE)
@@ -552,6 +584,7 @@ dev_ermod_lin_cov_sel <- function(
     prior = rstanarm::default_prior_coef(stats::binomial()),
     prior_intercept = rstanarm::default_prior_intercept(stats::binomial()),
     prior_aux = rstanarm::exponential(autoscale = TRUE)) {
+  
   stopifnot(verbosity_level %in% c(0, 1, 2, 3))
 
   rlang::check_installed("projpred")
