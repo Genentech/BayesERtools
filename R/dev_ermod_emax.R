@@ -82,8 +82,7 @@ dev_ermod_emax <- function(
     data = data,
     var_exposure = var_exposure,
     var_resp = var_resp,
-    var_cov = unlist(l_var_cov),
-    options_placebo_handling = options_placebo_handling
+    var_cov = unlist(l_var_cov)
   )
 
   formula <-
@@ -272,7 +271,6 @@ dev_ermod_bin_emax <- function(
     var_exposure = var_exposure,
     var_resp = var_resp,
     var_cov = unlist(l_var_cov),
-    options_placebo_handling = options_placebo_handling,
     is_binary = TRUE
   )
 
