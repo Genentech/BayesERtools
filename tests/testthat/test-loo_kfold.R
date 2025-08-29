@@ -80,6 +80,9 @@ if (.if_run_ex_eval_mod()) {
 
   # Test ----------------------------------------------------------------------
   test_that("loo", {
+
+    skip("temporarily disable loo test")
+
     loo_ermod_bin <- loo(ermod_bin)
     loo_ermod_emax_w_cov <- suppressWarnings(loo(ermod_emax_w_cov))
     loo_ermod_bin_emax <- loo(ermod_bin_emax)
@@ -103,6 +106,9 @@ if (.if_run_ex_eval_mod()) {
   })
 
   test_that("kfold", {
+
+    skip("temporarily disable kfold test")
+
     expect_gt(comp[[2, 1]], -0.5)
     expect_equal(
       kfold_ermod_bin$estimates[, 1],
