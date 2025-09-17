@@ -157,7 +157,6 @@ dev_ermod_bin_exp_sel <- function(
   fun_dev_ermod <-
     purrr::partial(
       dev_ermod_bin,
-      options_placebo_handling = options_placebo_handling,
       prior = prior,
       prior_intercept = prior_intercept
     )
@@ -167,6 +166,7 @@ dev_ermod_bin_exp_sel <- function(
       data = data,
       var_resp = var_resp,
       var_exp_candidates = var_exp_candidates,
+      options_placebo_handling = options_placebo_handling,
       verbosity_level = verbosity_level,
       chains = chains,
       iter = iter,
