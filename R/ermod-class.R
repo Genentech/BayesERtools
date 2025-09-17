@@ -224,7 +224,7 @@ new_ermod_bin_cov_sel <- function(
     var_cov_candidates = var_cov_candidates, 
     var_cov = var_cov,
     var_selected = var_selected, 
-    options_placebo_handling = list(),
+    options_placebo_handling = options_placebo_handling,
     cvvs = cvvs, 
     rk = rk,
     input_args = input_args, 
