@@ -38,7 +38,7 @@ if (.if_run_ex_eval_mod()) {
 
   set.seed(1234)
   ermod_emax_w_cov <-
-    dev_ermod_emax(
+    suppressWarnings(dev_ermod_emax(
       data = data_er_cont_cov,
       var_exposure = "conc",
       var_resp = "resp",
@@ -47,7 +47,7 @@ if (.if_run_ex_eval_mod()) {
       chains = 2,
       iter = 1000,
       seed = 1
-    )
+    ))
 
   ermod_bin_emax <-
     suppressWarnings(dev_ermod_bin_emax(
