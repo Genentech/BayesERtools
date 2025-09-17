@@ -55,11 +55,14 @@ simulate_data <- function(seed = 123) {
     coef_d2 = 1
   )
 
-  # conditional on a dose group, generate data
+  # conditional on a dose group, generate data; include multiple exposure metrics
+  # but treat the first one as source of ground truth. exposures are strongly 
+  # correlated but on the same scale
   make_dose_data <- function(dose, n, par) {
     tibble::tibble(
       dose = dose,
-      exposure = generate_exposure(dose, n = n),
+      exposure_1 = generate_exposure(dose, n = n),
+      exposure_2 = 0.7 * exposure_1 + 0.3 * generate_exposure(dose, n = n),
 
       # add continuous and binary covariates
       cnt_a = continuous_covariate(n = n),
@@ -70,7 +73,7 @@ simulate_data <- function(seed = 123) {
 
       # response 1 is continuous
       response_1 = emax_fn(
-        exposure,
+        exposure_1,
         emax = par$emax_1,
         ec50 = par$ec50_1,
         e0 = par$e0_1,
@@ -84,7 +87,7 @@ simulate_data <- function(seed = 123) {
 
       # response 2 is binary; start with the predictor
       bin_pred = emax_fn(
-        exposure,
+        exposure_1,
         emax = par$emax_2,
         ec50 = par$ec50_2,
         e0 = par$e0_2,
@@ -116,6 +119,6 @@ simulate_data <- function(seed = 123) {
 # generate data -----------------------------------------------------------
 
 d_sim_emax <- simulate_data()
-d_sim_emax <- dplyr::relocate(d_sim_emax, response_1, response_2, .after = exposure)
+d_sim_emax <- dplyr::relocate(d_sim_emax, response_1, response_2, .after = exposure_2)
 readr::write_csv(d_sim_emax, "data-raw/d_sim_emax.csv")
 usethis::use_data(d_sim_emax, overwrite = TRUE)
