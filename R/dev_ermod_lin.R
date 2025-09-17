@@ -240,7 +240,6 @@ dev_ermod_bin_cov_sel <- function(
   fun_dev_ermod <-
     purrr::partial(
       dev_ermod_bin,
-      options_placebo_handling = options_placebo_handling,
       prior = prior,
       prior_intercept = prior_intercept
     )
@@ -250,6 +249,7 @@ dev_ermod_bin_cov_sel <- function(
     var_resp = var_resp,
     var_exposure = var_exposure,
     var_cov_candidates = var_cov_candidates,
+    options_placebo_handling = options_placebo_handling,
     cv_method = cv_method,
     k = k,
     validate_search = validate_search,
@@ -272,6 +272,7 @@ dev_ermod_bin_cov_sel <- function(
     var_cov_candidates = var_cov_candidates,
     var_cov = var_cov,
     var_selected = var_selected,
+    options_placebo_handling = options_placebo_handling,
     cv_method = cv_method,
     cvvs = cvvs,
     rk = rk,
