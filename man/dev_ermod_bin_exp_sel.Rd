@@ -94,7 +94,8 @@ data(d_sim_lin)
 ermod_lin_exp_sel <- dev_ermod_lin_exp_sel(
   data = d_sim_lin,
   var_resp = "response",
-  var_exp_candidates = c("AUCss", "Cmaxss")
+  var_exp_candidates = c("AUCss", "Cmaxss"),
+  options_placebo_handling = list(use_placebo = TRUE)
 )
 
 ermod_lin_exp_sel

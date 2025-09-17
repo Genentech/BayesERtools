@@ -52,6 +52,7 @@ ermod_emax_exp_sel <-
     data = data_er_cont,
     var_resp = "response",
     var_exp_candidates = c("exposure", "exposure2"),
+    options_placebo_handling = list(use_placebo = TRUE), 
     emax_fix = 100,
     e0_fix = 0,
     verbosity_level = 0,
