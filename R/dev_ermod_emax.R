@@ -140,7 +140,7 @@ dev_ermod_emax <- function(
 #'     data = data_er_cont,
 #'     var_resp = "response",
 #'     var_exp_candidates = c("exposure", "exposure2"),
-#'     options_placebo_handling = list(use_placebo = TRUE)
+#'     options_placebo_handling = list(include_placebo = TRUE)
 #'   )
 #'
 #' ermod_emax_exp_sel
