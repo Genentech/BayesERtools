@@ -394,7 +394,6 @@ dev_ermod_lin_exp_sel <- function(
   fun_dev_ermod <-
     purrr::partial(
       dev_ermod_lin,
-      options_placebo_handling = options_placebo_handling,
       prior = prior,
       prior_intercept = prior_intercept,
       prior_aux = prior_aux
@@ -406,6 +405,7 @@ dev_ermod_lin_exp_sel <- function(
       var_resp = var_resp,
       var_exp_candidates = var_exp_candidates,
       verbosity_level = verbosity_level,
+      options_placebo_handling = options_placebo_handling,
       chains = chains,
       iter = iter,
       fun_dev_ermod = fun_dev_ermod
@@ -454,7 +454,6 @@ dev_ermod_lin_cov_sel <- function(
   fun_dev_ermod <-
     purrr::partial(
       dev_ermod_lin,
-      options_placebo_handling = options_placebo_handling,
       prior = prior,
       prior_intercept = prior_intercept,
       prior_aux = prior_aux
@@ -465,6 +464,7 @@ dev_ermod_lin_cov_sel <- function(
     var_resp = var_resp,
     var_exposure = var_exposure,
     var_cov_candidates = var_cov_candidates,
+    options_placebo_handling = options_placebo_handling,
     cv_method = cv_method,
     k = k,
     validate_search = validate_search,
@@ -486,6 +486,7 @@ dev_ermod_lin_cov_sel <- function(
     var_resp = var_resp,
     var_exposure = var_exposure,
     var_cov_candidates = var_cov_candidates,
+    options_placebo_handling = options_placebo_handling,
     var_cov = var_cov,
     var_selected = var_selected,
     cv_method = cv_method,
@@ -501,6 +502,7 @@ dev_ermod_lin_cov_sel <- function(
     data, 
     var_resp, 
     var_exp_candidates,
+    options_placebo_handling,
     verbosity_level = 1, 
     chains = 4, 
     iter = 2000,
@@ -523,7 +525,8 @@ dev_ermod_lin_cov_sel <- function(
       function(.x) {
         fun_dev_ermod(data, var_resp, .x,
           chains = chains, iter = iter,
-          verbosity_level = verbosity_level
+          verbosity_level = verbosity_level,
+          options_placebo_handling = options_placebo_handling,
         )
       },
       .progress = verbose
@@ -572,6 +575,7 @@ dev_ermod_lin_cov_sel <- function(
     var_resp,
     var_exposure,
     var_cov_candidates,
+    options_placebo_handling,
     cv_method = c("LOO", "kfold"),
     k = 5,
     validate_search = FALSE,
