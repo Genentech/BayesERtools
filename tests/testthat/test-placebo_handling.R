@@ -42,7 +42,7 @@ for(r in 1:nrow(cases)) {
   set.seed(123L)
   suppressWarnings(
     m[[r]] <- d |> f(
-      var_exposure = "exposure",
+      var_exposure = "exposure_1",
       var_resp = cases$var_resp[r],
       options_placebo_handling = o,
       chains = 1,
