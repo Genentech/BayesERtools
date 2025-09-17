@@ -38,7 +38,7 @@ if (getRversion() >= "2.15.1") {
 
   # sim data gen
   utils::globalVariables(c(
-    "exposure", "cnt_a", "cnt_b", "cnt_c", "bin_d", "bin_pred", "bin_prob"
+    "exposure_1", "exposure_2", "cnt_a", "cnt_b", "cnt_c", "bin_d", "bin_pred", "bin_prob"
   ))
 }
 

@@ -69,7 +69,7 @@ dev_ermod_bin <- function(
     environment()
   )
 
-  options_placebo_handling <- .apply_placebo_handling_defaults(options_placebo_handling)
+  options_placebo_handling <- .apply_placebo_defaults(options_placebo_handling)
 
   check_data_columns(
     data = data,
@@ -152,7 +152,7 @@ dev_ermod_bin_exp_sel <- function(
     chains = 4,
     iter = 2000) {
 
-  options_placebo_handling <- .apply_placebo_handling_defaults(options_placebo_handling)
+  options_placebo_handling <- .apply_placebo_defaults(options_placebo_handling)
 
   fun_dev_ermod <-
     purrr::partial(
@@ -235,7 +235,7 @@ dev_ermod_bin_cov_sel <- function(
     chains = 4,
     iter = 2000) {
 
-  options_placebo_handling <- .apply_placebo_handling_defaults(options_placebo_handling)
+  options_placebo_handling <- .apply_placebo_defaults(options_placebo_handling)
 
   fun_dev_ermod <-
     purrr::partial(
@@ -319,7 +319,7 @@ dev_ermod_lin <- function(
     environment()
   )
 
-  options_placebo_handling <- .apply_placebo_handling_defaults(options_placebo_handling)
+  options_placebo_handling <- .apply_placebo_defaults(options_placebo_handling)
 
   check_data_columns(
     data = data,
@@ -390,7 +390,7 @@ dev_ermod_lin_exp_sel <- function(
     chains = 4,
     iter = 2000) {
 
-  options_placebo_handling <- .apply_placebo_handling_defaults(options_placebo_handling)
+  options_placebo_handling <- .apply_placebo_defaults(options_placebo_handling)
 
   fun_dev_ermod <-
     purrr::partial(
@@ -450,7 +450,7 @@ dev_ermod_lin_cov_sel <- function(
     chains = 4,
     iter = 2000) {
 
-  options_placebo_handling <- .apply_placebo_handling_defaults(options_placebo_handling)
+  options_placebo_handling <- .apply_placebo_defaults(options_placebo_handling)
 
   fun_dev_ermod <-
     purrr::partial(

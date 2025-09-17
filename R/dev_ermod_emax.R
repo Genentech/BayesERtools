@@ -73,7 +73,7 @@ dev_ermod_emax <- function(
     environment()
   )
 
-  options_placebo_handling <- .apply_placebo_handling_defaults(options_placebo_handling)
+  options_placebo_handling <- .apply_placebo_defaults(options_placebo_handling)
 
   stopifnot(verbosity_level %in% c(0, 1, 2, 3))
   refresh <- dplyr::if_else(verbosity_level >= 3, iter %/% 4, 0)
@@ -262,7 +262,7 @@ dev_ermod_bin_emax <- function(
     environment()
   )
 
-  options_placebo_handling <- .apply_placebo_handling_defaults(options_placebo_handling)
+  options_placebo_handling <- .apply_placebo_defaults(options_placebo_handling)
 
   stopifnot(verbosity_level %in% c(0, 1, 2, 3))
   refresh <- dplyr::if_else(verbosity_level >= 3, iter %/% 4, 0)

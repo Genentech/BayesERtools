@@ -21,7 +21,7 @@ new_ermod_lin <- function(
     options_placebo_handling = list()) {
 
   coef_exp_draws <- .get_coef_exp_draws(mod, var_exposure)
-  options_placebo_handling <- .apply_placebo_handling_defaults(options_placebo_handling)
+  options_placebo_handling <- .apply_placebo_defaults(options_placebo_handling)
 
   check_input_new_ermod(
     mod = mod,
@@ -150,7 +150,7 @@ new_ermod_bin <- function(
 ) {
 
   coef_exp_draws <- .get_coef_exp_draws(mod, var_exposure)
-  options_placebo_handling <- .apply_placebo_handling_defaults(options_placebo_handling)
+  options_placebo_handling <- .apply_placebo_defaults(options_placebo_handling)
 
   check_input_new_ermod(
     mod = mod,
@@ -432,7 +432,7 @@ check_l_ermod_exp_sel <- function(l_ermod_exp_sel, basemodclass = "stanreg") {
   posterior::as_draws_df(mod)[[var_exposure]]
 }
 
-.apply_placebo_handling_defaults <- function(options) {
+.apply_placebo_defaults <- function(options) {
   utils::modifyList(
     list(
       include_placebo = FALSE,
