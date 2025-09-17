@@ -645,6 +645,7 @@ dev_ermod_lin_cov_sel <- function(
     var_resp = var_resp,
     var_exposure = var_exposure,
     var_cov = var_cov,
+    options_placebo_handling = options_placebo_handling,
     verbosity_level = verbosity_level,
     chains = chains, iter = iter
   )
