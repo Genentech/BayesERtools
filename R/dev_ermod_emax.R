@@ -162,7 +162,6 @@ dev_ermod_emax_exp_sel <- function(
   fun_dev_ermod <-
     purrr::partial(
       dev_ermod_emax,
-      options_placebo_handling = options_placebo_handling,
       gamma_fix = gamma_fix,
       e0_fix = e0_fix,
       emax_fix = emax_fix,
@@ -175,6 +174,7 @@ dev_ermod_emax_exp_sel <- function(
       data = data,
       var_resp = var_resp,
       var_exp_candidates = var_exp_candidates,
+      options_placebo_handling = options_placebo_handling,
       verbosity_level = verbosity_level,
       chains = chains,
       iter = iter,
@@ -341,7 +341,6 @@ dev_ermod_bin_emax_exp_sel <- function(
   fun_dev_ermod <-
     purrr::partial(
       dev_ermod_bin_emax,
-      options_placebo_handling = options_placebo_handling,
       gamma_fix = gamma_fix,
       e0_fix = e0_fix,
       emax_fix = emax_fix,
@@ -354,6 +353,7 @@ dev_ermod_bin_emax_exp_sel <- function(
       data = data,
       var_resp = var_resp,
       var_exp_candidates = var_exp_candidates,
+      options_placebo_handling = options_placebo_handling,
       verbosity_level = verbosity_level,
       chains = chains,
       iter = iter,
