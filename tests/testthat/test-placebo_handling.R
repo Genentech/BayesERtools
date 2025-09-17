@@ -77,15 +77,15 @@ if (require("projpred")) {
 
 # helper function to inspect internal data objects
 internal_stan_data_rows <- function(object) {
-  if (inherits(object, "stanemax") | inherits(object, "stanemaxbin")) {
+  if (inherits(object, "stanemax") || inherits(object, "stanemaxbin")) {
     return(object$standata$N)
-  } 
+  }
   return(nrow(object$data))
 }
 
 # fit the model for each basic er model case
 m <- list()
-for(r in 1:nrow(cases_ermod)) {
+for (r in seq_len(nrow(cases_ermod))) {
   f <- dev_ermod[[cases_ermod$dev_ermod[r]]]
   d <- dat[[cases_ermod$dat[r]]]
   o <- opts[[cases_ermod$opts[r]]]
@@ -98,13 +98,13 @@ for(r in 1:nrow(cases_ermod)) {
       chains = 1,
       iter = 100
     )
-  )) 
+  ))
 }
 cases_ermod$mod <- m
 
 # fit the model for each exposure-selection model case
 m <- list()
-for(r in 1:nrow(cases_expsel)) {
+for (r in seq_len(nrow(cases_expsel))) {
   f <- dev_expsel[[cases_expsel$dev_expsel[r]]]
   d <- dat[[cases_expsel$dat[r]]]
   o <- opts[[cases_expsel$opts[r]]]
@@ -117,14 +117,14 @@ for(r in 1:nrow(cases_expsel)) {
       chains = 1,
       iter = 100
     )
-  )) 
+  ))
 }
 cases_expsel$mod <- m
 
 # fit the model for each covariate-selection model case
 if (require("projpred")) {
   m <- list()
-  for(r in 1:nrow(cases_covsel)) {
+  for (r in seq_len(nrow(cases_covsel))) {
     f <- dev_covsel[[cases_covsel$dev_covsel[r]]]
     d <- dat[[cases_covsel$dat[r]]]
     o <- opts[[cases_covsel$opts[r]]]
@@ -138,7 +138,7 @@ if (require("projpred")) {
         chains = 1,
         iter = 100
       )
-    )) 
+    ))
   }
   cases_covsel$mod <- m
 }
@@ -146,7 +146,7 @@ if (require("projpred")) {
 # record number of rows in the inner and outer data sets (basic models)
 cases_ermod$inner_n <- numeric(nrow(cases_ermod))
 cases_ermod$outer_n <- numeric(nrow(cases_ermod))
-for(r in 1:nrow(cases_ermod)) {
+for (r in seq_len(nrow(cases_ermod))) {
   cases_ermod$inner_n[r] <- internal_stan_data_rows(cases_ermod$mod[[r]]$mod)
   cases_ermod$outer_n[r] <- nrow(cases_ermod$mod[[r]]$data)
 }
@@ -154,7 +154,7 @@ for(r in 1:nrow(cases_ermod)) {
 # record number of rows in the inner and outer data sets (metric selection)
 cases_expsel$inner_n <- numeric(nrow(cases_expsel))
 cases_expsel$outer_n <- numeric(nrow(cases_expsel))
-for(r in 1:nrow(cases_expsel)) {
+for (r in seq_len(nrow(cases_expsel))) {
   cases_expsel$inner_n[r] <- internal_stan_data_rows(cases_expsel$mod[[r]]$mod)
   cases_expsel$outer_n[r] <- nrow(cases_expsel$mod[[r]]$data)
 }
@@ -163,7 +163,7 @@ if (require("projpred")) {
   # record number of rows in the inner and outer data sets (covariate selection)
   cases_covsel$inner_n <- numeric(nrow(cases_covsel))
   cases_covsel$outer_n <- numeric(nrow(cases_covsel))
-  for(r in 1:nrow(cases_covsel)) {
+  for (r in seq_len(nrow(cases_covsel))) {
     cases_covsel$inner_n[r] <- internal_stan_data_rows(cases_covsel$mod[[r]]$mod)
     cases_covsel$outer_n[r] <- nrow(cases_covsel$mod[[r]]$data)
   }
@@ -173,7 +173,7 @@ if (require("projpred")) {
 # originally contained a placebo group, and the options specify that the
 # placebo group is to be used during model fitting
 test_that("internal data respects placebo options (basic models)", {
-  for(r in 1:nrow(cases_ermod)) {
+  for (r in seq_len(nrow(cases_ermod))) {
     if (cases_ermod$dat[r] == "placebo" & cases_ermod$opts[r] == "use_placebo") {
       expect_equal(cases_ermod$inner_n[r], 40L)
     } else {
@@ -182,7 +182,7 @@ test_that("internal data respects placebo options (basic models)", {
   }
 })
 test_that("internal data respects placebo options (metric selection)", {
-  for(r in 1:nrow(cases_expsel)) {
+  for (r in seq_len(nrow(cases_expsel))) {
     if (cases_expsel$dat[r] == "placebo" & cases_expsel$opts[r] == "use_placebo") {
       expect_equal(cases_expsel$inner_n[r], 40L)
     } else {
@@ -192,7 +192,7 @@ test_that("internal data respects placebo options (metric selection)", {
 })
 if (require("projpred")) {
   test_that("internal data respects placebo options (covariate selection)", {
-    for(r in 1:nrow(cases_covsel)) {
+    for (r in seq_len(nrow(cases_covsel))) {
       if (cases_covsel$dat[r] == "placebo" & cases_covsel$opts[r] == "use_placebo") {
         expect_equal(cases_covsel$inner_n[r], 40L)
       } else {
@@ -205,7 +205,7 @@ if (require("projpred")) {
 # the "user facing" data set should only include placebo samples if the data set
 # originally contained a placebo group, regardless of the placebo handling settings
 test_that("outer data preserves all data rows (basic models)", {
-  for(r in 1:nrow(cases_ermod)) {
+  for (r in seq_len(nrow(cases_ermod))) {
     if (cases_ermod$dat[r] == "placebo") {
       expect_equal(cases_ermod$outer_n[r], 40L)
     } else {
@@ -214,7 +214,7 @@ test_that("outer data preserves all data rows (basic models)", {
   }
 })
 test_that("outer data preserves all data rows (metric selection)", {
-  for(r in 1:nrow(cases_expsel)) {
+  for (r in seq_len(nrow(cases_expsel))) {
     if (cases_expsel$dat[r] == "placebo") {
       expect_equal(cases_expsel$outer_n[r], 40L)
     } else {
@@ -224,7 +224,7 @@ test_that("outer data preserves all data rows (metric selection)", {
 })
 if (require("projpred")) {
   test_that("outer data preserves all data rows (covariate selection)", {
-    for(r in 1:nrow(cases_covsel)) {
+    for (r in seq_len(nrow(cases_covsel))) {
       if (cases_covsel$dat[r] == "placebo") {
         expect_equal(cases_covsel$outer_n[r], 40L)
       } else {
@@ -233,4 +233,3 @@ if (require("projpred")) {
     }
   })
 }
-  

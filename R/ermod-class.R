@@ -19,17 +19,17 @@ new_ermod_lin <- function(
     var_cov = NULL,
     input_args = list(),
     options_placebo_handling = list()) {
-  
+
   coef_exp_draws <- .get_coef_exp_draws(mod, var_exposure)
   options_placebo_handling <- .apply_placebo_handling_defaults(options_placebo_handling)
 
   check_input_new_ermod(
-    mod = mod, 
-    data = data, 
+    mod = mod,
+    data = data,
     var_resp = var_resp,
-    var_exposure = var_exposure, 
+    var_exposure = var_exposure,
     var_cov = var_cov,
-    input_args = input_args, 
+    input_args = input_args,
     options_placebo_handling = options_placebo_handling,
     coef_exp_draws = coef_exp_draws,
     basemodclass = "stanreg"
@@ -85,22 +85,22 @@ new_ermod_lin_cov_sel <- function(
     cvvs = NULL,
     rk = NULL,
     input_args = list()) {
-  
+
   cv_method <- match.arg(cv_method)
   coef_exp_draws <- .get_coef_exp_draws(mod, var_exposure)
 
   check_input_new_ermod(
-    mod = mod, 
-    data = data, 
-    var_resp = var_resp, 
+    mod = mod,
+    data = data,
+    var_resp = var_resp,
     var_exposure = var_exposure,
-    var_cov_candidates = var_cov_candidates, 
+    var_cov_candidates = var_cov_candidates,
     var_cov = var_cov,
-    var_selected = var_selected, 
+    var_selected = var_selected,
     options_placebo_handling = options_placebo_handling,
-    cvvs = cvvs, 
+    cvvs = cvvs,
     rk = rk,
-    input_args = input_args, 
+    input_args = input_args,
     coef_exp_draws = coef_exp_draws,
     basemodclass = "stanreg"
   )
@@ -140,23 +140,23 @@ new_ermod_lin_cov_sel <- function(
 #' @param input_args Captured inputs
 #' @param options_placebo_handling List specifying how placebo groups are handled
 new_ermod_bin <- function(
-    mod,
-    data,
-    var_resp = character(),
-    var_exposure = character(),
-    var_cov = NULL,
-    input_args = list(),
-    options_placebo_handling = list()
-  ) {
-  
+  mod,
+  data,
+  var_resp = character(),
+  var_exposure = character(),
+  var_cov = NULL,
+  input_args = list(),
+  options_placebo_handling = list()
+) {
+
   coef_exp_draws <- .get_coef_exp_draws(mod, var_exposure)
   options_placebo_handling <- .apply_placebo_handling_defaults(options_placebo_handling)
-  
+
   check_input_new_ermod(
-    mod = mod, 
-    data = data, 
+    mod = mod,
+    data = data,
     var_resp = var_resp,
-    input_args = input_args, 
+    input_args = input_args,
     options_placebo_handling = options_placebo_handling,
     coef_exp_draws = coef_exp_draws,
     basemodclass = "stanreg"
@@ -212,22 +212,22 @@ new_ermod_bin_cov_sel <- function(
     cvvs = NULL,
     rk = NULL,
     input_args = list()) {
-  
+
   cv_method <- match.arg(cv_method)
   coef_exp_draws <- .get_coef_exp_draws(mod, var_exposure)
 
   check_input_new_ermod(
-    mod = mod, 
-    data = data, 
-    var_resp = var_resp, 
+    mod = mod,
+    data = data,
+    var_resp = var_resp,
     var_exposure = var_exposure,
-    var_cov_candidates = var_cov_candidates, 
+    var_cov_candidates = var_cov_candidates,
     var_cov = var_cov,
-    var_selected = var_selected, 
+    var_selected = var_selected,
     options_placebo_handling = options_placebo_handling,
-    cvvs = cvvs, 
+    cvvs = cvvs,
     rk = rk,
-    input_args = input_args, 
+    input_args = input_args,
     coef_exp_draws = coef_exp_draws,
     basemodclass = "stanreg"
   )
@@ -273,14 +273,14 @@ new_ermod_emax <- function(
     options_placebo_handling = list(),
     l_var_cov = NULL,
     input_args = list()) {
-  
+
   check_input_new_ermod(
-    mod = mod, 
-    data = data, 
-    var_resp = var_resp, 
+    mod = mod,
+    data = data,
+    var_resp = var_resp,
     var_exposure = var_exposure,
     options_placebo_handling = options_placebo_handling,
-    l_var_cov = l_var_cov, 
+    l_var_cov = l_var_cov,
     basemodclass = "stanemax"
   )
 
@@ -333,14 +333,14 @@ new_ermod_bin_emax <- function(
     options_placebo_handling = list(),
     l_var_cov = NULL,
     input_args = list()) {
-  
+
   check_input_new_ermod(
-    mod = mod, 
-    data = data, 
-    var_resp = var_resp, 
+    mod = mod,
+    data = data,
+    var_resp = var_resp,
     var_exposure = var_exposure,
     options_placebo_handling = options_placebo_handling,
-    l_var_cov = l_var_cov, 
+    l_var_cov = l_var_cov,
     basemodclass = "stanemaxbin"
   )
 
@@ -396,7 +396,7 @@ check_input_new_ermod <- function(
     options_placebo_handling = list(),
     coef_exp_draws = NULL,
     basemodclass = "stanreg") {
-  
+
   stopifnot(inherits(mod, basemodclass))
   stopifnot(is.data.frame(data))
   stopifnot(is.character(var_resp))
@@ -418,12 +418,12 @@ check_l_ermod_exp_sel <- function(l_ermod_exp_sel, basemodclass = "stanreg") {
   ll <- l_ermod_exp_sel
 
   check_input_new_ermod(
-    mod = ll$mod, 
-    data = ll$data, 
+    mod = ll$mod,
+    data = ll$data,
     var_resp = ll$var_resp,
-    var_exp_candidates = ll$var_exp_candidates, 
+    var_exp_candidates = ll$var_exp_candidates,
     var_exposure = ll$var_exposure,
-    l_mod_exposures = ll$l_mod_exposures, 
+    l_mod_exposures = ll$l_mod_exposures,
     basemodclass = basemodclass
   )
 }

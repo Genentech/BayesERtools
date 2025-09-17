@@ -56,7 +56,7 @@ simulate_data <- function(seed = 123) {
   )
 
   # conditional on a dose group, generate data; include multiple exposure metrics
-  # but treat the first one as source of ground truth. exposures are strongly 
+  # but treat the first one as source of ground truth. exposures are strongly
   # correlated but on the same scale
   make_dose_data <- function(dose, n, par) {
     tibble::tibble(

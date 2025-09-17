@@ -64,7 +64,7 @@ dev_ermod_emax <- function(
     chains = 4,
     iter = 2000,
     seed = sample.int(.Machine$integer.max, 1)) {
-  
+
   input_args <- capture_selected_args(
     c(
       "gamma_fix", "e0_fix", "emax_fix",
@@ -159,7 +159,7 @@ dev_ermod_emax_exp_sel <- function(
     emax_fix = NULL,
     priors = NULL,
     seed = sample.int(.Machine$integer.max, 1)) {
-  
+
   fun_dev_ermod <-
     purrr::partial(
       dev_ermod_emax,
@@ -225,7 +225,7 @@ dev_ermod_bin_emax <- function(
     chains = 4,
     iter = 2000,
     seed = sample.int(.Machine$integer.max, 1)) {
-  
+
   # Warn when e0_fix is set
   if (!is.null(e0_fix) && e0_fix == 0) {
     warning(
@@ -338,7 +338,7 @@ dev_ermod_bin_emax_exp_sel <- function(
     emax_fix = NULL,
     priors = NULL,
     seed = sample.int(.Machine$integer.max, 1)) {
-  
+
   fun_dev_ermod <-
     purrr::partial(
       dev_ermod_bin_emax,
