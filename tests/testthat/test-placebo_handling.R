@@ -61,19 +61,19 @@ cases_expsel <- tidyr::expand_grid(
   )
 )
 
-# all test cases for covariate selection functions
-cases_covsel <- tidyr::expand_grid(
-  dat = names(dat),
-  dev_covsel = names(dev_covsel),
-  opts = names(opts),
-) |> dplyr::mutate(
-  var_resp = dplyr::case_when(
-    dev_covsel == "dev_ermod_lin_cov_sel" ~ "response_1",
-    dev_covsel == "dev_ermod_bin_cov_sel" ~ "response_2",
-  #  dev_covsel == "dev_ermod_emax_cov_sel" ~ "response_1",
-  #  dev_covsel == "dev_ermod_bin_emax_cov_sel" ~ "response_2"
+if (require("projpred")) {
+  # all test cases for covariate selection functions
+  cases_covsel <- tidyr::expand_grid(
+    dat = names(dat),
+    dev_covsel = names(dev_covsel),
+    opts = names(opts),
+  ) |> dplyr::mutate(
+    var_resp = dplyr::case_when(
+      dev_covsel == "dev_ermod_lin_cov_sel" ~ "response_1",
+      dev_covsel == "dev_ermod_bin_cov_sel" ~ "response_2",
+    )
   )
-)
+}
 
 # helper function to inspect internal data objects
 internal_stan_data_rows <- function(object) {
@@ -122,24 +122,26 @@ for(r in 1:nrow(cases_expsel)) {
 cases_expsel$mod <- m
 
 # fit the model for each covariate-selection model case
-m <- list()
-for(r in 1:nrow(cases_covsel)) {
-  f <- dev_covsel[[cases_covsel$dev_covsel[r]]]
-  d <- dat[[cases_covsel$dat[r]]]
-  o <- opts[[cases_covsel$opts[r]]]
-  set.seed(123L)
-  suppressWarnings(suppressMessages(
-    m[[r]] <- d |> f(
-      var_exposure = "exposure_1",
-      var_cov_candidates = c("cnt_a", "cnt_b"),
-      var_resp = cases_expsel$var_resp[r],
-      options_placebo_handling = o,
-      chains = 1,
-      iter = 100
-    )
-  )) 
+if (require("projpred")) {
+  m <- list()
+  for(r in 1:nrow(cases_covsel)) {
+    f <- dev_covsel[[cases_covsel$dev_covsel[r]]]
+    d <- dat[[cases_covsel$dat[r]]]
+    o <- opts[[cases_covsel$opts[r]]]
+    set.seed(123L)
+    suppressWarnings(suppressMessages(
+      m[[r]] <- d |> f(
+        var_exposure = "exposure_1",
+        var_cov_candidates = c("cnt_a", "cnt_b"),
+        var_resp = cases_expsel$var_resp[r],
+        options_placebo_handling = o,
+        chains = 1,
+        iter = 100
+      )
+    )) 
+  }
+  cases_covsel$mod <- m
 }
-cases_covsel$mod <- m
 
 # record number of rows in the inner and outer data sets (basic models)
 cases_ermod$inner_n <- numeric(nrow(cases_ermod))
@@ -157,12 +159,14 @@ for(r in 1:nrow(cases_expsel)) {
   cases_expsel$outer_n[r] <- nrow(cases_expsel$mod[[r]]$data)
 }
 
-# record number of rows in the inner and outer data sets (covariate selection)
-cases_covsel$inner_n <- numeric(nrow(cases_covsel))
-cases_covsel$outer_n <- numeric(nrow(cases_covsel))
-for(r in 1:nrow(cases_covsel)) {
-  cases_covsel$inner_n[r] <- internal_stan_data_rows(cases_covsel$mod[[r]]$mod)
-  cases_covsel$outer_n[r] <- nrow(cases_covsel$mod[[r]]$data)
+if (require("projpred")) {
+  # record number of rows in the inner and outer data sets (covariate selection)
+  cases_covsel$inner_n <- numeric(nrow(cases_covsel))
+  cases_covsel$outer_n <- numeric(nrow(cases_covsel))
+  for(r in 1:nrow(cases_covsel)) {
+    cases_covsel$inner_n[r] <- internal_stan_data_rows(cases_covsel$mod[[r]]$mod)
+    cases_covsel$outer_n[r] <- nrow(cases_covsel$mod[[r]]$data)
+  }
 }
 
 # the "stan" data set should only include placebo samples if the data set
@@ -186,16 +190,17 @@ test_that("internal data respects placebo options (metric selection)", {
     }
   }
 })
-test_that("internal data respects placebo options (covariate selection)", {
-  for(r in 1:nrow(cases_covsel)) {
-    if (cases_covsel$dat[r] == "placebo" & cases_covsel$opts[r] == "use_placebo") {
-      expect_equal(cases_covsel$inner_n[r], 40L)
-    } else {
-      expect_equal(cases_covsel$inner_n[r], 30L)
+if (require("projpred")) {
+  test_that("internal data respects placebo options (covariate selection)", {
+    for(r in 1:nrow(cases_covsel)) {
+      if (cases_covsel$dat[r] == "placebo" & cases_covsel$opts[r] == "use_placebo") {
+        expect_equal(cases_covsel$inner_n[r], 40L)
+      } else {
+        expect_equal(cases_covsel$inner_n[r], 30L)
+      }
     }
-  }
-})
-
+  })
+}
 
 # the "user facing" data set should only include placebo samples if the data set
 # originally contained a placebo group, regardless of the placebo handling settings
@@ -217,13 +222,15 @@ test_that("outer data preserves all data rows (metric selection)", {
     }
   }
 })
-test_that("outer data preserves all data rows (covariate selection)", {
-  for(r in 1:nrow(cases_covsel)) {
-    if (cases_covsel$dat[r] == "placebo") {
-      expect_equal(cases_covsel$outer_n[r], 40L)
-    } else {
-      expect_equal(cases_covsel$outer_n[r], 30L)
+if (require("projpred")) {
+  test_that("outer data preserves all data rows (covariate selection)", {
+    for(r in 1:nrow(cases_covsel)) {
+      if (cases_covsel$dat[r] == "placebo") {
+        expect_equal(cases_covsel$outer_n[r], 40L)
+      } else {
+        expect_equal(cases_covsel$outer_n[r], 30L)
+      }
     }
-  }
-})
-
+  })
+}
+  
