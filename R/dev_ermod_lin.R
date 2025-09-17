@@ -523,8 +523,12 @@ dev_ermod_lin_cov_sel <- function(
     purrr::set_names() |>
     purrr::map(
       function(.x) {
-        fun_dev_ermod(data, var_resp, .x,
-          chains = chains, iter = iter,
+        fun_dev_ermod(
+          data, 
+          var_resp, 
+          .x,
+          chains = chains, 
+          iter = iter,
           verbosity_level = verbosity_level,
           options_placebo_handling = options_placebo_handling,
         )
@@ -611,6 +615,7 @@ dev_ermod_lin_cov_sel <- function(
     var_resp = var_resp,
     var_exposure = var_exposure,
     var_cov_candidates = var_cov_candidates,
+    options_placebo_handling = options_placebo_handling,
     verbosity_level = verbosity_level,
     chains = chains, iter = iter,
     fun_family = fun_family,
@@ -660,6 +665,7 @@ dev_ermod_lin_cov_sel <- function(
     var_cov_candidates = var_cov_candidates,
     var_cov = var_cov,
     var_selected = as.character(var_selected),
+    options_placebo_handling = options_placebo_handling,
     cv_method = cv_method,
     cvvs = attr(var_selected, "cvvs"),
     rk = attr(var_selected, "rk")
@@ -690,12 +696,19 @@ NULL
 #' [.dev_ermod_refmodel()]: The reference model object that can be used
 #' for variable selection.
 .dev_ermod_refmodel <- function(
-    data, var_resp, var_exposure, var_cov_candidates,
-    verbosity_level = 1, chains = 4, iter = 2000,
+    data, 
+    var_resp, 
+    var_exposure, 
+    var_cov_candidates,
+    options_placebo_handling,
+    verbosity_level = 1, 
+    chains = 4, 
+    iter = 2000,
     fun_family = quote(stats::binomial()),
     prior = rstanarm::default_prior_coef(stats::binomial()),
     prior_intercept = rstanarm::default_prior_intercept(stats::binomial()),
     prior_aux = rstanarm::exponential(autoscale = TRUE)) {
+  
   stopifnot(verbosity_level %in% c(0, 1, 2, 3))
   refresh <- dplyr::if_else(verbosity_level >= 3, iter %/% 4, 0)
 
@@ -710,6 +723,8 @@ NULL
     var_cov_candidates = var_cov_candidates
   )
 
+  stan_data <- .apply_placebo_handling(data, options_placebo_handling, var_exposure)
+
   varnames <- paste(c(var_exposure, var_cov_candidates), collapse = " + ")
   formula_full <-
     stats::formula(paste(var_resp, "~", varnames))
@@ -717,11 +732,17 @@ NULL
   # Need to construct call and then evaluate. Directly calling
   # rstanarm::stan_glm with formula_full does not work for the cross-validation
   call_fit_ref <-
-    rlang::call2(rstanarm::stan_glm,
+    rlang::call2(
+      rstanarm::stan_glm,
       formula = formula_full,
-      family = fun_family, data = quote(data), QR = TRUE,
-      refresh = refresh, chains = chains, iter = iter,
-      prior = prior, prior_intercept = prior_intercept,
+      family = fun_family, 
+      data = quote(stan_data), 
+      QR = TRUE,
+      refresh = refresh, 
+      chains = chains, 
+      iter = iter,
+      prior = prior, 
+      prior_intercept = prior_intercept,
       prior_aux = prior_aux
     )
   fit_ref <- eval(call_fit_ref)
@@ -741,7 +762,9 @@ NULL
 #' @return
 #' [.select_cov_projpred()]: The selected variables
 .select_cov_projpred <- function(
-    refm_obj, var_exposure, var_cov_candidates,
+    refm_obj, 
+    var_exposure, 
+    var_cov_candidates,
     nterms_max = NULL,
     cv_method = c("LOO", "kfold"),
     k = 5,
@@ -814,7 +837,6 @@ NULL
   return(var_selected)
 }
 
-
 .reduce_cvvs_size <- function(cvvs) {
   family <- cvvs$refmodel$family
   cvvs$refmodel <- NULL
@@ -825,9 +847,14 @@ NULL
 }
 
 check_data_columns <- function(
-    data, var_resp = NULL, var_exp_candidates = NULL,
-    var_exposure = NULL, var_cov_candidates = NULL, var_cov = NULL,
+    data, 
+    var_resp = NULL, 
+    var_exp_candidates = NULL,
+    var_exposure = NULL, 
+    var_cov_candidates = NULL, 
+    var_cov = NULL,
     is_binary = FALSE) {
+  
   if (!is.data.frame(data)) {
     stop("data should be a data frame")
   }
