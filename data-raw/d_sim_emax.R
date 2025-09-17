@@ -59,7 +59,7 @@ simulate_data <- function(seed = 123) {
   make_dose_data <- function(dose, n, par) {
     tibble::tibble(
       dose = dose,
-      exposure = generate_exposure(max(dose, .01), n = n),
+      exposure = generate_exposure(dose, n = n),
 
       # add continuous and binary covariates
       cnt_a = continuous_covariate(n = n),
@@ -102,8 +102,9 @@ simulate_data <- function(seed = 123) {
       dplyr::select(-bin_pred, -bin_prob) # remove intermediate variables
   }
 
-  # create data set assuming three dosing groups
+  # create data set assuming three dosing groups and placebo
   dat <- dplyr::bind_rows(
+    make_dose_data(dose = 0, n = 100, par = par),
     make_dose_data(dose = 100, n = 100, par = par),
     make_dose_data(dose = 200, n = 100, par = par),
     make_dose_data(dose = 300, n = 100, par = par)
