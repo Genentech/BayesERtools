@@ -171,11 +171,9 @@ plot.ermod_cov_sel <- function(x, ...) {
 #' @keywords internal
 #' @inherit extract_method return
 #' @param x An object of class \code{ermod_*}
-#' @param options_placebo_handling This is exposed to allow user to override placebo settings
-#' @param method This is exposed to allow extraction of data in different ways: "raw" returns
-#' the original data object, "processed" returns the data after placebo handling has been
-#' applied, "internal" is for testing purposes only and extracts data from the masked stan
-#' object
+#' @param method If \code{method="raw"} (the default), the original data set is returned.
+#' When \code{method="processed"}, the data set returned is one that has the placebo handling
+#' options applied. A \code{method="internal"} option also exists, used for internal testing.
 #'
 extract_data.ermod <- function(x, ..., method = "raw") {
   if (method == "raw") return(x$data)

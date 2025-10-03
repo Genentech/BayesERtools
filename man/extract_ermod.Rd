@@ -31,12 +31,9 @@
 \arguments{
 \item{x}{An object of class \code{ermod_*}}
 
-\item{method}{This is exposed to allow extraction of data in different ways: "raw" returns
-the original data object, "processed" returns the data after placebo handling has been
-applied, "internal" is for testing purposes only and extracts data from the masked stan
-object}
-
-\item{options_placebo_handling}{This is exposed to allow user to override placebo settings}
+\item{method}{If \code{method="raw"} (the default), the original data set is returned.
+When \code{method="processed"}, the data set returned is one that has the placebo handling
+options applied. A \code{method="internal"} option also exists, used for internal testing.}
 }
 \value{
 \itemize{

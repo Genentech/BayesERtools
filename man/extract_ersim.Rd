@@ -30,6 +30,10 @@
 }
 \arguments{
 \item{x}{An object of class \code{ersim_*}}
+
+\item{method}{If \code{method="raw"} (the default), the original data set is returned.
+When \code{method="processed"}, the data set returned is one that has the placebo handling
+options applied.}
 }
 \value{
 \itemize{
