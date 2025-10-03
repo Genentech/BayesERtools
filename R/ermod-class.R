@@ -434,10 +434,10 @@ check_l_ermod_exp_sel <- function(l_ermod_exp_sel, basemodclass = "stanreg") {
 
 .apply_placebo_defaults <- function(options) {
   placebo_defaults <- list(
-      include_placebo = FALSE,
-      method = "zero_exposure_as_placebo", # alternatives: "var_placebo", "none"
-      var_placebo = NULL # if specified must be a string referring to a logical vector
-    )
+    include_placebo = FALSE,
+    method = "zero_exposure_as_placebo", # alternatives: "var_placebo", "none"
+    var_placebo = NULL # if specified must be a string referring to a logical vector
+  )
   if (is.null(options)) return(placebo_defaults)
   utils::modifyList(placebo_defaults, options)
 }
