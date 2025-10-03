@@ -64,7 +64,7 @@ fit_ermods <- list(
     dev_ermod_bin_emax(
       var_resp = "response_2",
       var_exposure = "exposure_1",
-      options_placebo_handling = list(include_placebo = FALSE),
+      options_placebo_handling = list(include_placebo = TRUE),
       chains = 2,
       iter = 500
     ))
@@ -149,7 +149,7 @@ fit_expsel <- list(
     dev_ermod_bin_emax_exp_sel(
       var_resp = "response_2",
       var_exp_candidates = c("exposure_1", "exposure_2"),
-      options_placebo_handling = list(include_placebo = FALSE),
+      options_placebo_handling = list(include_placebo = TRUE),
       chains = 2,
       iter = 500
     ))
