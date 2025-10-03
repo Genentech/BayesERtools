@@ -102,9 +102,9 @@ test_that("basic model fitting works with and without placebo", {
     mods[[r]] <- m
   }
 
-  # keep a copy in the cases_ermod data frame so that the models 
+  # keep a copy in the cases_ermod data frame so that the models
   # persist without the test environment
-  cases_ermod$mod <<- mods  
+  cases_ermod$mod <<- mods
 })
 
 test_that("exposure selection fitting works with and without placebo", {
@@ -130,9 +130,9 @@ test_that("exposure selection fitting works with and without placebo", {
     mods[[r]] <- m
   }
 
-  # keep a copy in the cases_expsel data frame so that the models 
+  # keep a copy in the cases_expsel data frame so that the models
   # persist without the test environment
-  cases_expsel$mod <<- mods  
+  cases_expsel$mod <<- mods
 })
 
 if (require("projpred")) {
@@ -145,7 +145,7 @@ if (require("projpred")) {
       d <- dat[[cases_covsel$dat[r]]]
       o <- opts[[cases_covsel$opts[r]]]
       set.seed(123L)
-    
+
       # estimate the model quietly, test that it runs without error
       expect_no_error(
         m <- d |> f(
@@ -159,7 +159,7 @@ if (require("projpred")) {
       )
       mods[[r]] <- m
     }
-    # keep a copy in the cases_covsel data frame so that the models 
+    # keep a copy in the cases_covsel data frame so that the models
     # persist without the test environment
     cases_covsel$mod <<- mods
   })
@@ -265,4 +265,3 @@ if (require("projpred")) {
     }
   })
 }
-
