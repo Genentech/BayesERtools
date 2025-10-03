@@ -93,7 +93,7 @@ plot_er_exp_sel <- function(x, n_draws_sim = NULL) {
     )
 
   origdata <-
-    extract_data(x) |>
+    extract_data(x, method = "processed") |>
     tidyr::pivot_longer(dplyr::all_of(var_exp_order),
       names_to = ".exp_metric", values_to = ".exposure"
     ) |>
