@@ -174,7 +174,7 @@ plot.ermod_cov_sel <- function(x, ...) {
 #' @param options_placebo_handling This is exposed to allow user to override placebo settings
 #' @param method This is exposed to allow extraction of data in different ways: "raw" returns
 #' the original data object, "processed" returns the data after placebo handling has been
-#' applied, "internal" is for testing purposes only and extracts data from the masked stan 
+#' applied, "internal" is for testing purposes only and extracts data from the masked stan
 #' object
 #'
 extract_data.ermod <- function(x, ..., method = "raw") {
@@ -182,8 +182,8 @@ extract_data.ermod <- function(x, ..., method = "raw") {
   if (method == "processed") {
     opt <- .apply_placebo_defaults(x$options_placebo_handling)
     dat <- .apply_placebo_handling(
-      data = x$data, 
-      options = opt, 
+      data = x$data,
+      options = opt,
       var_exposure = extract_var_exposure(x)
     )
     return(dat)

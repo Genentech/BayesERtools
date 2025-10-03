@@ -51,7 +51,7 @@ if (.if_run_ex_eval_mod()) {
     var_resp = "response",
     var_exposure = "AUCss",
     var_cov = c("SEX", "BAGE"),
-    options_placebo_handling = opts_placebo, 
+    options_placebo_handling = opts_placebo,
     chains = 2,
     iter = 500
   )

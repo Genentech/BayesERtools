@@ -252,13 +252,13 @@ sim_er_curve <- function(
     seed_sample_draws = NULL,
     output_type = c("draws", "median_qi"),
     qi_width = 0.95) {
-  
+
   if (is.null(exposure_range)) {
-    exposure_range <- .default_exposure_range(ermod) 
+    exposure_range <- .default_exposure_range(ermod)
   } else {
     stopifnot(length(exposure_range) == 2)
   }
-  
+
   exposure_to_sim_vec <-
     seq(exposure_range[1], exposure_range[2], length.out = num_exposures)
 
