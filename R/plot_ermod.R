@@ -118,7 +118,7 @@ plot_er.ersim_med_qi <- function(
       options_caption
     )
 
-  origdata <- extract_data(x)
+  origdata <- extract_data(x, method = "processed")
   var_exposure <- extract_var_exposure(x)
   add_boxplot <- options_orig_data$add_boxplot
   boxplot_height <- options_orig_data$boxplot_height
@@ -721,7 +721,7 @@ set_pos_ci_annot <- function(x, pos_x, pos_y, var_exposure, var_resp) {
     if (attr(x, "endpoint_type") == "binary") {
       pos_y <- 0.9
     } else {
-      pos_y <- max(extract_data(x)[[var_resp]])
+      pos_y <- max(extract_data(x, method = "processed")[[var_resp]])
     }
   }
   return(c(pos_x, pos_y))

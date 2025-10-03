@@ -12,7 +12,7 @@
 \alias{extract_var_selected}
 \title{Extract elements from S3 objects}
 \usage{
-extract_data(x)
+extract_data(x, ...)
 
 extract_mod(x)
 
@@ -30,6 +30,8 @@ extract_var_selected(x)
 }
 \arguments{
 \item{x}{An object to extract elements from}
+
+\item{...}{Additional arguments passed to methods}
 }
 \value{
 \itemize{

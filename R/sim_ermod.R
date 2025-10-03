@@ -252,9 +252,9 @@ sim_er_curve <- function(
     seed_sample_draws = NULL,
     output_type = c("draws", "median_qi"),
     qi_width = 0.95) {
+
   if (is.null(exposure_range)) {
-    exposure_range <-
-      range(extract_data(ermod)[[extract_var_exposure(ermod)]])
+    exposure_range <- .default_exposure_range(ermod)
   } else {
     stopifnot(length(exposure_range) == 2)
   }
@@ -273,6 +273,11 @@ sim_er_curve <- function(
   )
 }
 
+.default_exposure_range <- function(ermod) {
+  exp <- extract_var_exposure(ermod)
+  dat <- extract_data(ermod, method = "processed")
+  range(dat[[exp]])
+}
 
 #' Calculate marginal expected response for specified exposure values
 #'
@@ -439,8 +444,7 @@ sim_er_curve_marg <- function(
     output_type = c("draws", "median_qi"),
     qi_width = 0.95) {
   if (is.null(exposure_range)) {
-    exposure_range <-
-      range(extract_data(ermod)[[extract_var_exposure(ermod)]])
+    exposure_range <- .default_exposure_range(ermod)
   } else {
     stopifnot(length(exposure_range) == 2)
   }

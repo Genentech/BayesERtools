@@ -54,6 +54,7 @@ dev_ermod_emax <- function(
     data,
     var_resp,
     var_exposure,
+    options_placebo_handling = list(),
     l_var_cov = NULL,
     gamma_fix = 1,
     e0_fix = NULL,
@@ -63,6 +64,7 @@ dev_ermod_emax <- function(
     chains = 4,
     iter = 2000,
     seed = sample.int(.Machine$integer.max, 1)) {
+
   input_args <- capture_selected_args(
     c(
       "gamma_fix", "e0_fix", "emax_fix",
@@ -70,6 +72,8 @@ dev_ermod_emax <- function(
     ),
     environment()
   )
+
+  options_placebo_handling <- .apply_placebo_defaults(options_placebo_handling)
 
   stopifnot(verbosity_level %in% c(0, 1, 2, 3))
   refresh <- dplyr::if_else(verbosity_level >= 3, iter %/% 4, 0)
@@ -84,9 +88,11 @@ dev_ermod_emax <- function(
   formula <-
     stats::formula(paste(var_resp, "~", var_exposure))
 
+  stan_data <- .apply_placebo_handling(data, options_placebo_handling, var_exposure)
+
   mod <- rstanemax::stan_emax(
     formula,
-    data = data,
+    data = stan_data,
     gamma.fix = gamma_fix,
     e0.fix = e0_fix,
     emax.fix = emax_fix,
@@ -103,6 +109,7 @@ dev_ermod_emax <- function(
     data = data,
     var_resp = var_resp,
     var_exposure = var_exposure,
+    options_placebo_handling = options_placebo_handling,
     l_var_cov = l_var_cov,
     input_args = input_args
   )
@@ -132,7 +139,8 @@ dev_ermod_emax <- function(
 #'   dev_ermod_emax_exp_sel(
 #'     data = data_er_cont,
 #'     var_resp = "response",
-#'     var_exp_candidates = c("exposure", "exposure2")
+#'     var_exp_candidates = c("exposure", "exposure2"),
+#'     options_placebo_handling = list(include_placebo = TRUE)
 #'   )
 #'
 #' ermod_emax_exp_sel
@@ -142,6 +150,7 @@ dev_ermod_emax_exp_sel <- function(
     data,
     var_resp,
     var_exp_candidates,
+    options_placebo_handling = list(),
     verbosity_level = 1,
     chains = 4,
     iter = 2000,
@@ -150,6 +159,7 @@ dev_ermod_emax_exp_sel <- function(
     emax_fix = NULL,
     priors = NULL,
     seed = sample.int(.Machine$integer.max, 1)) {
+
   fun_dev_ermod <-
     purrr::partial(
       dev_ermod_emax,
@@ -165,6 +175,7 @@ dev_ermod_emax_exp_sel <- function(
       data = data,
       var_resp = var_resp,
       var_exp_candidates = var_exp_candidates,
+      options_placebo_handling = options_placebo_handling,
       verbosity_level = verbosity_level,
       chains = chains,
       iter = iter,
@@ -204,6 +215,7 @@ dev_ermod_bin_emax <- function(
     data,
     var_resp,
     var_exposure,
+    options_placebo_handling = list(),
     l_var_cov = NULL,
     gamma_fix = 1,
     e0_fix = NULL,
@@ -213,6 +225,7 @@ dev_ermod_bin_emax <- function(
     chains = 4,
     iter = 2000,
     seed = sample.int(.Machine$integer.max, 1)) {
+
   # Warn when e0_fix is set
   if (!is.null(e0_fix) && e0_fix == 0) {
     warning(
@@ -249,6 +262,8 @@ dev_ermod_bin_emax <- function(
     environment()
   )
 
+  options_placebo_handling <- .apply_placebo_defaults(options_placebo_handling)
+
   stopifnot(verbosity_level %in% c(0, 1, 2, 3))
   refresh <- dplyr::if_else(verbosity_level >= 3, iter %/% 4, 0)
 
@@ -263,9 +278,11 @@ dev_ermod_bin_emax <- function(
   formula <-
     stats::formula(paste(var_resp, "~", var_exposure))
 
+  stan_data <- .apply_placebo_handling(data, options_placebo_handling, var_exposure)
+
   mod <- rstanemax::stan_emax_binary(
     formula,
-    data = data,
+    data = stan_data,
     gamma.fix = gamma_fix,
     e0.fix = e0_fix,
     emax.fix = emax_fix,
@@ -282,6 +299,7 @@ dev_ermod_bin_emax <- function(
     data = data,
     var_resp = var_resp,
     var_exposure = var_exposure,
+    options_placebo_handling = options_placebo_handling,
     l_var_cov = l_var_cov,
     input_args = input_args
   )
@@ -311,6 +329,7 @@ dev_ermod_bin_emax_exp_sel <- function(
     data,
     var_resp,
     var_exp_candidates,
+    options_placebo_handling = list(),
     verbosity_level = 1,
     chains = 4,
     iter = 2000,
@@ -319,6 +338,7 @@ dev_ermod_bin_emax_exp_sel <- function(
     emax_fix = NULL,
     priors = NULL,
     seed = sample.int(.Machine$integer.max, 1)) {
+
   fun_dev_ermod <-
     purrr::partial(
       dev_ermod_bin_emax,
@@ -334,6 +354,7 @@ dev_ermod_bin_emax_exp_sel <- function(
       data = data,
       var_resp = var_resp,
       var_exp_candidates = var_exp_candidates,
+      options_placebo_handling = options_placebo_handling,
       verbosity_level = verbosity_level,
       chains = chains,
       iter = iter,

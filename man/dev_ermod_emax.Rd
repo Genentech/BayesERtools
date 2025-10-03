@@ -9,6 +9,7 @@ dev_ermod_emax(
   data,
   var_resp,
   var_exposure,
+  options_placebo_handling = list(),
   l_var_cov = NULL,
   gamma_fix = 1,
   e0_fix = NULL,
@@ -24,6 +25,7 @@ dev_ermod_bin_emax(
   data,
   var_resp,
   var_exposure,
+  options_placebo_handling = list(),
   l_var_cov = NULL,
   gamma_fix = 1,
   e0_fix = NULL,
@@ -41,6 +43,25 @@ dev_ermod_bin_emax(
 \item{var_resp}{Response variable name in character}
 
 \item{var_exposure}{Exposure variable names in character}
+
+\item{options_placebo_handling}{List of for placebo handling.
+Possible options include:
+\itemize{
+\item \code{include_placebo}: Logical, whether the placebo group should be
+used when estimating the model. Default is observed data. Default
+is \code{FALSE}.
+\item \code{method}: Character, specifying the method used to detect placebo
+group samples. Possible values include \code{"zero_exposure_as_placebo"}
+(the default), in which rows with zero values for the exposure
+variable are automatically assigned to a placebo group,
+\code{"var_placebo"}, indicating that the user will supply the name of
+a data column specifying the placebo group, and \code{"none"}, in which
+case no placebo handling takes place.
+\item \code{var_placebo}: Character, specifying the name of a column in the
+data set that indicates which rows belong to the placebo group. This
+column is interpreted as a logical vector. This value is ignored
+unless \code{method = "var_placebo"}.
+}}
 
 \item{l_var_cov}{a names list of categorical covariate variables in
 character vector. See details in the \code{param.cov} argument of

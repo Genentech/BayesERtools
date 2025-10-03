@@ -29,11 +29,36 @@ plot.ersim_med_qi <- function(x, show_orig_data = FALSE, ...) {
 #' @keywords internal
 #' @inherit extract_method return
 #' @param x An object of class \code{ersim_*}
-extract_data.ersim <- function(x) attr(x, "origdata")
+#' @param method If \code{method="raw"} (the default), the original data set is returned.
+#' When \code{method="processed"}, the data set returned is one that has the placebo handling
+#' options applied.
+extract_data.ersim <- function(x, ..., method = "raw") {
+  dat <- attr(x, "origdata")
+  if (method == "raw") return(dat)
+  if (method == "processed") {
+    opt <- attr(x, "options_placebo_handling")
+    opt <- .apply_placebo_defaults(opt)
+    exp <- extract_var_exposure(x)
+    dat <- .apply_placebo_handling(dat, opt, exp)
+    return(dat)
+  }
+  stop("unknown `method`", call. = FALSE)
+}
 
 #' @export
 #' @rdname extract_ersim
-extract_data.ersim_med_qi <- function(x) attr(x, "origdata")
+extract_data.ersim_med_qi <- function(x, ..., method = "raw") {
+  dat <- attr(x, "origdata")
+  if (method == "raw") return(dat)
+  if (method == "processed") {
+    opt <- attr(x, "options_placebo_handling")
+    opt <- .apply_placebo_defaults(opt)
+    exp <- extract_var_exposure(x)
+    dat <- .apply_placebo_handling(dat, opt, exp)
+    return(dat)
+  }
+  stop("unknown `method`", call. = FALSE)
+}
 
 #' @export
 #' @rdname extract_ersim

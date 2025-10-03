@@ -26,6 +26,7 @@ new_ersim <- function(simdata, ermod, nrow_cov_data) {
   attr(ersim, "coef_exp_draws") <- ermod$coef_exp_draws
   attr(ersim, "ermod_class") <- class(ermod)
   attr(ersim, "endpoint_type") <- ermod$endpoint_type
+  attr(ersim, "options_placebo_handling") <- ermod$options_placebo_handling
 
   # Add ersim class
   class(ersim) <- c("ersim", class(ersim))

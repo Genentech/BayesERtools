@@ -83,6 +83,7 @@ if (requireNamespace("projpred")) {
     var_resp = var_resp,
     var_exposure = "AUCss_1000",
     var_cov_candidates = var_cov_ae_covsel_test,
+    options_placebo_handling = list(include_placebo = TRUE),
     verbosity_level = 0,
     # Below option to make the test fast
     chains = 2, iter = 1000
@@ -276,6 +277,7 @@ test_that("No ER case", {
       var_resp = var_resp,
       var_exposure = "AUCss_1000",
       var_cov_candidates = c("BAGE_10", "BWT_10"),
+      options_placebo_handling = list(include_placebo = TRUE),
       verbosity_level = 0,
       # Below option to make the test fast
       chains = 2, iter = 1000

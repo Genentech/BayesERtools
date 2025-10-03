@@ -12,7 +12,7 @@
 \alias{extract_var_selected.ermod_cov_sel}
 \title{Extract elements from an object of class \code{ermod_*}}
 \usage{
-\method{extract_data}{ermod}(x)
+\method{extract_data}{ermod}(x, ..., method = "raw")
 
 \method{extract_mod}{ermod}(x)
 
@@ -30,6 +30,10 @@
 }
 \arguments{
 \item{x}{An object of class \code{ermod_*}}
+
+\item{method}{If \code{method="raw"} (the default), the original data set is returned.
+When \code{method="processed"}, the data set returned is one that has the placebo handling
+options applied. A \code{method="internal"} option also exists, used for internal testing.}
 }
 \value{
 \itemize{

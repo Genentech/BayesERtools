@@ -11,6 +11,22 @@
 #' @param var_resp Response variable name in character
 #' @param var_exposure Exposure variable names in character
 #' @param var_cov Covariate variable names in character vector
+#' @param options_placebo_handling List of for placebo handling.
+#' Possible options include:
+#'   - `include_placebo`: Logical, whether the placebo group should be
+#'   used when estimating the model. Default is observed data. Default
+#'   is `FALSE`.
+#'   - `method`: Character, specifying the method used to detect placebo
+#'   group samples. Possible values include `"zero_exposure_as_placebo"`
+#'   (the default), in which rows with zero values for the exposure
+#'   variable are automatically assigned to a placebo group,
+#'   `"var_placebo"`, indicating that the user will supply the name of
+#'   a data column specifying the placebo group, and `"none"`, in which
+#'   case no placebo handling takes place.
+#'   - `var_placebo`: Character, specifying the name of a column in the
+#'   data set that indicates which rows belong to the placebo group. This
+#'   column is interpreted as a logical vector. This value is ignored
+#'   unless `method = "var_placebo"`.
 #' @param prior,prior_intercept,prior_aux See [rstanarm::stan_glm()]
 #' @param verbosity_level Verbosity level. 0: No output, 1: Display steps,
 #' 2: Display progress in each step, 3: Display MCMC sampling.
@@ -38,11 +54,13 @@ dev_ermod_bin <- function(
     var_resp,
     var_exposure,
     var_cov = NULL,
+    options_placebo_handling = list(),
     prior = rstanarm::default_prior_coef(stats::binomial()),
     prior_intercept = rstanarm::default_prior_intercept(stats::binomial()),
     verbosity_level = 1,
     chains = 4,
     iter = 2000) {
+
   stopifnot(verbosity_level %in% c(0, 1, 2, 3))
   refresh <- dplyr::if_else(verbosity_level >= 3, iter %/% 4, 0)
 
@@ -50,6 +68,8 @@ dev_ermod_bin <- function(
     c("chains", "iter"),
     environment()
   )
+
+  options_placebo_handling <- .apply_placebo_defaults(options_placebo_handling)
 
   check_data_columns(
     data = data,
@@ -66,13 +86,15 @@ dev_ermod_bin <- function(
       paste(var_resp, "~", paste(var_full, collapse = " + "))
     )
 
+  stan_data <- .apply_placebo_handling(data, options_placebo_handling, var_exposure)
+
   # Need to construct call and then evaluate. Directly calling
   # rstanarm::stan_glm with formula_final does not work for the cross-validation
   call_stan_glm <- rlang::call2(
     rstanarm::stan_glm,
     formula = formula_final,
     family = stats::binomial(),
-    data = quote(data),
+    data = stan_data,
     prior = prior,
     prior_intercept = prior_intercept,
     QR = dplyr::if_else(length(var_full) > 1, TRUE, FALSE),
@@ -86,6 +108,7 @@ dev_ermod_bin <- function(
     var_resp = var_resp,
     var_exposure = var_exposure,
     var_cov = var_cov,
+    options_placebo_handling = options_placebo_handling,
     input_args = input_args
   )
 }
@@ -122,11 +145,15 @@ dev_ermod_bin_exp_sel <- function(
     data,
     var_resp,
     var_exp_candidates,
+    options_placebo_handling = list(),
     prior = rstanarm::default_prior_coef(stats::binomial()),
     prior_intercept = rstanarm::default_prior_intercept(stats::binomial()),
     verbosity_level = 1,
     chains = 4,
     iter = 2000) {
+
+  options_placebo_handling <- .apply_placebo_defaults(options_placebo_handling)
+
   fun_dev_ermod <-
     purrr::partial(
       dev_ermod_bin,
@@ -139,6 +166,7 @@ dev_ermod_bin_exp_sel <- function(
       data = data,
       var_resp = var_resp,
       var_exp_candidates = var_exp_candidates,
+      options_placebo_handling = options_placebo_handling,
       verbosity_level = verbosity_level,
       chains = chains,
       iter = iter,
@@ -195,6 +223,7 @@ dev_ermod_bin_cov_sel <- function(
     var_resp,
     var_exposure,
     var_cov_candidates,
+    options_placebo_handling = list(),
     cv_method = c("LOO", "kfold"),
     k = 5,
     validate_search = FALSE,
@@ -205,6 +234,9 @@ dev_ermod_bin_cov_sel <- function(
     verbosity_level = 1,
     chains = 4,
     iter = 2000) {
+
+  options_placebo_handling <- .apply_placebo_defaults(options_placebo_handling)
+
   fun_dev_ermod <-
     purrr::partial(
       dev_ermod_bin,
@@ -217,6 +249,7 @@ dev_ermod_bin_cov_sel <- function(
     var_resp = var_resp,
     var_exposure = var_exposure,
     var_cov_candidates = var_cov_candidates,
+    options_placebo_handling = options_placebo_handling,
     cv_method = cv_method,
     k = k,
     validate_search = validate_search,
@@ -239,6 +272,7 @@ dev_ermod_bin_cov_sel <- function(
     var_cov_candidates = var_cov_candidates,
     var_cov = var_cov,
     var_selected = var_selected,
+    options_placebo_handling = options_placebo_handling,
     cv_method = cv_method,
     cvvs = cvvs,
     rk = rk,
@@ -269,12 +303,14 @@ dev_ermod_lin <- function(
     var_resp,
     var_exposure,
     var_cov = NULL,
+    options_placebo_handling = list(),
     prior = rstanarm::default_prior_coef(stats::binomial()),
     prior_intercept = rstanarm::default_prior_intercept(stats::binomial()),
     prior_aux = rstanarm::exponential(autoscale = TRUE),
     verbosity_level = 1,
     chains = 4,
     iter = 2000) {
+
   stopifnot(verbosity_level %in% c(0, 1, 2, 3))
   refresh <- dplyr::if_else(verbosity_level >= 3, iter %/% 4, 0)
 
@@ -282,6 +318,8 @@ dev_ermod_lin <- function(
     c("chains", "iter"),
     environment()
   )
+
+  options_placebo_handling <- .apply_placebo_defaults(options_placebo_handling)
 
   check_data_columns(
     data = data,
@@ -297,10 +335,12 @@ dev_ermod_lin <- function(
       paste(var_resp, "~", paste(var_full, collapse = " + "))
     )
 
+  stan_data <- .apply_placebo_handling(data, options_placebo_handling, var_exposure)
+
   mod <- rstanarm::stan_glm(
     formula_final,
     family = stats::gaussian(),
-    data = data,
+    data = stan_data,
     prior = prior,
     prior_intercept = prior_intercept,
     prior_aux = prior_aux,
@@ -316,6 +356,7 @@ dev_ermod_lin <- function(
     var_resp = var_resp,
     var_exposure = var_exposure,
     var_cov = var_cov,
+    options_placebo_handling = options_placebo_handling,
     input_args = input_args
   )
 }
@@ -330,7 +371,8 @@ dev_ermod_lin <- function(
 #' ermod_lin_exp_sel <- dev_ermod_lin_exp_sel(
 #'   data = d_sim_lin,
 #'   var_resp = "response",
-#'   var_exp_candidates = c("AUCss", "Cmaxss")
+#'   var_exp_candidates = c("AUCss", "Cmaxss"),
+#'   options_placebo_handling = list(include_placebo = TRUE)
 #' )
 #'
 #' ermod_lin_exp_sel
@@ -340,12 +382,16 @@ dev_ermod_lin_exp_sel <- function(
     data,
     var_resp,
     var_exp_candidates,
+    options_placebo_handling = list(),
     prior = rstanarm::default_prior_coef(stats::binomial()),
     prior_intercept = rstanarm::default_prior_intercept(stats::binomial()),
     prior_aux = rstanarm::exponential(autoscale = TRUE),
     verbosity_level = 1,
     chains = 4,
     iter = 2000) {
+
+  options_placebo_handling <- .apply_placebo_defaults(options_placebo_handling)
+
   fun_dev_ermod <-
     purrr::partial(
       dev_ermod_lin,
@@ -360,6 +406,7 @@ dev_ermod_lin_exp_sel <- function(
       var_resp = var_resp,
       var_exp_candidates = var_exp_candidates,
       verbosity_level = verbosity_level,
+      options_placebo_handling = options_placebo_handling,
       chains = chains,
       iter = iter,
       fun_dev_ermod = fun_dev_ermod
@@ -390,6 +437,7 @@ dev_ermod_lin_cov_sel <- function(
     var_resp,
     var_exposure,
     var_cov_candidates,
+    options_placebo_handling = list(),
     cv_method = c("LOO", "kfold"),
     k = 5,
     validate_search = FALSE,
@@ -401,6 +449,9 @@ dev_ermod_lin_cov_sel <- function(
     verbosity_level = 1,
     chains = 4,
     iter = 2000) {
+
+  options_placebo_handling <- .apply_placebo_defaults(options_placebo_handling)
+
   fun_dev_ermod <-
     purrr::partial(
       dev_ermod_lin,
@@ -414,6 +465,7 @@ dev_ermod_lin_cov_sel <- function(
     var_resp = var_resp,
     var_exposure = var_exposure,
     var_cov_candidates = var_cov_candidates,
+    options_placebo_handling = options_placebo_handling,
     cv_method = cv_method,
     k = k,
     validate_search = validate_search,
@@ -435,6 +487,7 @@ dev_ermod_lin_cov_sel <- function(
     var_resp = var_resp,
     var_exposure = var_exposure,
     var_cov_candidates = var_cov_candidates,
+    options_placebo_handling = options_placebo_handling,
     var_cov = var_cov,
     var_selected = var_selected,
     cv_method = cv_method,
@@ -447,9 +500,15 @@ dev_ermod_lin_cov_sel <- function(
 # Internal functions ----------------------------------------------------------
 
 .dev_ermod_exp_sel <- function(
-    data, var_resp, var_exp_candidates,
-    verbosity_level = 1, chains = 4, iter = 2000,
+    data,
+    var_resp,
+    var_exp_candidates,
+    options_placebo_handling,
+    verbosity_level = 1,
+    chains = 4,
+    iter = 2000,
     fun_dev_ermod) {
+
   stopifnot(verbosity_level %in% c(0, 1, 2, 3))
 
   verbose <- dplyr::if_else(verbosity_level == 2, TRUE, FALSE)
@@ -465,9 +524,14 @@ dev_ermod_lin_cov_sel <- function(
     purrr::set_names() |>
     purrr::map(
       function(.x) {
-        fun_dev_ermod(data, var_resp, .x,
-          chains = chains, iter = iter,
-          verbosity_level = verbosity_level
+        fun_dev_ermod(
+          data,
+          var_resp,
+          .x,
+          chains = chains,
+          iter = iter,
+          verbosity_level = verbosity_level,
+          options_placebo_handling = options_placebo_handling,
         )
       },
       .progress = verbose
@@ -504,6 +568,7 @@ dev_ermod_lin_cov_sel <- function(
     var_resp = var_resp,
     var_exp_candidates = var_exp_candidates,
     var_exposure = var_exposure,
+    options_placebo_handling = options_placebo_handling,
     l_mod_exposures = l_mod_exposures,
     loo_comp_exposures = loo_comp_exposures,
     input_args = l_mod_exposures[[var_exposure]]$input_args
@@ -516,6 +581,7 @@ dev_ermod_lin_cov_sel <- function(
     var_resp,
     var_exposure,
     var_cov_candidates,
+    options_placebo_handling,
     cv_method = c("LOO", "kfold"),
     k = 5,
     validate_search = FALSE,
@@ -529,6 +595,7 @@ dev_ermod_lin_cov_sel <- function(
     prior = rstanarm::default_prior_coef(stats::binomial()),
     prior_intercept = rstanarm::default_prior_intercept(stats::binomial()),
     prior_aux = rstanarm::exponential(autoscale = TRUE)) {
+
   stopifnot(verbosity_level %in% c(0, 1, 2, 3))
 
   rlang::check_installed("projpred")
@@ -550,6 +617,7 @@ dev_ermod_lin_cov_sel <- function(
     var_resp = var_resp,
     var_exposure = var_exposure,
     var_cov_candidates = var_cov_candidates,
+    options_placebo_handling = options_placebo_handling,
     verbosity_level = verbosity_level,
     chains = chains, iter = iter,
     fun_family = fun_family,
@@ -584,6 +652,7 @@ dev_ermod_lin_cov_sel <- function(
     var_resp = var_resp,
     var_exposure = var_exposure,
     var_cov = var_cov,
+    options_placebo_handling = options_placebo_handling,
     verbosity_level = verbosity_level,
     chains = chains, iter = iter
   )
@@ -598,6 +667,7 @@ dev_ermod_lin_cov_sel <- function(
     var_cov_candidates = var_cov_candidates,
     var_cov = var_cov,
     var_selected = as.character(var_selected),
+    options_placebo_handling = options_placebo_handling,
     cv_method = cv_method,
     cvvs = attr(var_selected, "cvvs"),
     rk = attr(var_selected, "rk")
@@ -628,12 +698,19 @@ NULL
 #' [.dev_ermod_refmodel()]: The reference model object that can be used
 #' for variable selection.
 .dev_ermod_refmodel <- function(
-    data, var_resp, var_exposure, var_cov_candidates,
-    verbosity_level = 1, chains = 4, iter = 2000,
+    data,
+    var_resp,
+    var_exposure,
+    var_cov_candidates,
+    options_placebo_handling,
+    verbosity_level = 1,
+    chains = 4,
+    iter = 2000,
     fun_family = quote(stats::binomial()),
     prior = rstanarm::default_prior_coef(stats::binomial()),
     prior_intercept = rstanarm::default_prior_intercept(stats::binomial()),
     prior_aux = rstanarm::exponential(autoscale = TRUE)) {
+
   stopifnot(verbosity_level %in% c(0, 1, 2, 3))
   refresh <- dplyr::if_else(verbosity_level >= 3, iter %/% 4, 0)
 
@@ -648,6 +725,8 @@ NULL
     var_cov_candidates = var_cov_candidates
   )
 
+  stan_data <- .apply_placebo_handling(data, options_placebo_handling, var_exposure)
+
   varnames <- paste(c(var_exposure, var_cov_candidates), collapse = " + ")
   formula_full <-
     stats::formula(paste(var_resp, "~", varnames))
@@ -655,11 +734,17 @@ NULL
   # Need to construct call and then evaluate. Directly calling
   # rstanarm::stan_glm with formula_full does not work for the cross-validation
   call_fit_ref <-
-    rlang::call2(rstanarm::stan_glm,
+    rlang::call2(
+      rstanarm::stan_glm,
       formula = formula_full,
-      family = fun_family, data = quote(data), QR = TRUE,
-      refresh = refresh, chains = chains, iter = iter,
-      prior = prior, prior_intercept = prior_intercept,
+      family = fun_family,
+      data = stan_data,
+      QR = TRUE,
+      refresh = refresh,
+      chains = chains,
+      iter = iter,
+      prior = prior,
+      prior_intercept = prior_intercept,
       prior_aux = prior_aux
     )
   fit_ref <- eval(call_fit_ref)
@@ -679,7 +764,9 @@ NULL
 #' @return
 #' [.select_cov_projpred()]: The selected variables
 .select_cov_projpred <- function(
-    refm_obj, var_exposure, var_cov_candidates,
+    refm_obj,
+    var_exposure,
+    var_cov_candidates,
     nterms_max = NULL,
     cv_method = c("LOO", "kfold"),
     k = 5,
@@ -752,7 +839,6 @@ NULL
   return(var_selected)
 }
 
-
 .reduce_cvvs_size <- function(cvvs) {
   family <- cvvs$refmodel$family
   cvvs$refmodel <- NULL
@@ -763,9 +849,14 @@ NULL
 }
 
 check_data_columns <- function(
-    data, var_resp = NULL, var_exp_candidates = NULL,
-    var_exposure = NULL, var_cov_candidates = NULL, var_cov = NULL,
+    data,
+    var_resp = NULL,
+    var_exp_candidates = NULL,
+    var_exposure = NULL,
+    var_cov_candidates = NULL,
+    var_cov = NULL,
     is_binary = FALSE) {
+
   if (!is.data.frame(data)) {
     stop("data should be a data frame")
   }
@@ -822,4 +913,27 @@ capture_selected_args <- function(arg_names, env) {
 
 .if_run_ex_covsel <- function() {
   requireNamespace("projpred", quietly = TRUE)
+}
+
+.apply_placebo_handling <- function(data, options, var_exposure = NULL) {
+
+  # do nothing if user wants to retain placebo
+  if (options$include_placebo) return(data)
+
+  # "none" method: no filtering, also do nothing
+  if (options$method == "none") return(data)
+
+  # "var_placebo" method: filter rows using named column
+  if (options$method == "var_placebo") {
+    keep <- !data[[options$var_placebo]]
+    return(data[keep, ])
+  }
+
+  # "zero_exposure_as_placebo" method: drop zero-exposure rows
+  if (options$method == "zero_exposure_as_placebo") {
+    keep <- data[[var_exposure]] != 0
+    return(data[keep, ])
+  }
+
+  stop("unknown placebo handling method", call. = FALSE)
 }

@@ -171,8 +171,28 @@ plot.ermod_cov_sel <- function(x, ...) {
 #' @keywords internal
 #' @inherit extract_method return
 #' @param x An object of class \code{ermod_*}
+#' @param method If \code{method="raw"} (the default), the original data set is returned.
+#' When \code{method="processed"}, the data set returned is one that has the placebo handling
+#' options applied. A \code{method="internal"} option also exists, used for internal testing.
 #'
-extract_data.ermod <- function(x) x$data
+extract_data.ermod <- function(x, ..., method = "raw") {
+  if (method == "raw") return(x$data)
+  if (method == "processed") {
+    opt <- .apply_placebo_defaults(x$options_placebo_handling)
+    dat <- .apply_placebo_handling(
+      data = x$data,
+      options = opt,
+      var_exposure = extract_var_exposure(x)
+    )
+    return(dat)
+  }
+  if (method == "internal") {
+    if (inherits(x$mod, "stanreg")) return(x$mod$data)
+    if (inherits(x$mod, "stanemax")) return(as.data.frame(x$mod$standata))
+    if (inherits(x$mod, "stanemaxbin")) return(as.data.frame(x$mod$standata))
+  }
+  stop("unknown `method`", call. = FALSE)
+}
 
 #' @export
 #' @rdname extract_ermod

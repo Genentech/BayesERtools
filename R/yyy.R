@@ -38,7 +38,7 @@ if (getRversion() >= "2.15.1") {
 
   # sim data gen
   utils::globalVariables(c(
-    "exposure", "cnt_a", "cnt_b", "cnt_c", "bin_d", "bin_pred", "bin_prob"
+    "exposure_1", "exposure_2", "cnt_a", "cnt_b", "cnt_c", "bin_d", "bin_pred", "bin_prob"
   ))
 }
 
@@ -121,7 +121,8 @@ if (getRversion() >= "2.15.1") {
 #' @format A data frame with columns:
 #' \describe{
 #' \item{dose}{Nominal dose, units not specified}
-#' \item{exposure}{Exposure value, units and metric not specified}
+#' \item{exposure_1}{Exposure value, units and metric not specified}
+#' \item{exposure_2}{Exposure value, units and metric not specified, but different from exposure_1}
 #' \item{response_1}{Continuous response value (units not specified)}
 #' \item{response_2}{Binary response value (group labels not specified)}
 #' \item{cnt_a}{Continuous valued covariate}

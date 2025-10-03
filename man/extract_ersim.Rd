@@ -12,9 +12,9 @@
 \alias{extract_var_cov.ersim_med_qi}
 \title{Extract elements from objects of the classes \verb{ersim_*} and `ersim_med_qi_*``}
 \usage{
-\method{extract_data}{ersim}(x)
+\method{extract_data}{ersim}(x, ..., method = "raw")
 
-\method{extract_data}{ersim_med_qi}(x)
+\method{extract_data}{ersim_med_qi}(x, ..., method = "raw")
 
 \method{extract_var_resp}{ersim}(x)
 
@@ -30,6 +30,10 @@
 }
 \arguments{
 \item{x}{An object of class \code{ersim_*}}
+
+\item{method}{If \code{method="raw"} (the default), the original data set is returned.
+When \code{method="processed"}, the data set returned is one that has the placebo handling
+options applied.}
 }
 \value{
 \itemize{

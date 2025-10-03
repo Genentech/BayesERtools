@@ -20,17 +20,18 @@ set.seed(1234)
 
 # Test ermod_emax ------------------------------------------------------------
 ermod_emax <-
-  dev_ermod_emax(
+  suppressWarnings(dev_ermod_emax(
     data = data_er_cont,
     var_exposure = "exposure",
     var_resp = "response",
+    options_placebo_handling = list(include_placebo = TRUE),
     verbosity_level = 0,
     # Increase iter for better convergence as exact reproducibility
     # over different machines doesn't seem realistic
     chains = 2,
     iter = 1000,
     seed = 1
-  )
+  ))
 
 ermod_emax_w_cov <-
   suppressWarnings(dev_ermod_emax(
@@ -38,6 +39,7 @@ ermod_emax_w_cov <-
     var_exposure = "conc",
     var_resp = "resp",
     l_var_cov = list(emax = "cov2", ec50 = "cov3", e0 = "cov1"),
+    options_placebo_handling = list(include_placebo = TRUE),
     verbosity_level = 0,
     chains = 2,
     iter = 200,
@@ -46,12 +48,13 @@ ermod_emax_w_cov <-
 
 ersim_med_qi <- sim_er(ermod_emax, output_type = "median_qi")
 
-
+# TODO
 ermod_emax_exp_sel <-
   suppressWarnings(dev_ermod_emax_exp_sel(
     data = data_er_cont,
     var_resp = "response",
     var_exp_candidates = c("exposure", "exposure2"),
+    options_placebo_handling = list(include_placebo = TRUE),
     emax_fix = 100,
     e0_fix = 0,
     verbosity_level = 0,
@@ -63,23 +66,25 @@ ermod_emax_exp_sel <-
 
 # Test ermod_bin_emax ---------------------------------------------------------
 ermod_bin_emax <-
-  dev_ermod_bin_emax(
+  suppressWarnings(dev_ermod_bin_emax(
     data = data_er_bin,
     var_exposure = "conc",
     var_resp = "y",
+    options_placebo_handling = list(include_placebo = TRUE),
     verbosity_level = 0,
     # Increase iter for better convergence as exact reproducibility
     # over different machines doesn't seem realistic
     chains = 2,
     iter = 1000,
     seed = 1
-  )
+  ))
 
 ermod_bin_emax_w_cov <-
   suppressWarnings(dev_ermod_bin_emax(
     data = data_er_bin,
     var_exposure = "conc",
     var_resp = "y_cov",
+    options_placebo_handling = list(include_placebo = TRUE),
     l_var_cov = list(emax = "sex"),
     verbosity_level = 0,
     chains = 2,
@@ -95,6 +100,7 @@ ermod_bin_emax_exp_sel <-
     var_resp = "y",
     var_exp_candidates = c("conc", "conc2"),
     verbosity_level = 0,
+    options_placebo_handling = list(include_placebo = TRUE),
     chains = 2,
     iter = 200,
     seed = 1
@@ -111,6 +117,7 @@ mod_mtcars_emax <- suppressWarnings(dev_ermod_bin_emax(
   var_resp = "am3",
   var_exposure = "cyl",
   verbosity_level = 0,
+  options_placebo_handling = list(include_placebo = TRUE),
   # Below option to make the test fast
   chains = 2, iter = 1000
 ))

@@ -23,6 +23,7 @@
 ^cran-comments\.md$
 
 ^data-raw$
+^other$
 ^LICENSE\.md$
 ^_pkgdown\.yml$
 

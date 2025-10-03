@@ -5,6 +5,7 @@
 #'
 #' @name extract_method
 #' @param x An object to extract elements from
+#' @param ... Additional arguments passed to methods
 #' @return
 #' - [extract_data()] extracts data used for the model fit.
 #' - [extract_mod()] extracts the model fit object.
@@ -21,7 +22,7 @@ NULL
 
 #' @export
 #' @rdname extract_method
-extract_data <- function(x) UseMethod("extract_data")
+extract_data <- function(x, ...) UseMethod("extract_data")
 
 #' @export
 #' @rdname extract_method
