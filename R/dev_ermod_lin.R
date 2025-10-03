@@ -568,6 +568,7 @@ dev_ermod_lin_cov_sel <- function(
     var_resp = var_resp,
     var_exp_candidates = var_exp_candidates,
     var_exposure = var_exposure,
+    options_placebo_handling = options_placebo_handling,
     l_mod_exposures = l_mod_exposures,
     loo_comp_exposures = loo_comp_exposures,
     input_args = l_mod_exposures[[var_exposure]]$input_args
