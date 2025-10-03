@@ -12,7 +12,7 @@
 \alias{extract_var_selected.ermod_cov_sel}
 \title{Extract elements from an object of class \code{ermod_*}}
 \usage{
-\method{extract_data}{ermod}(x, ..., internal_data = FALSE)
+\method{extract_data}{ermod}(x, ..., method = "raw")
 
 \method{extract_mod}{ermod}(x)
 
@@ -30,6 +30,13 @@
 }
 \arguments{
 \item{x}{An object of class \code{ermod_*}}
+
+\item{method}{This is exposed to allow extraction of data in different ways: "raw" returns
+the original data object, "processed" returns the data after placebo handling has been
+applied, "internal" is for testing purposes only and extracts data from the masked stan
+object}
+
+\item{options_placebo_handling}{This is exposed to allow user to override placebo settings}
 }
 \value{
 \itemize{
