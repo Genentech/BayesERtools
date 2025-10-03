@@ -1,4 +1,6 @@
 
+# setup cases to test ----------------------------------------------------
+
 # two versions of the data to test
 dat <- list(
   placebo = d_sim_emax |> dplyr::slice_sample(n = 10, by = dose),
@@ -75,72 +77,102 @@ if (require("projpred")) {
   )
 }
 
+# tests that the model fitting runs without error ------------------------
+
+test_that("basic model fitting works with and without placebo", {
+  mods <- list()
+  for (r in seq_len(nrow(cases_ermod))) {
+
+    # which function, dataset, and options to use
+    f <- purrr::quietly(dev_ermod[[cases_ermod$dev_ermod[r]]])
+    d <- dat[[cases_ermod$dat[r]]]
+    o <- opts[[cases_ermod$opts[r]]]
+    set.seed(123L)
+
+    # estimate the model quietly, test that it runs without error
+    expect_no_error(
+      m <- d |> f(
+        var_exposure = "exposure_1",
+        var_resp = cases_ermod$var_resp[r],
+        options_placebo_handling = o,
+        chains = 1,
+        iter = 100
+      )
+    )
+    mods[[r]] <- m
+  }
+
+  # keep a copy in the cases_ermod data frame so that the models 
+  # persist without the test environment
+  cases_ermod$mod <<- mods  
+})
+
+test_that("exposure selection fitting works with and without placebo", {
+  mods <- list()
+  for (r in seq_len(nrow(cases_expsel))) {
+
+    # which function, dataset, and options to use
+    f <- purrr::quietly(dev_expsel[[cases_expsel$dev_expsel[r]]])
+    d <- dat[[cases_expsel$dat[r]]]
+    o <- opts[[cases_expsel$opts[r]]]
+    set.seed(123L)
+
+    # estimate the model quietly, test that it runs without error
+    expect_no_error(
+      m <- d |> f(
+        var_exp_candidates = c("exposure_1", "exposure_2"),
+        var_resp = cases_expsel$var_resp[r],
+        options_placebo_handling = o,
+        chains = 1,
+        iter = 100
+      )
+    )
+    mods[[r]] <- m
+  }
+
+  # keep a copy in the cases_expsel data frame so that the models 
+  # persist without the test environment
+  cases_expsel$mod <<- mods  
+})
+
+if (require("projpred")) {
+  test_that("covariate selection fitting works with and without placebo", {
+    mods <- list()
+    for (r in seq_len(nrow(cases_covsel))) {
+
+      # which function, dataset, and options to use
+      f <- purrr::quietly(dev_covsel[[cases_covsel$dev_covsel[r]]])
+      d <- dat[[cases_covsel$dat[r]]]
+      o <- opts[[cases_covsel$opts[r]]]
+      set.seed(123L)
+    
+      # estimate the model quietly, test that it runs without error
+      expect_no_error(
+        m <- d |> f(
+          var_exposure = "exposure_1",
+          var_cov_candidates = c("cnt_a", "cnt_b"),
+          var_resp = cases_covsel$var_resp[r],
+          options_placebo_handling = o,
+          chains = 1,
+          iter = 100
+        )
+      )
+      mods[[r]] <- m
+    }
+    # keep a copy in the cases_covsel data frame so that the models 
+    # persist without the test environment
+    cases_covsel$mod <<- mods
+  })
+}
+
+# tests to examine placebo data handling ---------------------------------
+
 # helper function to inspect internal data objects
 internal_stan_data_rows <- function(object) {
   if (inherits(object, "stanemax") || inherits(object, "stanemaxbin")) {
     return(object$standata$N)
   }
   return(nrow(object$data))
-}
-
-# fit the model for each basic er model case
-m <- list()
-for (r in seq_len(nrow(cases_ermod))) {
-  f <- dev_ermod[[cases_ermod$dev_ermod[r]]]
-  d <- dat[[cases_ermod$dat[r]]]
-  o <- opts[[cases_ermod$opts[r]]]
-  set.seed(123L)
-  suppressWarnings(suppressMessages(
-    m[[r]] <- d |> f(
-      var_exposure = "exposure_1",
-      var_resp = cases_ermod$var_resp[r],
-      options_placebo_handling = o,
-      chains = 1,
-      iter = 100
-    )
-  ))
-}
-cases_ermod$mod <- m
-
-# fit the model for each exposure-selection model case
-m <- list()
-for (r in seq_len(nrow(cases_expsel))) {
-  f <- dev_expsel[[cases_expsel$dev_expsel[r]]]
-  d <- dat[[cases_expsel$dat[r]]]
-  o <- opts[[cases_expsel$opts[r]]]
-  set.seed(123L)
-  suppressWarnings(suppressMessages(
-    m[[r]] <- d |> f(
-      var_exp_candidates = c("exposure_1", "exposure_2"),
-      var_resp = cases_expsel$var_resp[r],
-      options_placebo_handling = o,
-      chains = 1,
-      iter = 100
-    )
-  ))
-}
-cases_expsel$mod <- m
-
-# fit the model for each covariate-selection model case
-if (require("projpred")) {
-  m <- list()
-  for (r in seq_len(nrow(cases_covsel))) {
-    f <- dev_covsel[[cases_covsel$dev_covsel[r]]]
-    d <- dat[[cases_covsel$dat[r]]]
-    o <- opts[[cases_covsel$opts[r]]]
-    set.seed(123L)
-    suppressWarnings(suppressMessages(
-      m[[r]] <- d |> f(
-        var_exposure = "exposure_1",
-        var_cov_candidates = c("cnt_a", "cnt_b"),
-        var_resp = cases_expsel$var_resp[r],
-        options_placebo_handling = o,
-        chains = 1,
-        iter = 100
-      )
-    ))
-  }
-  cases_covsel$mod <- m
 }
 
 # record number of rows in the inner and outer data sets (basic models)
@@ -233,3 +265,4 @@ if (require("projpred")) {
     }
   })
 }
+
