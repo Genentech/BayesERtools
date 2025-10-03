@@ -172,7 +172,12 @@ plot.ermod_cov_sel <- function(x, ...) {
 #' @inherit extract_method return
 #' @param x An object of class \code{ermod_*}
 #'
-extract_data.ermod <- function(x) x$data
+extract_data.ermod <- function(x, ..., internal_data = FALSE) {
+  if (!internal_data) return(x$data)
+  if (inherits(x$mod, "stanreg")) return(x$mod$data)
+  if (inherits(x$mod, "stanemax")) return(as.data.frame(x$mod$standata))
+  if (inherits(x$mod, "stanemaxbin")) return(as.data.frame(x$mod$standata))
+}
 
 #' @export
 #' @rdname extract_ermod

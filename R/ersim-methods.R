@@ -29,11 +29,11 @@ plot.ersim_med_qi <- function(x, show_orig_data = FALSE, ...) {
 #' @keywords internal
 #' @inherit extract_method return
 #' @param x An object of class \code{ersim_*}
-extract_data.ersim <- function(x) attr(x, "origdata")
+extract_data.ersim <- function(x, ...) attr(x, "origdata")
 
 #' @export
 #' @rdname extract_ersim
-extract_data.ersim_med_qi <- function(x) attr(x, "origdata")
+extract_data.ersim_med_qi <- function(x, ...) attr(x, "origdata")
 
 #' @export
 #' @rdname extract_ersim

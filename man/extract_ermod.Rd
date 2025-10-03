@@ -12,7 +12,7 @@
 \alias{extract_var_selected.ermod_cov_sel}
 \title{Extract elements from an object of class \code{ermod_*}}
 \usage{
-\method{extract_data}{ermod}(x)
+\method{extract_data}{ermod}(x, ..., internal_data = FALSE)
 
 \method{extract_mod}{ermod}(x)
 

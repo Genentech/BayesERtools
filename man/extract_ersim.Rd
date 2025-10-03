@@ -12,9 +12,9 @@
 \alias{extract_var_cov.ersim_med_qi}
 \title{Extract elements from objects of the classes \verb{ersim_*} and `ersim_med_qi_*``}
 \usage{
-\method{extract_data}{ersim}(x)
+\method{extract_data}{ersim}(x, ...)
 
-\method{extract_data}{ersim_med_qi}(x)
+\method{extract_data}{ersim_med_qi}(x, ...)
 
 \method{extract_var_resp}{ersim}(x)
 
