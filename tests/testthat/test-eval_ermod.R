@@ -6,11 +6,13 @@ if (.if_run_ex_eval_mod()) {
   d_train <- rsample::training(d_split)
   d_test <- rsample::testing(d_split)
 
+  opts_placebo <- list(include_placebo = TRUE)  # allow zeros in test
   ermod_bin <- dev_ermod_bin(
     data = d_train |> head(100),
     var_resp = "AEFLAG",
     var_exposure = "AUCss_1000",
     var_cov = "BHBA1C_5",
+    options_placebo_handling = opts_placebo,
     chains = 2,
     iter = 500
   )
@@ -30,6 +32,7 @@ if (.if_run_ex_eval_mod()) {
       var_exposure = "conc",
       var_resp = "y_cov",
       l_var_cov = list(emax = "sex"),
+      options_placebo_handling = opts_placebo,
       verbosity_level = 0,
       chains = 2,
       iter = 200,
@@ -48,6 +51,7 @@ if (.if_run_ex_eval_mod()) {
     var_resp = "response",
     var_exposure = "AUCss",
     var_cov = c("SEX", "BAGE"),
+    options_placebo_handling = opts_placebo, 
     chains = 2,
     iter = 500
   )
@@ -67,6 +71,7 @@ if (.if_run_ex_eval_mod()) {
       var_exposure = "conc",
       var_resp = "resp",
       l_var_cov = list(emax = "cov2", ec50 = "cov3", e0 = "cov1"),
+      options_placebo_handling = opts_placebo,
       verbosity_level = 0,
       chains = 2,
       iter = 200,
