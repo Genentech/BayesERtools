@@ -179,7 +179,6 @@ if (require("projpred")) {
 
 test_that("extract_data.ermod respects internal_data argument (ermod)", {
   for (r in seq_len(n_cases_ermod)) {
-    print(r)
     m <- cases_ermod$mod[[r]]
     expect_no_error(extract_data(m, method = "internal"))
     expect_no_error(extract_data(m, method = "raw"))
