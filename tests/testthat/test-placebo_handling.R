@@ -199,6 +199,8 @@ test_that("extract_data.ermod respects internal_data argument (expsel)", {
     expect_no_error(extract_data(m, internal_data = FALSE))
     inner_data <- extract_data(m, internal_data = TRUE)
     outer_data <- extract_data(m, internal_data = FALSE)
+    expect_true(inherits(inner_data, "data.frame"))
+    expect_true(inherits(outer_data, "data.frame"))
     cases_expsel$inner_n[r] <<- nrow(inner_data)
     cases_expsel$outer_n[r] <<- nrow(outer_data)
   }
@@ -212,6 +214,8 @@ if (require("projpred")) {
       expect_no_error(extract_data(m, internal_data = FALSE))
       inner_data <- extract_data(m, internal_data = TRUE)
       outer_data <- extract_data(m, internal_data = FALSE)
+      expect_true(inherits(inner_data, "data.frame"))
+      expect_true(inherits(outer_data, "data.frame"))
       cases_covsel$inner_n[r] <<- nrow(inner_data)
       cases_covsel$outer_n[r] <<- nrow(outer_data)
     }
