@@ -171,12 +171,29 @@ plot.ermod_cov_sel <- function(x, ...) {
 #' @keywords internal
 #' @inherit extract_method return
 #' @param x An object of class \code{ermod_*}
+#' @param options_placebo_handling This is exposed to allow user to override placebo settings
+#' @param method This is exposed to allow extraction of data in different ways: "raw" returns
+#' the original data object, "processed" returns the data after placebo handling has been
+#' applied, "internal" is for testing purposes only and extracts data from the masked stan 
+#' object
 #'
-extract_data.ermod <- function(x, ..., internal_data = FALSE) {
-  if (!internal_data) return(x$data)
-  if (inherits(x$mod, "stanreg")) return(x$mod$data)
-  if (inherits(x$mod, "stanemax")) return(as.data.frame(x$mod$standata))
-  if (inherits(x$mod, "stanemaxbin")) return(as.data.frame(x$mod$standata))
+extract_data.ermod <- function(x, ..., method = "raw") {
+  if (method == "raw") return(x$data)
+  if (method == "processed") {
+    opt <- .apply_placebo_defaults(x$options_placebo_handling)
+    dat <- .apply_placebo_handling(
+      data = x$data, 
+      options = opt, 
+      var_exposure = extract_var_exposure(x)
+    )
+    return(dat)
+  }
+  if (method == "internal") {
+    if (inherits(x$mod, "stanreg")) return(x$mod$data)
+    if (inherits(x$mod, "stanemax")) return(as.data.frame(x$mod$standata))
+    if (inherits(x$mod, "stanemaxbin")) return(as.data.frame(x$mod$standata))
+  }
+  stop("unknown `method`", call. = FALSE)
 }
 
 #' @export

@@ -181,10 +181,10 @@ test_that("extract_data.ermod respects internal_data argument (ermod)", {
   for (r in seq_len(n_cases_ermod)) {
     print(r)
     m <- cases_ermod$mod[[r]]
-    expect_no_error(extract_data(m, internal_data = TRUE))
-    expect_no_error(extract_data(m, internal_data = FALSE))
-    inner_data <- extract_data(m, internal_data = TRUE)
-    outer_data <- extract_data(m, internal_data = FALSE)
+    expect_no_error(extract_data(m, method = "internal"))
+    expect_no_error(extract_data(m, method = "raw"))
+    inner_data <- extract_data(m, method = "internal")
+    outer_data <- extract_data(m, method = "raw")
     expect_true(inherits(inner_data, "data.frame"))
     expect_true(inherits(outer_data, "data.frame"))
     cases_ermod$inner_n[r] <<- nrow(inner_data)
@@ -195,10 +195,10 @@ test_that("extract_data.ermod respects internal_data argument (ermod)", {
 test_that("extract_data.ermod respects internal_data argument (expsel)", {
   for (r in seq_len(n_cases_ermod)) {
     m <- cases_expsel$mod[[r]]
-    expect_no_error(extract_data(m, internal_data = TRUE))
-    expect_no_error(extract_data(m, internal_data = FALSE))
-    inner_data <- extract_data(m, internal_data = TRUE)
-    outer_data <- extract_data(m, internal_data = FALSE)
+    expect_no_error(extract_data(m, method = "internal"))
+    expect_no_error(extract_data(m, method = "raw"))
+    inner_data <- extract_data(m, method = "internal")
+    outer_data <- extract_data(m, method = "raw")
     expect_true(inherits(inner_data, "data.frame"))
     expect_true(inherits(outer_data, "data.frame"))
     cases_expsel$inner_n[r] <<- nrow(inner_data)
@@ -210,10 +210,10 @@ if (require("projpred")) {
   test_that("extract_data.ermod respects internal_data argument (covsel)", {
     for (r in seq_len(n_cases_covsel)) {
       m <- cases_covsel$mod[[r]]
-      expect_no_error(extract_data(m, internal_data = TRUE))
-      expect_no_error(extract_data(m, internal_data = FALSE))
-      inner_data <- extract_data(m, internal_data = TRUE)
-      outer_data <- extract_data(m, internal_data = FALSE)
+      expect_no_error(extract_data(m, method = "internal"))
+      expect_no_error(extract_data(m, method = "raw"))
+      inner_data <- extract_data(m, method = "internal")
+      outer_data <- extract_data(m, method = "raw")
       expect_true(inherits(inner_data, "data.frame"))
       expect_true(inherits(outer_data, "data.frame"))
       cases_covsel$inner_n[r] <<- nrow(inner_data)
