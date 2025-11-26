@@ -11,6 +11,7 @@ plot_er_gof(
   show_boxplot_y_title = FALSE,
   var_group = NULL,
   n_bins = 4,
+  bin_breaks = NULL,
   qi_width_obs = 0.95,
   show_coef_exp = FALSE,
   coef_pos_x = NULL,
@@ -40,6 +41,9 @@ and colored by this column. Default is \code{NULL}.}
 
 \item{n_bins}{Number of bins to use for observed probability
 summary. Only relevant for binary models. Default is \code{4}.}
+
+\item{bin_breaks}{Manually specify bin breaks for binary models. If specified
+this overrides \code{n_bins}.}
 
 \item{qi_width_obs}{Confidence level for the observed probability
 summary. Default is \code{0.95}.}
