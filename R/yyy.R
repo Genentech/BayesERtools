@@ -143,3 +143,37 @@ if (getRversion() >= "2.15.1") {
 #' @examples
 #' d_sim_emax
 "d_sim_emax"
+
+
+#' Sample simulated data for Emax exposure-response models with covariates and placebo
+#'
+#' @name d_sim_placebo
+#' @format A data frame with columns:
+#' \describe{
+#' \item{id}{Subject identifier}
+#' \item{dose}{Nominal dose, units not specified}
+#' \item{exp_1}{Exposure value on metric 1, units and metric not specified}
+#' \item{exp_2}{Exposure value on metric 2, units and metric not specified}
+#' \item{rsp_1}{Continuous response value (units not specified)}
+#' \item{rsp_2}{Binary response value (group labels not specified)}
+#' \item{cnt_a}{Continuous valued covariate}
+#' \item{cnt_b}{Continuous valued covariate}
+#' \item{cnt_c}{Continuous valued covariate}
+#' \item{bin_d}{Binary valued covariate}
+#' \item{bin_e}{Binary valued covariate}
+#' }
+#' @details
+#'
+#' This simulated dataset is entirely synthetic. It is a generic data set that can be used
+#' to illustrate Emax modeling with placebo data. It contains variables corresponding to 
+#' dose and exposure, and includes both a continuous response variable and a binary response 
+#' variable. Three continuous valued covariates are included, along with two binary covariates.
+#' Data from two exposure metrics are included.
+#'
+#' You can find the data generating code in the package source code,
+#' under `data-raw/d_sim_placebo.R`.
+#'
+#' @examples
+#' d_sim_placebo
+"d_sim_placebo"
+
