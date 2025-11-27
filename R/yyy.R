@@ -165,8 +165,8 @@ if (getRversion() >= "2.15.1") {
 #' @details
 #'
 #' This simulated dataset is entirely synthetic. It is a generic data set that can be used
-#' to illustrate Emax modeling with placebo data. It contains variables corresponding to 
-#' dose and exposure, and includes both a continuous response variable and a binary response 
+#' to illustrate Emax modeling with placebo data. It contains variables corresponding to
+#' dose and exposure, and includes both a continuous response variable and a binary response
 #' variable. Three continuous valued covariates are included, along with two binary covariates.
 #' Data from two exposure metrics are included.
 #'
@@ -176,4 +176,3 @@ if (getRversion() >= "2.15.1") {
 #' @examples
 #' d_sim_placebo
 "d_sim_placebo"
-

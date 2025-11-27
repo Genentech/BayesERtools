@@ -337,7 +337,7 @@ plot_er.ersim_med_qi <- function(
     # binned probability ------------------------------------------------------
     if (is.null(bin_breaks)) {
       bin_breaks <- stats::quantile(
-        origdata[[var_exposure]], 
+        origdata[[var_exposure]],
         probs = seq(0, 1, 1 / n_bins)
       )
     }
@@ -353,33 +353,33 @@ plot_er.ersim_med_qi <- function(
 
     gg <- gg +
       ggplot2::geom_vline(
-        xintercept = bin_breaks, 
+        xintercept = bin_breaks,
         linetype = "dashed",
         alpha = 0.3
       ) +
       xgxr::xgx_stat_ci(
         data = origdata,
         ggplot2::aes(
-          x = .data[[var_exposure]], 
+          x = .data[[var_exposure]],
           y = .data[[".resp_num"]]
         ),
-        breaks = bin_breaks, 
-        conf_level = qi_width, 
-        distribution = "binomial", 
-        geom = c("point"), 
-        shape = 0, 
+        breaks = bin_breaks,
+        conf_level = qi_width,
+        distribution = "binomial",
+        geom = c("point"),
+        shape = 0,
         size = 4
       ) +
       xgxr::xgx_stat_ci(
         data = origdata,
         ggplot2::aes(
-          x = .data[[var_exposure]], 
+          x = .data[[var_exposure]],
           y = .data[[".resp_num"]]
         ),
-        breaks = bin_breaks, 
-        conf_level = qi_width, 
-        distribution = "binomial", 
-        geom = c("errorbar"), 
+        breaks = bin_breaks,
+        conf_level = qi_width,
+        distribution = "binomial",
+        geom = c("errorbar"),
         linewidth = 0.5
       )
 
@@ -631,16 +631,16 @@ plot_er.ermod <- function(
 #' }
 #'
 plot_er_gof <- function(
-    x, add_boxplot = !is.null(var_group), 
+    x, add_boxplot = !is.null(var_group),
     boxplot_height = 0.15,
     show_boxplot_y_title = FALSE,
-    var_group = NULL, 
-    n_bins = 4, 
+    var_group = NULL,
+    n_bins = 4,
     bin_breaks = NULL,
     qi_width_obs = 0.95,
     show_coef_exp = FALSE,
-    coef_pos_x = NULL, 
-    coef_pos_y = NULL, 
+    coef_pos_x = NULL,
+    coef_pos_y = NULL,
     coef_size = 4,
     qi_width_coef = 0.95,
     qi_width_sim = 0.95,
@@ -651,22 +651,22 @@ plot_er_gof <- function(
     show_coef_exp = show_coef_exp,
     show_caption = show_caption,
     options_orig_data = list(
-      add_boxplot = add_boxplot, 
+      add_boxplot = add_boxplot,
       boxplot_height = boxplot_height,
       show_boxplot_y_title = show_boxplot_y_title,
       var_group = var_group,
-      n_bins = n_bins, 
+      n_bins = n_bins,
       bin_breaks = bin_breaks,
       qi_width = qi_width_obs
     ),
     options_coef_exp = list(
-      qi_width = qi_width_coef, 
-      pos_x = coef_pos_x, 
+      qi_width = qi_width_coef,
+      pos_x = coef_pos_x,
       pos_y = coef_pos_y,
       size = coef_size
     ),
     options_caption = list(
-      orig_data_summary = TRUE, 
+      orig_data_summary = TRUE,
       coef_exp = show_coef_exp
     ),
     qi_width_sim = qi_width_sim

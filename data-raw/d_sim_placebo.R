@@ -121,12 +121,12 @@ d_sim_placebo <- local({
   # generate data -----------------------------------------------------------
 
   d_sim_placebo <- simulate_data()
-  d_sim_placebo <- d_sim_placebo |> 
-    dplyr::mutate(id = dplyr::row_number()) |> 
-    dplyr::relocate(response_1, response_2, .after = exposure_2) |> 
-    dplyr::relocate(id, 1) |> 
+  d_sim_placebo <- d_sim_placebo |>
+    dplyr::mutate(id = dplyr::row_number()) |>
+    dplyr::relocate(response_1, response_2, .after = exposure_2) |>
+    dplyr::relocate(id, 1) |>
     dplyr::rename(
-      exp_1 = exposure_1, 
+      exp_1 = exposure_1,
       exp_2 = exposure_2,
       rsp_1 = response_1,
       rsp_2 = response_2
@@ -137,4 +137,3 @@ d_sim_placebo <- local({
 
 readr::write_csv(d_sim_placebo, "data-raw/d_sim_placebo.csv")
 usethis::use_data(d_sim_placebo, overwrite = TRUE)
-
