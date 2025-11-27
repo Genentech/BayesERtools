@@ -306,7 +306,6 @@ plot_er.ersim_med_qi <- function(
   return(caption)
 }
 
-
 .plot_er_binary <- function(
     gg, x, origdata, show_orig_data, options_orig_data) {
   var_resp <- extract_var_resp(x)
