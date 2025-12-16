@@ -18,7 +18,8 @@ plot_er_gof(
   coef_size = 4,
   qi_width_coef = 0.95,
   qi_width_sim = 0.95,
-  show_caption = TRUE
+  show_caption = TRUE,
+  return_components = FALSE
 )
 }
 \arguments{
@@ -65,6 +66,13 @@ draws. Default is \code{0.95}.}
 
 \item{show_caption}{Logical, whether to show the caption note for the
 plot. Default is \code{TRUE}.}
+
+\item{return_components}{Logical, whether to return plot components as a
+list instead of a combined plot. When \code{TRUE}, returns a list with
+\verb{$main} (main plot), \verb{$boxplot} (boxplot if applicable), \verb{$caption}
+(caption text if applicable), and \verb{$metadata}. This allows users to
+customize individual plot components before combining them. Default is
+\code{FALSE}.}
 }
 \value{
 A ggplot object
@@ -97,6 +105,10 @@ plot_er(
   qi_width_sim = qi_width_sim
 )
 }
+
+To customize plot elements (titles, shapes, themes), use
+\code{return_components = TRUE} to get individual plot components, modify them,
+then recombine with \code{combine_er_components()}.
 }
 \examples{
 \dontshow{if (BayesERtools:::.if_run_ex_plot_er()) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
@@ -112,6 +124,13 @@ ermod_bin <- dev_ermod_bin(
 plot_er_gof(ermod_bin, var_group = "Dose_mg", show_coef_exp = TRUE) *
   # Use log10 scale for exposure, need to use `*` instead of `+`
   xgxr::xgx_scale_x_log10(guide = ggplot2::guide_axis(minor.ticks = TRUE))
+
+# Customize plot components
+comps <- plot_er_gof(ermod_bin, var_group = "Dose_mg", return_components = TRUE)
+comps$main <- comps$main +
+  ggplot2::labs(title = "Exposure-Response Analysis", x = "AUC (ng*h/mL)") +
+  ggplot2::theme_bw()
+combine_er_components(comps)
 }
 \dontshow{\}) # examplesIf}
 }

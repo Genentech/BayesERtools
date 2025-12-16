@@ -4,6 +4,10 @@
   
 ## Minor changes
 
+* Added `return_components` option to `plot_er()` and `plot_er_gof()` that 
+  returns individual plot components (main plot, boxplot, caption) for 
+  customization before recombining with `combine_er_components()`
+
 # BayesERtools 0.2.4
 
 ## Major changes
