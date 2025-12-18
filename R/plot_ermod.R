@@ -29,6 +29,10 @@
 #'   - `qi_width`: Width of the quantile interval (confidence interval) for
 #'     the observed probability summary. Only relevant for binary models.
 #'     Default is `0.95`.
+#'   - `return_components`: Logical, whether to return plot components as a
+#'     list instead of a combined plot. When `TRUE`, returns a list with
+#'     `$main` (main plot), `$boxplot` (boxplot if applicable), `$caption`
+#'     (caption text if applicable), and `$metadata`. Default is `FALSE`.
 #' @param options_coef_exp List of options for configuring how the exposure
 #' coefficient credible interval is displayed. Possible options include:
 #'  - `qi_width`: Width of the quantile interval (credible interval) for
@@ -99,7 +103,8 @@ plot_er.ersim_med_qi <- function(
       list(
         add_boxplot = FALSE, boxplot_height = 0.15,
         show_boxplot_y_title = TRUE, var_group = NULL,
-        n_bins = 4, bin_breaks = NULL, qi_width = 0.95
+        n_bins = 4, bin_breaks = NULL, qi_width = 0.95,
+        return_components = FALSE
       ),
       options_orig_data
     )
@@ -122,6 +127,7 @@ plot_er.ersim_med_qi <- function(
   var_exposure <- extract_var_exposure(x)
   add_boxplot <- options_orig_data$add_boxplot
   boxplot_height <- options_orig_data$boxplot_height
+  return_components <- options_orig_data$return_components
 
   # Check input
   check_plot_er_input(x, show_orig_data)
@@ -174,6 +180,94 @@ plot_er.ersim_med_qi <- function(
         alpha = 0.7,
         hjust = 0, vjust = 1, size = options_coef_exp$size
       )
+  }
+
+  # Return components if requested --------------------------------------------
+  if (return_components) {
+    # Build boxplot if needed
+    gg_boxplot <- NULL
+    if (add_boxplot) {
+      var_group <- options_orig_data$var_group
+
+      if (is.null(var_group)) {
+        gg_boxplot <-
+          ggplot2::ggplot(data = origdata, ggplot2::aes(
+            x = .data[[var_exposure]],
+            y = 0
+          )) +
+          ggplot2::geom_boxplot(alpha = 0.5) +
+          ggplot2::scale_y_continuous(expand = ggplot2::expansion(mult = 0.2)) +
+          ggplot2::theme(
+            panel.grid.major.y = ggplot2::element_blank(),
+            panel.grid.minor.y = ggplot2::element_blank(),
+            axis.ticks.y = ggplot2::element_blank(),
+            axis.title.y = ggplot2::element_blank(),
+            axis.text.y = ggplot2::element_blank()
+          )
+      } else {
+        # Define the numeric variable name with a leading dot
+        var_group_num <- paste0(".", var_group, "_num")
+
+        # Convert the categorical variable to a numeric index
+        origdata[[var_group_num]] <- as.numeric(factor(origdata[[var_group]]))
+
+        gg_boxplot <-
+          ggplot2::ggplot(data = origdata, ggplot2::aes(
+            x = .data[[var_exposure]],
+            y = .data[[var_group_num]]
+          )) +
+          ggplot2::geom_boxplot(
+            ggplot2::aes(
+              fill = .data[[var_group]],
+              color = .data[[var_group]]
+            ),
+            alpha = 0.5
+          ) +
+          ggplot2::scale_y_continuous(
+            name = var_group,
+            breaks = unique(origdata[[var_group_num]]),
+            labels = levels(factor(origdata[[var_group]])),
+            expand = ggplot2::expansion(mult = 0.2)
+          ) +
+          ggplot2::theme(
+            panel.grid.minor.y = ggplot2::element_blank()
+          )
+        if (!options_orig_data$show_boxplot_y_title) {
+          gg_boxplot <- gg_boxplot +
+            ggplot2::theme(axis.title.y = ggplot2::element_blank())
+        }
+      }
+
+      gg_boxplot <- gg_boxplot +
+        ggplot2::theme(
+          legend.position = "none",
+          plot.margin = ggplot2::margin(t = 0)
+        )
+    }
+
+    # Build caption if needed
+    caption <- NULL
+    if (show_caption) {
+      caption <- .build_caption(
+        x, show_orig_data, show_coef_exp,
+        options_orig_data, options_coef_exp, options_caption
+      )
+    }
+
+    # Create components list
+    components <- list(
+      main = gg,
+      boxplot = gg_boxplot,
+      caption = caption
+    )
+    attr(components, "metadata") <- list(
+      boxplot_height = boxplot_height,
+      var_exposure = var_exposure,
+      var_resp = extract_var_resp(x),
+      endpoint_type = attr(x, "endpoint_type")
+    )
+    class(components) <- c("er_plot_components", "list")
+    return(components)
   }
 
   # Add boxplot ---------------------------------------------------------------
@@ -587,6 +681,12 @@ plot_er.ermod <- function(
 #' draws. Default is `0.95`.
 #' @param show_caption Logical, whether to show the caption note for the
 #' plot. Default is `TRUE`.
+#' @param return_components Logical, whether to return plot components as a
+#' list instead of a combined plot. When `TRUE`, returns a list with
+#' `$main` (main plot), `$boxplot` (boxplot if applicable), `$caption`
+#' (caption text if applicable), and `$metadata`. This allows users to
+#' customize individual plot components before combining them. Default is
+#' `FALSE`.
 #'
 #' @details
 #' The following code will generate the same plot:
@@ -613,6 +713,10 @@ plot_er.ermod <- function(
 #' )
 #' }
 #'
+#' To customize plot elements (titles, shapes, themes), use
+#' `return_components = TRUE` to get individual plot components, modify them,
+#' then recombine with `combine_er_components()`.
+#'
 #' @return A ggplot object
 #' @examplesIf BayesERtools:::.if_run_ex_plot_er()
 #' \donttest{
@@ -627,6 +731,13 @@ plot_er.ermod <- function(
 #' plot_er_gof(ermod_bin, var_group = "Dose_mg", show_coef_exp = TRUE) *
 #'   # Use log10 scale for exposure, need to use `*` instead of `+`
 #'   xgxr::xgx_scale_x_log10(guide = ggplot2::guide_axis(minor.ticks = TRUE))
+#'
+#' # Customize plot components
+#' comps <- plot_er_gof(ermod_bin, var_group = "Dose_mg", return_components = TRUE)
+#' comps$main <- comps$main +
+#'   ggplot2::labs(title = "Exposure-Response Analysis", x = "AUC (ng*h/mL)") +
+#'   ggplot2::theme_bw()
+#' combine_er_components(comps)
 #' }
 #'
 plot_er_gof <- function(
@@ -643,7 +754,8 @@ plot_er_gof <- function(
     coef_size = 4,
     qi_width_coef = 0.95,
     qi_width_sim = 0.95,
-    show_caption = TRUE) {
+    show_caption = TRUE,
+    return_components = FALSE) {
   plot_er(
     x,
     show_orig_data = TRUE,
@@ -656,7 +768,8 @@ plot_er_gof <- function(
       var_group = var_group,
       n_bins = n_bins,
       bin_breaks = bin_breaks,
-      qi_width = qi_width_obs
+      qi_width = qi_width_obs,
+      return_components = return_components
     ),
     options_coef_exp = list(
       qi_width = qi_width_coef,
@@ -761,4 +874,97 @@ set_pos_ci_annot <- function(x, pos_x, pos_y, var_exposure, var_resp) {
 
 .if_run_ex_plot_er <- function() {
   requireNamespace("xgxr", quietly = TRUE)
+}
+
+#' Combine ER plot components
+#'
+#' @param components An object of class `er_plot_components` returned by
+#' `plot_er()` or `plot_er_gof()` with `return_components = TRUE` or
+#' `options_orig_data = list(return_components = TRUE)`.
+#' @param heights Numeric vector of length 2 specifying the relative heights
+#' of the main plot and boxplot. If `NULL` (default), uses the height from
+#' the metadata (based on `boxplot_height` parameter).
+#' @param add_caption Logical, whether to add the caption to the combined plot.
+#' Default is `TRUE` if caption is available.
+#' @param ... Additional arguments passed to `patchwork::wrap_plots()`.
+#'
+#' @return A combined ggplot object.
+#' @export
+#'
+#' @examples
+#' \dontrun{
+#' # Get components
+#' comps <- plot_er_gof(ermod_bin, return_components = TRUE)
+#'
+#' # Modify components
+#' comps$main <- comps$main + labs(title = "Custom Title")
+#'
+#' # Recombine
+#' combine_er_components(comps)
+#' }
+combine_er_components <- function(components, heights = NULL,
+                                  add_caption = !is.null(components$caption),
+                                  ...) {
+  if (!inherits(components, "er_plot_components")) {
+    stop(
+      "Input must be an object of class 'er_plot_components' ",
+      "returned by plot_er() or plot_er_gof() with return_components = TRUE."
+    )
+  }
+
+  gg <- components$main
+
+  # Add boxplot if present
+  if (!is.null(components$boxplot)) {
+    rlang::check_installed("patchwork")
+
+    # Set default heights if not provided
+    if (is.null(heights)) {
+      boxplot_height <- attr(components, "metadata")$boxplot_height
+      heights <- c(1 - boxplot_height, boxplot_height)
+    }
+
+    # Adjust margins for combination
+    gg <- gg +
+      ggplot2::theme(plot.margin = ggplot2::margin(b = 0))
+
+    gg <-
+      patchwork::wrap_plots(
+        list(gg, components$boxplot),
+        nrow = 2, heights = heights, ...
+      ) +
+      patchwork::plot_layout(axes = "collect", guides = "collect")
+  }
+
+  # Add caption if requested
+  if (add_caption && !is.null(components$caption)) {
+    gg <- gg +
+      ggplot2::labs(caption = components$caption) +
+      ggplot2::theme(
+        plot.caption = ggplot2::element_text(family = "mono", hjust = 0)
+      )
+  }
+
+  return(gg)
+}
+
+#' @export
+print.er_plot_components <- function(x, ...) {
+  cat("ER plot components (class: er_plot_components)\n")
+  cat("Components:\n")
+  cat("  $main    : Main ER plot\n")
+  if (!is.null(x$boxplot)) {
+    cat("  $boxplot : Exposure boxplot\n")
+  }
+  if (!is.null(x$caption)) {
+    cat("  $caption : Caption text\n")
+  }
+  cat("\nMetadata:\n")
+  metadata <- attr(x, "metadata")
+  for (name in names(metadata)) {
+    cat(sprintf("  %s: %s\n", name, paste(metadata[[name]], collapse = ", ")))
+  }
+  cat("\nUse combine_er_components() to recombine after customization.\n")
+  cat("Or access individual components for manual combination.\n")
+  invisible(x)
 }

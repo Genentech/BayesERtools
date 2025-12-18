@@ -210,3 +210,127 @@ test_that("plot_er_gof", {
       expect_silent()
   }
 })
+
+test_that("plot_er return_components works", {
+  if (requireNamespace("xgxr")) {
+    # Test return_components with plot_er
+    comps <- plot_er(
+      ersim_curve_med_qi,
+      show_orig_data = TRUE,
+      show_caption = TRUE,
+      options_orig_data = list(
+        add_boxplot = TRUE,
+        return_components = TRUE
+      )
+    )
+
+    expect_s3_class(comps, "er_plot_components")
+    expect_true("main" %in% names(comps))
+    expect_true("boxplot" %in% names(comps))
+    expect_true("caption" %in% names(comps))
+    expect_s3_class(comps$main, "ggplot")
+    expect_s3_class(comps$boxplot, "ggplot")
+    expect_type(comps$caption, "character")
+
+    # Check metadata
+    metadata <- attr(comps, "metadata")
+    expect_true("boxplot_height" %in% names(metadata))
+    expect_true("var_exposure" %in% names(metadata))
+    expect_true("endpoint_type" %in% names(metadata))
+
+    # Test without boxplot
+    comps_no_box <- plot_er(
+      ersim_curve_med_qi,
+      show_orig_data = TRUE,
+      options_orig_data = list(return_components = TRUE)
+    )
+    expect_null(comps_no_box$boxplot)
+  }
+})
+
+test_that("plot_er_gof return_components works", {
+  if (requireNamespace("xgxr")) {
+    comps <- plot_er_gof(
+      ermod_bin,
+      var_group = "Dose_mg",
+      show_caption = TRUE,
+      return_components = TRUE
+    )
+
+    expect_s3_class(comps, "er_plot_components")
+    expect_s3_class(comps$main, "ggplot")
+    expect_s3_class(comps$boxplot, "ggplot")
+    expect_type(comps$caption, "character")
+  }
+})
+
+test_that("combine_er_components works", {
+  if (requireNamespace("xgxr") && requireNamespace("patchwork")) {
+    comps <- plot_er_gof(
+      ermod_bin,
+      var_group = "Dose_mg",
+      show_caption = TRUE,
+      return_components = TRUE
+    )
+
+    # Modify the main plot
+    comps$main <- comps$main +
+      ggplot2::labs(title = "Test Title", x = "Custom X Label")
+
+    # Recombine
+    combined <- combine_er_components(comps)
+    expect_s3_class(combined, "patchwork")
+
+    # Test without caption
+    combined_no_caption <- combine_er_components(comps, add_caption = FALSE)
+    expect_s3_class(combined_no_caption, "patchwork")
+
+    # Test with custom heights
+    combined_custom <- combine_er_components(comps, heights = c(0.7, 0.3))
+    expect_s3_class(combined_custom, "patchwork")
+  }
+})
+
+test_that("combine_er_components without boxplot works", {
+  if (requireNamespace("xgxr")) {
+    comps <- plot_er(
+      ersim_curve_med_qi,
+      show_orig_data = TRUE,
+      show_caption = TRUE,
+      options_orig_data = list(return_components = TRUE)
+    )
+
+    # Modify the main plot
+    comps$main <- comps$main +
+      ggplot2::labs(title = "Test Title")
+
+    # Recombine (should return ggplot since no boxplot)
+    combined <- combine_er_components(comps)
+    expect_s3_class(combined, "ggplot")
+  }
+})
+
+test_that("combine_er_components errors on invalid input", {
+  expect_error(
+    combine_er_components(list(main = NULL)),
+    "Input must be an object of class 'er_plot_components'"
+  )
+})
+
+test_that("print.er_plot_components works", {
+  if (requireNamespace("xgxr")) {
+    comps <- plot_er_gof(
+      ermod_bin,
+      var_group = "Dose_mg",
+      show_caption = TRUE,
+      return_components = TRUE
+    )
+
+    # Capture output
+    output <- capture.output(print(comps))
+    expect_true(any(grepl("ER plot components", output)))
+    expect_true(any(grepl("\\$main", output)))
+    expect_true(any(grepl("\\$boxplot", output)))
+    expect_true(any(grepl("combine_er_components", output)))
+  }
+})

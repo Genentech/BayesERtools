@@ -84,6 +84,10 @@ summary. Only relevant for binary models. Default is \code{4}.
 \item \code{qi_width}: Width of the quantile interval (confidence interval) for
 the observed probability summary. Only relevant for binary models.
 Default is \code{0.95}.
+\item \code{return_components}: Logical, whether to return plot components as a
+list instead of a combined plot. When \code{TRUE}, returns a list with
+\verb{$main} (main plot), \verb{$boxplot} (boxplot if applicable), \verb{$caption}
+(caption text if applicable), and \verb{$metadata}. Default is \code{FALSE}.
 }}
 
 \item{options_coef_exp}{List of options for configuring how the exposure
