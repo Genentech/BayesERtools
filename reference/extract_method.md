@@ -1,0 +1,54 @@
+# Extract elements from S3 objects
+
+S3 methods are defined for `ermod_*` (see
+[extract_ermod](https://genentech.github.io/BayesERtools/reference/extract_ermod.md))
+and `ersim_*` (see
+[extract_ersim](https://genentech.github.io/BayesERtools/reference/extract_ersim.md))
+classes.
+
+## Usage
+
+``` r
+extract_data(x)
+
+extract_mod(x)
+
+extract_var_resp(x)
+
+extract_var_exposure(x)
+
+extract_var_cov(x)
+
+extract_exp_sel_list_model(x)
+
+extract_exp_sel_comp(x)
+
+extract_var_selected(x)
+```
+
+## Arguments
+
+- x:
+
+  An object to extract elements from
+
+## Value
+
+- `extract_data()` extracts data used for the model fit.
+
+- `extract_mod()` extracts the model fit object.
+
+- `extract_var_resp()` extracts the response variable name
+
+- `extract_var_exposure()` extracts the exposure metric name
+
+- `extract_var_cov()` extracts the covariates name
+
+- `extract_exp_sel_list_model()` extracts the list of fitted models for
+  each exposure metrics.
+
+- `extract_exp_sel_comp()` extracts the comparison results of the
+  exposure metrics.
+
+- `extract_var_selected()` extracts the selected variables (both
+  exposure and covariates)in the final model after covariate selection.

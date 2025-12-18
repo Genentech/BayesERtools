@@ -51,6 +51,7 @@ goodness-of-fit (GOF) plots for ER models.</p>
 <span>  show_boxplot_y_title <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  var_group <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  n_bins <span class="op">=</span> <span class="fl">4</span>,</span>
+<span>  bin_breaks <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  qi_width_obs <span class="op">=</span> <span class="fl">0.95</span>,</span>
 <span>  show_coef_exp <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  coef_pos_x <span class="op">=</span> <span class="cn">NULL</span>,</span>
@@ -95,6 +96,11 @@ and colored by this column. Default is <code>NULL</code>.</p></dd>
 <dt id="arg-n-bins">n_bins<a class="anchor" aria-label="anchor" href="#arg-n-bins"></a></dt>
 <dd><p>Number of bins to use for observed probability
 summary. Only relevant for binary models. Default is <code>4</code>.</p></dd>
+
+
+<dt id="arg-bin-breaks">bin_breaks<a class="anchor" aria-label="anchor" href="#arg-bin-breaks"></a></dt>
+<dd><p>Manually specify bin breaks for binary models. If specified
+this overrides <code>n_bins</code>.</p></dd>
 
 
 <dt id="arg-qi-width-obs">qi_width_obs<a class="anchor" aria-label="anchor" href="#arg-qi-width-obs"></a></dt>
@@ -182,6 +188,8 @@ plot. Default is <code>TRUE</code>.</p></dd>
 <span class="r-in"><span><span class="fu">plot_er_gof</span><span class="op">(</span><span class="va">ermod_bin</span>, var_group <span class="op">=</span> <span class="st">"Dose_mg"</span>, show_coef_exp <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span> <span class="op">*</span></span></span>
 <span class="r-in"><span>  <span class="co"># Use log10 scale for exposure, need to use `*` instead of `+`</span></span></span>
 <span class="r-in"><span>  <span class="fu">xgxr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/xgxr/man/xgx_scale_x_log10.html" class="external-link">xgx_scale_x_log10</a></span><span class="op">(</span>guide <span class="op">=</span> <span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/guide_axis.html" class="external-link">guide_axis</a></span><span class="op">(</span>minor.ticks <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>Removed 1 row containing missing values or values outside the scale range</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> (`geom_point()`).</span>
 <span class="r-plt img"><img src="plot_er_gof-1.png" alt="" width="700" height="433"></span>
 <span class="r-in"><span><span class="co"># }</span></span></span>
 </code></pre></div>
@@ -195,7 +203,7 @@ plot. Default is <code>TRUE</code>.</p></dd>
 </div>
 
 <div class="pkgdown-footer-right">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.3.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.2.0.</p>
 </div>
 
     </footer></div>
