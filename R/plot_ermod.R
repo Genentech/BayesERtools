@@ -871,8 +871,8 @@ set_pos_ci_annot <- function(x, pos_x, pos_y, var_exposure, var_resp) {
 #' combine_er_components(comps)
 #' }
 combine_er_components <- function(components, heights = NULL,
-                                   add_caption = !is.null(components$caption),
-                                   ...) {
+                                  add_caption = !is.null(components$caption),
+                                  ...) {
   if (!inherits(components, "er_plot_components")) {
     stop(
       "Input must be an object of class 'er_plot_components' ",

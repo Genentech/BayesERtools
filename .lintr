@@ -14,5 +14,8 @@ exclusions: list(
     "vignettes/basic_workflow_bin.Rmd" = list(
       1, # global exclusions are unnamed
       line_length_linter = 100:200
+    ),
+    "R/loo_kfold.R" = list(
+      object_name_linter = Inf
     )
   )
