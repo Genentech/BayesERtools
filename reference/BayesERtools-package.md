@@ -23,7 +23,7 @@ Useful links:
 
 Authors:
 
-- François Mercier <francois.mercier@roche.com>
+- Fran\<c3\>\<a7\>ois Mercier <francois.mercier@roche.com>
   ([ORCID](https://orcid.org/0000-0002-5685-1408))
 
 - Danielle Navarro <djnavarro@protonmail.com>

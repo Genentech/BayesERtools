@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">BayesERtools</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.2.4.9000</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.2.4.9001</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -134,6 +134,10 @@ summary. Only relevant for binary models. Default is <code>4</code>.</p></li>
 <li><p><code>qi_width</code>: Width of the quantile interval (confidence interval) for
 the observed probability summary. Only relevant for binary models.
 Default is <code>0.95</code>.</p></li>
+<li><p><code>return_components</code>: Logical, whether to return plot components as a
+list instead of a combined plot. When <code>TRUE</code>, returns a list with
+<code>$main</code> (main plot), <code>$boxplot</code> (boxplot if applicable), <code>$caption</code>
+(caption text if applicable), and <code>$metadata</code>. Default is <code>FALSE</code>.</p></li>
 </ul></dd>
 
 

@@ -105,6 +105,11 @@ plot_er(
     the observed probability summary. Only relevant for binary models.
     Default is `0.95`.
 
+  - `return_components`: Logical, whether to return plot components as a
+    list instead of a combined plot. When `TRUE`, returns a list with
+    `$main` (main plot), `$boxplot` (boxplot if applicable), `$caption`
+    (caption text if applicable), and `$metadata`. Default is `FALSE`.
+
 - options_coef_exp:
 
   List of options for configuring how the exposure coefficient credible

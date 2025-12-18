@@ -82,12 +82,12 @@ print_coveff(sim_coveff(ermod_bin))
 #> # A tibble: 6 × 5
 #>   var_label  value_label value_annot `Odds ratio` `95% CI`        
 #>   <chr>      <chr>       <chr>       <chr>        <chr>           
-#> 1 AUCss_1000 0.868       5th         0.548        "[0.457, 0.649]"
+#> 1 AUCss_1000 0.868       5th         0.548        "[0.460, 0.646]"
 #> 2 AUCss_1000 2.21        median      1            " "             
-#> 3 AUCss_1000 5.30        95th        3.98         "[2.69, 6.03]"  
-#> 4 BHBA1C_5   5.75        5th         0.275        "[0.200, 0.374]"
+#> 3 AUCss_1000 5.30        95th        3.98         "[2.73, 5.95]"  
+#> 4 BHBA1C_5   5.75        5th         0.276        "[0.202, 0.372]"
 #> 5 BHBA1C_5   7.97        median      1            " "             
-#> 6 BHBA1C_5   10.4        95th        4.23         "[2.99, 6.01]"  
+#> 6 BHBA1C_5   10.4        95th        4.20         "[3.01, 5.93]"  
 
 # Linear regression model example
 data(d_sim_lin)
@@ -103,13 +103,13 @@ print_coveff(sim_coveff(ermod_lin))
 #> # A tibble: 8 × 5
 #>   var_label value_label value_annot `Response difference` `95% CI`         
 #>   <chr>     <chr>       <chr>       <chr>                 <chr>            
-#> 1 AUCss     5.00        5th         −20.5                 "[−23.2, −17.7]" 
+#> 1 AUCss     5.00        5th         −20.4                 "[−23.0, −17.8]" 
 #> 2 AUCss     50.0        median      0                     " "              
-#> 3 AUCss     95.0        95th        20.5                  "[17.7, 23.2]"   
+#> 3 AUCss     95.0        95th        20.4                  "[17.8, 23.0]"   
 #> 4 SEX       F           1st freq    0                     " "              
-#> 5 SEX       M           2nd freq    −4.07                 "[−7.77, −0.550]"
-#> 6 BAGE      33.5        5th         −8.52                 "[−11.4, −5.56]" 
+#> 5 SEX       M           2nd freq    −4.14                 "[−7.54, −0.692]"
+#> 6 BAGE      33.5        5th         −8.50                 "[−11.3, −5.56]" 
 #> 7 BAGE      50.4        median      0                     " "              
-#> 8 BAGE      67.0        95th        8.36                  "[5.45, 11.2]"   
+#> 8 BAGE      67.0        95th        8.34                  "[5.46, 11.1]"   
 # }
 ```

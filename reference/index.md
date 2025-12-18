@@ -42,6 +42,8 @@
   : Plot ER model simulations
 - [`plot_er_gof()`](https://genentech.github.io/BayesERtools/reference/plot_er_gof.md)
   : Default GOF plot for ER model
+- [`combine_er_components()`](https://genentech.github.io/BayesERtools/reference/combine_er_components.md)
+  : Combine ER plot components
 - [`plot_er_exp_sel()`](https://genentech.github.io/BayesERtools/reference/plot_er_exp_sel.md)
   : Plot exposure metric selection comparison
 

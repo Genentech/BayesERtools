@@ -22,7 +22,8 @@ plot_er_gof(
   coef_size = 4,
   qi_width_coef = 0.95,
   qi_width_sim = 0.95,
-  show_caption = TRUE
+  show_caption = TRUE,
+  return_components = FALSE
 )
 ```
 
@@ -104,6 +105,14 @@ plot_er_gof(
   Logical, whether to show the caption note for the plot. Default is
   `TRUE`.
 
+- return_components:
+
+  Logical, whether to return plot components as a list instead of a
+  combined plot. When `TRUE`, returns a list with `$main` (main plot),
+  `$boxplot` (boxplot if applicable), `$caption` (caption text if
+  applicable), and `$metadata`. This allows users to customize
+  individual plot components before combining them. Default is `FALSE`.
+
 ## Value
 
 A ggplot object
@@ -133,6 +142,11 @@ The following code will generate the same plot:
       qi_width_sim = qi_width_sim
     )
 
+To customize plot elements (titles, shapes, themes), use
+`return_components = TRUE` to get individual plot components, modify
+them, then recombine with
+[`combine_er_components()`](https://genentech.github.io/BayesERtools/reference/combine_er_components.md).
+
 ## Examples
 
 ``` r
@@ -150,6 +164,14 @@ plot_er_gof(ermod_bin, var_group = "Dose_mg", show_coef_exp = TRUE) *
   xgxr::xgx_scale_x_log10(guide = ggplot2::guide_axis(minor.ticks = TRUE))
 #> Warning: Removed 1 row containing missing values or values outside the scale range
 #> (`geom_point()`).
+
+
+# Customize plot components
+comps <- plot_er_gof(ermod_bin, var_group = "Dose_mg", return_components = TRUE)
+comps$main <- comps$main +
+  ggplot2::labs(title = "Exposure-Response Analysis", x = "AUC (ng*h/mL)") +
+  ggplot2::theme_bw()
+combine_er_components(comps)
 
 # }
 ```

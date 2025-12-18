@@ -3,7 +3,7 @@ pkgdown: 2.2.0
 pkgdown_sha: ~
 articles:
   overview_of_the_package: overview_of_the_package.html
-last_built: 2025-12-18T00:57Z
+last_built: 2025-12-18T01:02Z
 urls:
   reference: https://genentech.github.io/BayesERtools/reference
   article: https://genentech.github.io/BayesERtools/articles

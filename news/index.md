@@ -6,6 +6,18 @@
 
 ### Minor changes
 
+- Allow manual breaks in
+  [`plot_er()`](https://genentech.github.io/BayesERtools/reference/plot_er.md)
+  to control the position of the probability summary breaks for binary
+  models
+- Added `return_components` option to
+  [`plot_er()`](https://genentech.github.io/BayesERtools/reference/plot_er.md)
+  and
+  [`plot_er_gof()`](https://genentech.github.io/BayesERtools/reference/plot_er_gof.md)
+  that returns individual plot components (main plot, boxplot, caption)
+  for customization before recombining with
+  [`combine_er_components()`](https://genentech.github.io/BayesERtools/reference/combine_er_components.md)
+
 ## BayesERtools 0.2.4
 
 CRAN release: 2025-10-02
