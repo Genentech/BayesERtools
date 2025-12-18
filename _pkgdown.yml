@@ -74,6 +74,7 @@ reference:
   - d_sim_binom_cov
   - d_sim_lin
   - d_sim_emax
+  - d_sim_placebo
 - title: S3 methods
   contents:
   - ermod_method

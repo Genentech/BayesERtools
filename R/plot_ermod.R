@@ -103,7 +103,7 @@ plot_er.ersim_med_qi <- function(
       list(
         add_boxplot = FALSE, boxplot_height = 0.15,
         show_boxplot_y_title = TRUE, var_group = NULL,
-        n_bins = 4, qi_width = 0.95,
+        n_bins = 4, bin_breaks = NULL, qi_width = 0.95,
         return_components = FALSE
       ),
       options_orig_data
@@ -400,7 +400,6 @@ plot_er.ersim_med_qi <- function(
   return(caption)
 }
 
-
 .plot_er_binary <- function(
     gg, x, origdata, show_orig_data, options_orig_data) {
   var_resp <- extract_var_resp(x)
@@ -422,17 +421,22 @@ plot_er.ersim_med_qi <- function(
 
     var_group <- options_orig_data$var_group
     n_bins <- options_orig_data$n_bins
+    bin_breaks <- options_orig_data$bin_breaks
     qi_width <- options_orig_data$qi_width
 
     # Convert the response variable to a numeric index
     origdata$.resp_num <- as.numeric(factor(origdata[[var_resp]])) - 1
 
     # binned probability ------------------------------------------------------
-    breaks <-
-      stats::quantile(origdata[[var_exposure]], probs = seq(0, 1, 1 / n_bins))
+    if (is.null(bin_breaks)) {
+      bin_breaks <- stats::quantile(
+        origdata[[var_exposure]],
+        probs = seq(0, 1, 1 / n_bins)
+      )
+    }
 
     # Show error when the breaks are not unique
-    if (length(unique(breaks)) != length(breaks)) {
+    if (length(unique(bin_breaks)) != length(bin_breaks)) {
       stop(
         "The breaks for the binned probability are not unique, ",
         "possibly due to too few unique values in the exposure variable.\n",
@@ -442,20 +446,34 @@ plot_er.ersim_med_qi <- function(
 
     gg <- gg +
       ggplot2::geom_vline(
-        xintercept = breaks, linetype = "dashed",
+        xintercept = bin_breaks,
+        linetype = "dashed",
         alpha = 0.3
       ) +
       xgxr::xgx_stat_ci(
         data = origdata,
-        ggplot2::aes(x = .data[[var_exposure]], y = .data[[".resp_num"]]),
-        bins = n_bins, conf_level = qi_width, distribution = "binomial",
-        geom = c("point"), shape = 0, size = 4
+        ggplot2::aes(
+          x = .data[[var_exposure]],
+          y = .data[[".resp_num"]]
+        ),
+        breaks = bin_breaks,
+        conf_level = qi_width,
+        distribution = "binomial",
+        geom = c("point"),
+        shape = 0,
+        size = 4
       ) +
       xgxr::xgx_stat_ci(
         data = origdata,
-        ggplot2::aes(x = .data[[var_exposure]], y = .data[[".resp_num"]]),
-        bins = n_bins, conf_level = qi_width, distribution = "binomial",
-        geom = c("errorbar"), linewidth = 0.5
+        ggplot2::aes(
+          x = .data[[var_exposure]],
+          y = .data[[".resp_num"]]
+        ),
+        breaks = bin_breaks,
+        conf_level = qi_width,
+        distribution = "binomial",
+        geom = c("errorbar"),
+        linewidth = 0.5
       )
 
 
@@ -644,6 +662,8 @@ plot_er.ermod <- function(
 #' and colored by this column. Default is `NULL`.
 #' @param n_bins Number of bins to use for observed probability
 #' summary. Only relevant for binary models. Default is `4`.
+#' @param bin_breaks Manually specify bin breaks for binary models. If specified
+#' this overrides `n_bins`.
 #' @param qi_width_obs Confidence level for the observed probability
 #' summary. Default is `0.95`.
 #' @param show_coef_exp Logical, whether to show the credible interval
@@ -721,11 +741,17 @@ plot_er.ermod <- function(
 #' }
 #'
 plot_er_gof <- function(
-    x, add_boxplot = !is.null(var_group), boxplot_height = 0.15,
+    x, add_boxplot = !is.null(var_group),
+    boxplot_height = 0.15,
     show_boxplot_y_title = FALSE,
-    var_group = NULL, n_bins = 4, qi_width_obs = 0.95,
+    var_group = NULL,
+    n_bins = 4,
+    bin_breaks = NULL,
+    qi_width_obs = 0.95,
     show_coef_exp = FALSE,
-    coef_pos_x = NULL, coef_pos_y = NULL, coef_size = 4,
+    coef_pos_x = NULL,
+    coef_pos_y = NULL,
+    coef_size = 4,
     qi_width_coef = 0.95,
     qi_width_sim = 0.95,
     show_caption = TRUE,
@@ -736,18 +762,24 @@ plot_er_gof <- function(
     show_coef_exp = show_coef_exp,
     show_caption = show_caption,
     options_orig_data = list(
-      add_boxplot = add_boxplot, boxplot_height = boxplot_height,
+      add_boxplot = add_boxplot,
+      boxplot_height = boxplot_height,
       show_boxplot_y_title = show_boxplot_y_title,
       var_group = var_group,
-      n_bins = n_bins, qi_width = qi_width_obs,
+      n_bins = n_bins,
+      bin_breaks = bin_breaks,
+      qi_width = qi_width_obs,
       return_components = return_components
     ),
     options_coef_exp = list(
-      qi_width = qi_width_coef, pos_x = coef_pos_x, pos_y = coef_pos_y,
+      qi_width = qi_width_coef,
+      pos_x = coef_pos_x,
+      pos_y = coef_pos_y,
       size = coef_size
     ),
     options_caption = list(
-      orig_data_summary = TRUE, coef_exp = show_coef_exp
+      orig_data_summary = TRUE,
+      coef_exp = show_coef_exp
     ),
     qi_width_sim = qi_width_sim
   )
