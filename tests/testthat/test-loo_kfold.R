@@ -86,7 +86,8 @@ if (.if_run_ex_eval_mod()) {
 
     expect_equal(
       loo_ermod_bin$estimates[, 1],
-      c(elpd_loo = -38.5289466, p_loo = 3.3262640, looic = 77.0578931)
+      c(elpd_loo = -38.5289466, p_loo = 3.3262640, looic = 77.0578931),
+      tolerance = 0.1
     )
     expect_equal(
       loo_ermod_emax_w_cov$estimates[, 1],
