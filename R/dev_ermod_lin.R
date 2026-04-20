@@ -489,7 +489,11 @@ dev_ermod_lin_cov_sel <- function(
       function(.x) loo(.x)
     )
     comp_exposures <- loo::loo_compare(l_loo_exposures)
-    var_exposure <- rownames(comp_exposures)[[1]]
+    if ("model" %in% colnames(comp_exposures)) {
+      var_exposure <- comp_exposures$model[[1]]
+    } else {
+      var_exposure <- rownames(comp_exposures)[[1]]
+    }
 
     if (verbosity_level >= 1) {
       cli::cli_alert_info("The exposure metric selected was: {var_exposure}")
