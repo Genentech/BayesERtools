@@ -104,7 +104,11 @@ if (.if_run_ex_eval_mod()) {
   })
 
   test_that("kfold", {
-    expect_gt(comp[[2, 1]], -0.5)
+    if ("model" %in% colnames(comp)) {
+      expect_gt(comp[[2, 2]], -0.5)
+    } else {
+      expect_gt(comp[[2, 1]], -0.5)
+    }
     expect_equal(
       kfold_ermod_bin$estimates[, 1],
       c(elpd_kfold = -38.242947, p_kfold = 3.040264, kfoldic = 76.485893)
