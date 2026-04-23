@@ -120,7 +120,6 @@ ermod_emax_exp_sel <-
     var_resp = "response",
     var_exp_candidates = c("exposure", "exposure2")
   )
-#> Warning: Some Pareto k diagnostic values are too high. See help('pareto-k-diagnostic') for details.
 #> ℹ The exposure metric selected was: exposure
 
 ermod_emax_exp_sel
@@ -132,18 +131,18 @@ ermod_emax_exp_sel
 #> ── Exposure metrics comparison ──
 #> 
 #>           elpd_diff se_diff
-#> exposure    0.00      0.00 
-#> exposure2 -16.16     10.63 
+#> exposure   0.00      0.00  
+#> exposure2 -9.46      3.30  
 #> 
 #> ── Selected model ──
 #> 
 #> ---- Emax model fit with rstanemax ----
 #>        mean se_mean    sd  2.5%   25%   50%   75%  97.5%   n_eff Rhat
-#> emax  91.89    0.12  6.04 79.53 87.76 92.09 96.07 103.40 2670.28    1
-#> e0     5.93    0.10  4.64 -3.09  2.89  5.92  9.02  15.17 2253.00    1
-#> ec50  76.07    0.43 20.72 44.65 61.66 73.05 86.88 124.14 2333.33    1
+#> emax  92.01    0.12  6.07 80.13 88.01 92.02 96.20 103.86 2418.78    1
+#> e0     5.72    0.10  4.72 -3.63  2.54  5.74  8.88  14.96 2085.81    1
+#> ec50  75.96    0.49 20.45 45.07 61.24 73.36 87.46 124.72 1769.73    1
 #> gamma  1.00     NaN  0.00  1.00  1.00  1.00  1.00   1.00     NaN  NaN
-#> sigma 16.60    0.03  1.60 13.77 15.45 16.49 17.62  20.01 2870.66    1
+#> sigma 16.63    0.03  1.56 13.92 15.50 16.51 17.58  19.96 2735.09    1
 #> * Use `extract_stanfit()` function to extract raw stanfit object
 #> * Use `extract_param()` function to extract posterior draws of key parameters
 #> * Use `plot()` function to visualize model fit

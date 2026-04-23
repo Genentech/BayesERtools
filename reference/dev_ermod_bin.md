@@ -100,7 +100,7 @@ ermod_bin
 #>  predictors:   3
 #> ------
 #>             Median MAD_SD
-#> (Intercept) -6.94   0.78 
+#> (Intercept) -6.94   0.77 
 #> AUCss_1000   0.45   0.08 
 #> BHBA1C_5     0.58   0.08 
 #> ------

@@ -4,6 +4,10 @@
 
 ### Major changes
 
+- Updated compatibility with upcoming changes to `loo_compare()` output
+  structure in the `loo` package (\> 2.9.0), which now returns a data
+  frame instead of a matrix and includes additional diagnostic columns.
+
 ### Minor changes
 
 - Allow manual breaks in

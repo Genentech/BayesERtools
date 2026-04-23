@@ -91,8 +91,8 @@ ermod_bin_exp_sel
 #> 
 #>            elpd_diff se_diff
 #> AUCss_1000  0.00      0.00  
-#> Cminss     -4.41      3.13  
-#> Cmaxss     -4.94      2.87  
+#> Cminss     -4.51      3.10  
+#> Cmaxss     -5.04      2.85  
 #> 
 #> ── Selected model ──
 #> 
@@ -103,7 +103,7 @@ ermod_bin_exp_sel
 #>  predictors:   2
 #> ------
 #>             Median MAD_SD
-#> (Intercept) -2.05   0.23 
+#> (Intercept) -2.04   0.22 
 #> AUCss_1000   0.41   0.07 
 #> ------
 #> * For help interpreting the printed output see ?print.stanreg

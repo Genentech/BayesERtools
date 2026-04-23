@@ -88,6 +88,6 @@ ermod_bin <- dev_ermod_bin(
 )
 
 p_direction(ermod_bin, as_num = TRUE, as_p = TRUE)
-#> [1] 0.594
+#> [1] 0.591
 # }
 ```

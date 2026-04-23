@@ -89,7 +89,7 @@ print(cv_results)
 #> 
 #>            Estimate   SE
 #> elpd_kfold   -254.5 12.2
-#> p_kfold         4.9  1.4
+#> p_kfold         4.9  1.3
 #> kfoldic       509.0 24.3
 # }
 ```

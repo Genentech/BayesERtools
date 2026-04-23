@@ -83,23 +83,23 @@ print(metrics_training)
 #> # A tibble: 2 × 3
 #>   .metric     .estimator .estimate
 #>   <chr>       <chr>          <dbl>
-#> 1 roc_auc     binary         0.744
-#> 2 mn_log_loss binary         0.505
+#> 1 roc_auc     binary         0.738
+#> 2 mn_log_loss binary         0.526
 print(metrics_test)
 #> # A tibble: 2 × 3
 #>   .metric     .estimator .estimate
 #>   <chr>       <chr>          <dbl>
-#> 1 roc_auc     binary         0.803
-#> 2 mn_log_loss binary         0.483
+#> 1 roc_auc     binary         0.815
+#> 2 mn_log_loss binary         0.421
 print(metrics_kfold)
 #> # A tibble: 6 × 4
 #>   fold_id .metric     .estimator .estimate
 #>     <int> <chr>       <chr>          <dbl>
-#> 1       1 roc_auc     binary         0.655
-#> 2       2 roc_auc     binary         0.794
-#> 3       3 roc_auc     binary         0.783
-#> 4       1 mn_log_loss binary         0.607
-#> 5       2 mn_log_loss binary         0.542
-#> 6       3 mn_log_loss binary         0.433
+#> 1       1 roc_auc     binary         0.742
+#> 2       2 roc_auc     binary         0.764
+#> 3       3 roc_auc     binary         0.695
+#> 4       1 mn_log_loss binary         0.492
+#> 5       2 mn_log_loss binary         0.512
+#> 6       3 mn_log_loss binary         0.595
 # }
 ```
