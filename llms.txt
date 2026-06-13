@@ -34,7 +34,7 @@ for more thorough walk through.
 # Load package and data
 library(dplyr)
 library(BayesERtools)
-ggplot2::theme_set(ggplot2::theme_bw(base_size = 12))
+theme_set(theme_bw(base_size = 12))
 
 data(d_sim_binom_cov)
 
@@ -84,11 +84,11 @@ ermod_bin
 # Using `*` instead of `+` so that scale can be
 # applied for both panels (main plot and boxplot)
 plot_er_gof(ermod_bin, var_group = "Dose", show_coef_exp = TRUE) *
-  xgxr::xgx_scale_x_log10(guide = ggplot2::guide_axis(minor.ticks = TRUE))
-#> Warning in ggplot2::annotate("label", x = pos_ci_annot[1], y = pos_ci_annot[2],
-#> : Ignoring unknown parameters: `label.size`
-#> Warning: annotation$theme is not a valid theme.
-#> Please use `theme()` to construct themes.
+  coord_transform(x = "log10") *
+  scale_x_continuous(
+    breaks = xgxr::xgx_breaks_log10,
+    minor_breaks = xgxr::xgx_minor_breaks_log10
+  )
 ```
 
 ![](reference/figures/README-ermod_bin-1.png)
@@ -147,8 +147,6 @@ plot_submod_performance(ermod_bin_cov_sel)
 
 coveffsim <- sim_coveff(ermod_bin_cov_sel)
 plot_coveff(coveffsim)
-#> Warning in geom_errorbar(..., orientation = orientation): Ignoring unknown
-#> parameters: `height`
 ```
 
 ![](reference/figures/README-plot_coveff-1.png)
