@@ -107,7 +107,7 @@ sim_coveff <- function(
     linpred_draws_3 |>
     dplyr::group_by(dplyr::across(
       !dplyr::any_of(c(".chain", ".iteration", ".draw",
-        ".odds_ratio", ".response_diff"))
+                       ".odds_ratio", ".response_diff"))
     )) |>
     ggdist::median_qi(.width = qi_width) |>
     dplyr::arrange(var_order, value_order)
