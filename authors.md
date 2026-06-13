@@ -16,13 +16,13 @@
 ## Citation
 
 Yoshida K, Mercier F, Navarro D (2026). *BayesERtools: Bayesian
-Exposure-Response Analysis Tools*. R package version 0.2.5,
+Exposure-Response Analysis Tools*. R package version 0.2.5.9000,
 <https://genentech.github.io/BayesERtools/>.
 
     @Manual{,
       title = {BayesERtools: Bayesian Exposure-Response Analysis Tools},
       author = {Kenta Yoshida and François Mercier and Danielle Navarro},
       year = {2026},
-      note = {R package version 0.2.5},
+      note = {R package version 0.2.5.9000},
       url = {https://genentech.github.io/BayesERtools/},
     }

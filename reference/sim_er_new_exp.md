@@ -83,7 +83,7 @@ endpoints, `.linpred` is the linear predictor (i.e. on the logit scale)
 and `.epred` is on the probability scale. `.prediction` is the predicted
 response with residual variability (or in case of binary endpoint, the
 predicted yes (1) or no (0) for event occurrence). See
-[`tidybayes::add_epred_draws()`](https://mjskay.github.io/tidybayes/reference/add_predicted_draws.html)
+[`rstantools::posterior_epred()`](https://mc-stan.org/rstantools/reference/posterior_epred.html)
 for more details.
 
 In case of `output_type = "median_qi"`, it returns `ersim_med_qi`
@@ -136,16 +136,16 @@ ersim_new_exp_med_qi
 #> # A tibble: 147 × 12
 #>    AUCss_1000 BHBA1C_5  .row .epred .epred.lower .epred.upper .linpred
 #>         <dbl>    <int> <int>  <dbl>        <dbl>        <dbl>    <dbl>
-#>  1        2          4     1 0.0239       0.0114       0.0520   -3.71 
-#>  2        2          5     2 0.0420       0.0231       0.0763   -3.13 
-#>  3        2          6     3 0.0721       0.0466       0.112    -2.56 
-#>  4        2          7     4 0.122        0.0895       0.163    -1.98 
-#>  5        2          8     5 0.198        0.163        0.238    -1.40 
-#>  6        2          9     6 0.306        0.253        0.363    -0.821
-#>  7        2         10     7 0.438        0.353        0.528    -0.248
-#>  8        2.2        4     8 0.0261       0.0128       0.0563   -3.62 
-#>  9        2.2        5     9 0.0454       0.0251       0.0831   -3.04 
-#> 10        2.2        6    10 0.0784       0.0509       0.120    -2.46 
+#>  1        2          4     1 0.0235       0.0111       0.0476   -3.73 
+#>  2        2          5     2 0.0413       0.0223       0.0722   -3.15 
+#>  3        2          6     3 0.0719       0.0463       0.108    -2.56 
+#>  4        2          7     4 0.122        0.0917       0.160    -1.97 
+#>  5        2          8     5 0.197        0.162        0.244    -1.40 
+#>  6        2          9     6 0.307        0.253        0.367    -0.814
+#>  7        2         10     7 0.440        0.358        0.531    -0.241
+#>  8        2.2        4     8 0.0256       0.0123       0.0515   -3.64 
+#>  9        2.2        5     9 0.0449       0.0247       0.0770   -3.06 
+#> 10        2.2        6    10 0.0779       0.0509       0.114    -2.47 
 #> # ℹ 137 more rows
 #> # ℹ 5 more variables: .linpred.lower <dbl>, .linpred.upper <dbl>, .width <dbl>,
 #> #   .point <chr>, .interval <chr>

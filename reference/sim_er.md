@@ -63,7 +63,7 @@ endpoints, `.linpred` is the linear predictor (i.e. on the logit scale)
 and `.epred` is on the probability scale. `.prediction` is the predicted
 response with residual variability (or in case of binary endpoint, the
 predicted yes (1) or no (0) for event occurrence). See
-[`tidybayes::add_epred_draws()`](https://mjskay.github.io/tidybayes/reference/add_predicted_draws.html)
+[`rstantools::posterior_epred()`](https://mc-stan.org/rstantools/reference/posterior_epred.html)
 for more details.
 
 In case of `output_type = "median_qi"`, it returns `ersim_med_qi`
@@ -102,9 +102,6 @@ ersim_med_qi <- sim_er(
 
 ersim
 #> # A tibble: 250,000 × 24
-#> # Groups:   ID, AETYPE, AEFLAG, Dose_mg, AUCss, Cmaxss, Cminss, BAGE, BWT,
-#> #   BGLUC, BHBA1C, RACE, VISC, AUCss_1000, BAGE_10, BWT_10, BHBA1C_5, .row
-#> #   [500]
 #>       ID AETYPE AEFLAG Dose_mg AUCss Cmaxss Cminss  BAGE   BWT BGLUC BHBA1C
 #>    <int> <chr>   <int>   <dbl> <dbl>  <dbl>  <dbl> <dbl> <dbl> <dbl>  <dbl>
 #>  1     1 hgly2       0     200  866.   64.3   10.1  84.4  74.1  4.65   31.5

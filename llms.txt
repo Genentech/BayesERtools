@@ -13,6 +13,7 @@ exposure-response analysis using Bayesian methods.
 You can install the `BayesERtools` with:
 
 ``` r
+
 install.packages('BayesERtools')
 # devtools::install_github("genentech/BayesERtools") # development version
 ```
@@ -29,6 +30,7 @@ workflow](https://genentech.github.io/BayesERbook/notebook/binary/basic_workflow
 for more thorough walk through.
 
 ``` r
+
 # Load package and data
 library(dplyr)
 library(BayesERtools)
@@ -52,6 +54,7 @@ var_resp <- "AEFLAG"
 ### Simple univariable model for binary endpoint
 
 ``` r
+
 set.seed(1234)
 ermod_bin <- dev_ermod_bin(
   data = df_er_ae_hgly2,
@@ -95,6 +98,7 @@ plot_er_gof(ermod_bin, var_group = "Dose", show_coef_exp = TRUE) *
 BGLUC (baseline glucose) is selected while other two covariates are not.
 
 ``` r
+
 set.seed(1234)
 ermod_bin_cov_sel <-
   dev_ermod_bin_cov_sel(
@@ -140,6 +144,7 @@ plot_submod_performance(ermod_bin_cov_sel)
 ![](reference/figures/README-ermod_bin_cov_sel-1.png)
 
 ``` r
+
 coveffsim <- sim_coveff(ermod_bin_cov_sel)
 plot_coveff(coveffsim)
 #> Warning in geom_errorbar(..., orientation = orientation): Ignoring unknown

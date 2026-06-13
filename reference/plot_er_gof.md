@@ -121,6 +121,7 @@ A ggplot object
 
 The following code will generate the same plot:
 
+
     plot_er(
       x,
       show_orig_data = TRUE,
