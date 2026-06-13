@@ -1,4 +1,4 @@
-# BayesERtools 0.2.5.9000
+# BayesERtools 0.2.6
 
 ## Major changes
 
