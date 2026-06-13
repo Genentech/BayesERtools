@@ -62,7 +62,7 @@ endpoints, \code{.linpred} is the linear predictor (i.e. on the logit scale) and
 \code{.epred} is on the probability scale. \code{.prediction} is the predicted
 response with residual variability (or in case of binary endpoint,
 the predicted yes (1) or no (0) for event occurrence).
-See \code{\link[tidybayes:add_predicted_draws]{tidybayes::add_epred_draws()}} for more details.
+See \code{\link[rstantools:posterior_epred]{rstantools::posterior_epred()}} for more details.
 
 In case of \code{output_type = "median_qi"}, it returns \code{ersim_med_qi} object.
 }

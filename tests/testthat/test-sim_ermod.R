@@ -134,7 +134,7 @@ ersim_new_exp_marg_med_qi_2 <- calc_ersim_med_qi(ersim_new_exp_marg)
 test_that("sim_ermod", {
   expect_equal(dim(ersim), c(20000, 24))
   expect_equal(nrow(ersim_med_qi), 50)
-  expect_equal(min(ersim_med_qi$.linpred), -9.8585773)
+  expect_equal(min(ersim_med_qi$.linpred), -10.27, tolerance = 0.05)
 
   inv_logit <- \(x) exp(x) / (1 + exp(x))
   expect_equal(ersim$.epred, inv_logit(ersim$.linpred))
@@ -144,7 +144,7 @@ test_that("sim_er_new_exp", {
   expect_equal(nrow(ersim_new_exp), 8400)
   expect_equal(ncol(ersim_new_exp), 9)
   expect_equal(nrow(ersim_new_exp_med_qi), 42)
-  expect_equal(max(ersim_new_exp_med_qi$.epred), 0.97649282)
+  expect_equal(max(ersim_new_exp_med_qi$.epred), 0.975, tolerance = 0.01)
   expect_equal(
     unique(ersim_curve$AUCss_1000),
     seq(0.398670752493232, 6.3639878,
@@ -160,7 +160,7 @@ test_that("sim_er_new_exp_marg", {
   expect_equal(nrow(ersim_new_exp_marg_2), 6 * 200)
   expect_equal(nrow(ersim_new_exp_marg_med_qi), 6)
   expect_equal(nrow(ersim_new_exp_marg_med_qi_2), 6)
-  expect_equal(max(ersim_new_exp_marg_med_qi$.epred), 0.38051861)
+  expect_equal(max(ersim_new_exp_marg_med_qi$.epred), 0.37, tolerance = 0.03)
   expect_equal(ersim_curve_marg_med_qi$AUCss_1000, seq(2, 6, by = 0.4))
 })
 

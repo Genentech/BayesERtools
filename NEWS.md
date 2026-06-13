@@ -1,3 +1,13 @@
+# BayesERtools 0.2.5.9000
+
+## Major changes
+
+* Replaced `tidybayes` dependency with `ggdist` and `rstantools` to avoid
+  CRAN archival risk from `tidybayes`'s dependency on `arrayhelpers`.
+  `tidybayes::add_*_draws()` calls replaced with direct `posterior_epred()` /
+  `posterior_linpred()` / `posterior_predict()` via `rstantools` generics.
+  `tidybayes::median_qi()` replaced with `ggdist::median_qi()`.
+
 # BayesERtools 0.2.5
 
 ## Major changes

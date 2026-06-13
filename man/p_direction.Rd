@@ -48,7 +48,7 @@ For the class \verb{ermod_bin_*}, it only calculates the \strong{pd} for
 the exposure variable.
 }
 \examples{
-\dontshow{if (BayesERtools:::.if_run_ex_p_dir()) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
+\dontshow{if (BayesERtools:::.if_run_ex_p_dir()) withAutoprint(\{ # examplesIf}
 \donttest{
 library(bayestestR)
 

@@ -19,7 +19,7 @@ No return value, called for plotting side effect.
 Plot ER curve for each exposure metric and compare them.
 }
 \examples{
-\dontshow{if (BayesERtools:::.if_run_ex_plot_er()) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
+\dontshow{if (BayesERtools:::.if_run_ex_plot_er()) withAutoprint(\{ # examplesIf}
 \donttest{
 data(d_sim_binom_cov_hgly2)
 

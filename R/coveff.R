@@ -65,7 +65,10 @@ sim_coveff <- function(
   df_for_sim <- spec_coveff_to_df_sim(spec_coveff)
 
   linpred_draws <-
-    tidybayes::add_linpred_draws(df_for_sim, extract_mod(ermod))
+    .pp_matrix_to_draws_tbl(
+      rstantools::posterior_linpred(extract_mod(ermod), newdata = df_for_sim),
+      df_for_sim, ".linpred"
+    )
 
   linpred_draws_ref <-
     linpred_draws |>
@@ -102,7 +105,11 @@ sim_coveff <- function(
 
   linpred_med_qi <-
     linpred_draws_3 |>
-    tidybayes::median_qi(.width = qi_width) |>
+    dplyr::group_by(dplyr::across(
+      !dplyr::any_of(c(".chain", ".iteration", ".draw",
+        ".odds_ratio", ".response_diff"))
+    )) |>
+    ggdist::median_qi(.width = qi_width) |>
     dplyr::arrange(var_order, value_order)
 
   # Determine which columns to select based on model type

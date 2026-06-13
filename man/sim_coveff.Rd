@@ -42,7 +42,7 @@ returns odds ratios. For linear models (\code{ermod_lin}), returns response diff
 Perform simulation of covariate effects for ER model
 }
 \examples{
-\dontshow{if (BayesERtools:::.if_run_ex_coveff()) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
+\dontshow{if (BayesERtools:::.if_run_ex_coveff()) withAutoprint(\{ # examplesIf}
 \donttest{
 data(d_sim_binom_cov_hgly2)
 

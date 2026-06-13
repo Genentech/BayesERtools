@@ -115,7 +115,7 @@ To customize plot elements (titles, shapes, themes), use
 then recombine with \code{combine_er_components()}.
 }
 \examples{
-\dontshow{if (BayesERtools:::.if_run_ex_plot_er()) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
+\dontshow{if (BayesERtools:::.if_run_ex_plot_er()) withAutoprint(\{ # examplesIf}
 \donttest{
 data(d_sim_binom_cov_hgly2)
 

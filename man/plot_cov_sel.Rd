@@ -27,7 +27,7 @@ evaluated during variable selection.
 evaluated during variable selection.
 }
 \examples{
-\dontshow{if (BayesERtools:::.if_run_ex_covsel()) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
+\dontshow{if (BayesERtools:::.if_run_ex_covsel()) withAutoprint(\{ # examplesIf}
 \donttest{
 data(d_sim_binom_cov_hgly2)
 

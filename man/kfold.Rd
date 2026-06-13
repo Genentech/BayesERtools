@@ -41,7 +41,7 @@ It is internally used by \code{\link[=eval_ermod]{eval_ermod()}}. The output is 
 See \code{\link[loo:kfold-generic]{loo::kfold()}} for details.
 }
 \examples{
-\dontshow{if (BayesERtools:::.if_run_ex_eval_mod()) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
+\dontshow{if (BayesERtools:::.if_run_ex_eval_mod()) withAutoprint(\{ # examplesIf}
 \donttest{
 data(d_sim_binom_cov_hgly2)
 

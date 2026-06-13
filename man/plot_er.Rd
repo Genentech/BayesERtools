@@ -150,7 +150,7 @@ suitable, you can always perform the simulation manually and use
 \code{plot_er()} on the simulated data.
 }
 \examples{
-\dontshow{if (BayesERtools:::.if_run_ex_plot_er()) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
+\dontshow{if (BayesERtools:::.if_run_ex_plot_er()) withAutoprint(\{ # examplesIf}
 \donttest{
 data(d_sim_binom_cov_hgly2)
 

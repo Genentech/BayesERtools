@@ -79,7 +79,7 @@ together.
 }
 }
 \examples{
-\dontshow{if (BayesERtools:::.if_run_ex_coveff()) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
+\dontshow{if (BayesERtools:::.if_run_ex_coveff()) withAutoprint(\{ # examplesIf}
 \donttest{
 set.seed(1234)
 data(d_sim_binom_cov_hgly2)

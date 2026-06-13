@@ -72,15 +72,17 @@ extract_var_cov.ersim_med_qi <- function(x) attr(x, "var_cov")
 #'
 calc_ersim_med_qi <- function(x, qi_width = 0.95) {
   var_exposure_sym <- rlang::sym(extract_var_exposure(x))
-  x_grouped <- x
-
   if (inherits(x, "ersim_marg")) {
     x_grouped <- dplyr::group_by(x, .id_exposure, !!var_exposure_sym)
+  } else {
+    x_grouped <- dplyr::group_by(x, dplyr::across(
+      !c(.chain, .iteration, .draw, .epred, .linpred, .prediction)
+    ))
   }
 
   simdata_med_qi <-
     x_grouped |>
-    tidybayes::median_qi(.width = qi_width) |>
+    ggdist::median_qi(.width = qi_width) |>
     dplyr::as_tibble()
 
   # Create dummy ermod to feed to ersim class constructor

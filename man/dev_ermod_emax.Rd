@@ -79,7 +79,7 @@ You can also specify covariates to be included in the model; note that only
 categorical covariates are allowed.
 }
 \examples{
-\dontshow{if (BayesERtools:::.if_run_ex_plot_er()) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
+\dontshow{if (BayesERtools:::.if_run_ex_plot_er()) withAutoprint(\{ # examplesIf}
 \donttest{
 data_er_cont <- rstanemax::exposure.response.sample
 
@@ -103,7 +103,7 @@ ermod_emax_w_cov <-
   )
 }
 \dontshow{\}) # examplesIf}
-\dontshow{if (BayesERtools:::.if_run_ex_plot_er()) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
+\dontshow{if (BayesERtools:::.if_run_ex_plot_er()) withAutoprint(\{ # examplesIf}
 \donttest{
 data_er_bin <- rstanemax::exposure.response.sample.binary
 

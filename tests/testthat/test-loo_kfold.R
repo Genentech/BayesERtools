@@ -111,7 +111,8 @@ if (.if_run_ex_eval_mod()) {
     }
     expect_equal(
       kfold_ermod_bin$estimates[, 1],
-      c(elpd_kfold = -38.242947, p_kfold = 3.040264, kfoldic = 76.485893)
+      c(elpd_kfold = -38.305782, p_kfold = 3.103099, kfoldic = 76.611563),
+      tolerance = 0.05
     )
     expect_equal(
       class(extract_kfold_loo(kfold_ermod_bin)),

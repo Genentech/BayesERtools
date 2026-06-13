@@ -44,7 +44,7 @@ This function evaluates the performance of an exposure-response model
 using various metrics.
 }
 \examples{
-\dontshow{if (BayesERtools:::.if_run_ex_eval_mod()) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
+\dontshow{if (BayesERtools:::.if_run_ex_eval_mod()) withAutoprint(\{ # examplesIf}
 \donttest{
 data(d_sim_binom_cov_hgly2)
 d_split <- rsample::initial_split(d_sim_binom_cov_hgly2)

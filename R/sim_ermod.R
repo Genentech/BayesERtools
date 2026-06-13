@@ -25,7 +25,7 @@
 #' `.epred` is on the probability scale. `.prediction` is the predicted
 #' response with residual variability (or in case of binary endpoint,
 #' the predicted yes (1) or no (0) for event occurrence).
-#' See [tidybayes::add_epred_draws()] for more details.
+#' See [rstantools::posterior_epred()] for more details.
 #'
 #' In case of `output_type = "median_qi"`, it returns `ersim_med_qi` object.
 #'
@@ -87,23 +87,27 @@ sim_er <- function(
   n_draws_sim <- chech_ndraws(mod, n_draws_sim)
 
   simdata_epred <-
-    tidybayes::add_epred_draws(newdata, mod,
-      ndraws = n_draws_sim,
-      seed = seed_sample_draws
+    .pp_matrix_to_draws_tbl(
+      .posterior_draws(rstantools::posterior_epred, mod, newdata,
+        n_draws_sim, seed_sample_draws
+      ),
+      newdata, ".epred"
     )
   simdata_linpred <-
-    tidybayes::add_linpred_draws(newdata, mod,
-      ndraws = n_draws_sim,
-      seed = seed_sample_draws
+    .pp_matrix_to_draws_tbl(
+      .posterior_draws(rstantools::posterior_linpred, mod, newdata,
+        n_draws_sim, seed_sample_draws
+      ),
+      newdata, ".linpred"
     ) |>
-    dplyr::ungroup() |>
     dplyr::select(.draw, .row, .linpred)
   simdata_predicted <-
-    tidybayes::add_predicted_draws(newdata, mod,
-      ndraws = n_draws_sim,
-      seed = seed_sample_draws
+    .pp_matrix_to_draws_tbl(
+      .posterior_draws(rstantools::posterior_predict, mod, newdata,
+        n_draws_sim, seed_sample_draws
+      ),
+      newdata, ".prediction"
     ) |>
-    dplyr::ungroup() |>
     dplyr::select(.draw, .row, .prediction)
 
   simdata <-
@@ -121,7 +125,10 @@ sim_er <- function(
 
   simdata_med_qi <-
     simdata |>
-    tidybayes::median_qi(.width = qi_width) |>
+    dplyr::group_by(dplyr::across(
+      !c(.chain, .iteration, .draw, .epred, .linpred, .prediction)
+    )) |>
+    ggdist::median_qi(.width = qi_width) |>
     dplyr::as_tibble()
 
   if (inherits(ermod, "ermod_bin")) {
@@ -406,7 +413,7 @@ sim_er_new_exp_marg <- function(
   simdata_med_qi <-
     simdata |>
     dplyr::group_by(.id_exposure, !!var_exposure_sym) |>
-    tidybayes::median_qi(.width = qi_width) |>
+    ggdist::median_qi(.width = qi_width) |>
     dplyr::as_tibble()
 
   return(new_ersim_marg_med_qi(simdata_med_qi, ermod,

@@ -5,7 +5,7 @@ if (getRversion() >= "2.15.1") {
   # General
   utils::globalVariables(c(
     ".", "n", ":=", ".epred", ".linpred", ".prediction", ".draw", ".response",
-    ".id_exposure"
+    ".id_exposure", ".chain", ".iteration", ".row"
   ))
 
   # ggplot
