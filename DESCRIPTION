@@ -37,7 +37,7 @@ Imports:
     cli,
     rlang,
     rstanarm,
-    rstanemax (>= 0.1.9),
+    rstanemax (>= 0.1.10),
     rstantools,
     loo,
     ggdist,
