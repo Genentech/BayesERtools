@@ -135,5 +135,5 @@ eval_ermod <- function(
   requireNamespace("rsample", quietly = TRUE) &&
     requireNamespace("yardstick", quietly = TRUE) &&
     requireNamespace("digest", quietly = TRUE) &&
-    rlang::is_installed("rstanemax", version = "0.1.10")
+    rlang::is_installed("rstanemax", version = "0.1.9")
 }
