@@ -88,8 +88,8 @@ install.packages('BayesERtools')
 <td headers="linear" class="gt_row gt_left" style="text-align: center; vertical-align: middle;"><span class='gt_from_md'>✅</span></td>
 <td headers="emax" class="gt_row gt_left" style="text-align: center; vertical-align: middle;"><span class='gt_from_md'>❌</span></td></tr>
   </tbody>
-  &#10;  <tfoot class="gt_footnotes">
-    <tr>
+  <tfoot>
+    <tr class="gt_footnotes">
       <td class="gt_footnote" colspan="5"> ✅ Available, 🟡 In plan/under development, ❌ Not in a current plan</td>
     </tr>
   </tfoot>
@@ -107,7 +107,7 @@ for more thorough walk through.
 # Load package and data
 library(dplyr)
 library(BayesERtools)
-ggplot2::theme_set(ggplot2::theme_bw(base_size = 12))
+theme_set(theme_bw(base_size = 12))
 
 data(d_sim_binom_cov)
 
@@ -156,14 +156,14 @@ ermod_bin
 # Using `*` instead of `+` so that scale can be
 # applied for both panels (main plot and boxplot)
 plot_er_gof(ermod_bin, var_group = "Dose", show_coef_exp = TRUE) *
-  xgxr::xgx_scale_x_log10(guide = ggplot2::guide_axis(minor.ticks = TRUE))
-#> Warning in ggplot2::annotate("label", x = pos_ci_annot[1], y = pos_ci_annot[2],
-#> : Ignoring unknown parameters: `label.size`
-#> Warning: annotation$theme is not a valid theme.
-#> Please use `theme()` to construct themes.
+  coord_transform(x = "log10") *
+  scale_x_continuous(
+    breaks = xgxr::xgx_breaks_log10,
+    minor_breaks = xgxr::xgx_minor_breaks_log10
+  )
 ```
 
-<img src="man/figures/README-ermod_bin-1.png" width="75%" />
+<img src="man/figures/README-ermod_bin-1.png" alt="" width="75%" />
 
 ### Covariate selection
 
@@ -212,13 +212,11 @@ ermod_bin_cov_sel
 plot_submod_performance(ermod_bin_cov_sel)
 ```
 
-<img src="man/figures/README-ermod_bin_cov_sel-1.png" width="75%" />
+<img src="man/figures/README-ermod_bin_cov_sel-1.png" alt="" width="75%" />
 
 ``` r
 coveffsim <- sim_coveff(ermod_bin_cov_sel)
 plot_coveff(coveffsim)
-#> Warning in geom_errorbar(..., orientation = orientation): Ignoring unknown
-#> parameters: `height`
 ```
 
-<img src="man/figures/README-plot_coveff-1.png" width="75%" />
+<img src="man/figures/README-plot_coveff-1.png" alt="" width="75%" />

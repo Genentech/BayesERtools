@@ -14,6 +14,7 @@ knitr::opts_chunk$set(
 
 library(dplyr)
 library(tidyr)
+library(ggplot2)
 library(gt)
 ```
 
@@ -143,7 +144,7 @@ more thorough walk through.
 # Load package and data
 library(dplyr)
 library(BayesERtools)
-ggplot2::theme_set(ggplot2::theme_bw(base_size = 12))
+theme_set(theme_bw(base_size = 12))
 
 data(d_sim_binom_cov)
 
@@ -174,7 +175,11 @@ ermod_bin
 # Using `*` instead of `+` so that scale can be
 # applied for both panels (main plot and boxplot)
 plot_er_gof(ermod_bin, var_group = "Dose", show_coef_exp = TRUE) *
-  xgxr::xgx_scale_x_log10(guide = ggplot2::guide_axis(minor.ticks = TRUE))
+  coord_transform(x = "log10") *
+  scale_x_continuous(
+    breaks = xgxr::xgx_breaks_log10,
+    minor_breaks = xgxr::xgx_minor_breaks_log10
+  )
 ```
 
 ### Covariate selection
