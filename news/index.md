@@ -2,6 +2,8 @@
 
 ## BayesERtools 0.2.6
 
+CRAN release: 2026-06-13
+
 ### Major changes
 
 - Replaced `tidybayes` dependency with `ggdist` and `rstantools` to
