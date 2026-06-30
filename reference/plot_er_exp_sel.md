@@ -39,6 +39,9 @@ ermod_bin_exp_sel <-
 
 plot_er_exp_sel(ermod_bin_exp_sel) +
   xgxr::xgx_scale_x_log10(guide = ggplot2::guide_axis(minor.ticks = TRUE))
-
+#> Error in tidyr::pivot_longer(extract_data(x), dplyr::all_of(var_exp_order),     names_to = ".exp_metric", values_to = ".exposure"): ℹ In argument: `dplyr::all_of(var_exp_order)`.
+#> Caused by error in `dplyr::all_of()`:
+#> ! Can't subset elements that don't exist.
+#> ✖ Elements `1`, `2`, and `3` don't exist.
 # }
 ```
