@@ -89,10 +89,10 @@ ermod_bin_exp_sel
 #> 
 #> ── Exposure metrics comparison ──
 #> 
-#>            elpd_diff se_diff
-#> AUCss_1000  0.00      0.00  
-#> Cminss     -4.51      3.10  
-#> Cmaxss     -5.04      2.85  
+#>       model elpd_diff se_diff p_worse diag_diff diag_elpd
+#>  AUCss_1000      0.00    0.00      NA                    
+#>      Cminss     -4.51    3.10    0.93                    
+#>      Cmaxss     -5.04    2.85    0.96                    
 #> 
 #> ── Selected model ──
 #> 
@@ -128,9 +128,9 @@ ermod_lin_exp_sel
 #> 
 #> ── Exposure metrics comparison ──
 #> 
-#>        elpd_diff se_diff
-#> AUCss    0.00      0.00 
-#> Cmaxss -13.33      4.52 
+#>   model elpd_diff se_diff p_worse diag_diff diag_elpd
+#>   AUCss      0.00    0.00      NA                    
+#>  Cmaxss    -13.33    4.52    1.00                    
 #> 
 #> ── Selected model ──
 #> 

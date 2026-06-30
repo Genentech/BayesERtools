@@ -125,15 +125,19 @@ ermod_emax_exp_sel <-
 
 ermod_emax_exp_sel
 #> 
+#> Diagnostic flags present.
+#> See ?`loo-glossary` (sections `diag_diff` and `diag_elpd`)
+#> or https://mc-stan.org/loo/reference/loo-glossary.html.
+#> 
 #> ── Emax model & exposure metric selection ──────────────────────────────────────
 #> ℹ Use `plot_er_exp_sel()` for ER curve of all exposure metrics
 #> ℹ Use `plot_er()` with `show_orig_data = TRUE` for ER curve of the selected exposure metric
 #> 
 #> ── Exposure metrics comparison ──
 #> 
-#>           elpd_diff se_diff
-#> exposure    0.00      0.00 
-#> exposure2 -22.38     12.26 
+#>      model elpd_diff se_diff p_worse diag_diff      diag_elpd
+#>   exposure      0.00    0.00      NA                         
+#>  exposure2    -22.38   12.26    0.97   N < 100 1 k_psis > 0.7
 #> 
 #> ── Selected model ──
 #> 

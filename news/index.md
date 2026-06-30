@@ -1,5 +1,16 @@
 # Changelog
 
+## BayesERtools 0.2.6.9000
+
+### Bug fixes
+
+- Fixed
+  [`plot_er_exp_sel()`](https://genentech.github.io/BayesERtools/reference/plot_er_exp_sel.md)
+  (and [`plot()`](https://rdrr.io/r/graphics/plot.default.html) for
+  `ermod_exp_sel` objects) failing with `loo` (\>= 2.10.0), which
+  returns `loo_compare()` output as a data frame with model names in a
+  `model` column rather than in the matrix row names.
+
 ## BayesERtools 0.2.6
 
 CRAN release: 2026-06-13
