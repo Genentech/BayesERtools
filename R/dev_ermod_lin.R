@@ -446,6 +446,18 @@ dev_ermod_lin_cov_sel <- function(
 
 # Internal functions ----------------------------------------------------------
 
+# Extract exposure metric names from a `loo::loo_compare()` result, ordered
+# best-first. Newer versions of loo return a data.frame with a `model` column
+# and numeric rownames, while older versions store the model names in the
+# rownames of a matrix.
+get_exp_metric_order <- function(comp_exposures) {
+  if ("model" %in% colnames(comp_exposures)) {
+    as.character(comp_exposures$model)
+  } else {
+    rownames(comp_exposures)
+  }
+}
+
 .dev_ermod_exp_sel <- function(
     data, var_resp, var_exp_candidates,
     verbosity_level = 1, chains = 4, iter = 2000,
@@ -489,11 +501,7 @@ dev_ermod_lin_cov_sel <- function(
       function(.x) loo(.x)
     )
     comp_exposures <- loo::loo_compare(l_loo_exposures)
-    if ("model" %in% colnames(comp_exposures)) {
-      var_exposure <- comp_exposures$model[[1]]
-    } else {
-      var_exposure <- rownames(comp_exposures)[[1]]
-    }
+    var_exposure <- get_exp_metric_order(comp_exposures)[[1]]
 
     if (verbosity_level >= 1) {
       cli::cli_alert_info("The exposure metric selected was: {var_exposure}")

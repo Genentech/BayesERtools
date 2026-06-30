@@ -84,7 +84,7 @@ plot_er_exp_sel <- function(x, n_draws_sim = NULL) {
 
   var_resp <- extract_var_resp(x)
   var_exp_order <-
-    rownames(x$loo_comp_exposures)
+    get_exp_metric_order(x$loo_comp_exposures)
 
   df_map_var_exp <-
     dplyr::tibble(.exp_metric = var_exp_order) |>
