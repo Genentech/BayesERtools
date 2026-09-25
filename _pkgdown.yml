@@ -20,6 +20,7 @@ articles:
     navbar: ~
     contents:
     - overview_of_the_package
+    - articles/cqt_analysis
 
 reference:
 - title: 'Step 1: Develop ER models'
@@ -32,6 +33,9 @@ reference:
   contents:
   - dev_ermod_emax
   - dev_ermod_emax_exp_sel
+- subtitle: Linear mixed-effects model
+  contents:
+  - dev_ermod_lme
 - title: 'Step 2: Simulate responses'
 - contents:
   - sim_er
@@ -49,6 +53,12 @@ reference:
   - eval_ermod
   - loo
   - kfold
+- title: 'Concentration-QTc (C-QT) analysis'
+- contents:
+  - dev_ermod_cqt
+  - sim_cqt_ddqtc
+  - plot_cqt_gof
+  - plot_cqt_hysteresis
 - title: 'Other post-processing functions'
 - subtitle: Covariate selection
   contents:
@@ -75,6 +85,7 @@ reference:
   - d_sim_lin
   - d_sim_emax
   - d_sim_placebo
+  - d_sim_cqt
 - title: S3 methods
   contents:
   - ermod_method

@@ -57,20 +57,23 @@ remove_css <- function(x) {
 
 # Define the initial transposed tibble
 tab_mod_raw <- tibble(
-  feature = c("lin_logit", "emax_logit", "linear", "emax"),
-  backend = c("`rstanarm`", "`rstanemax`", "`rstanarm`", "`rstanemax`"),
+  feature = c("lin_logit", "emax_logit", "linear", "emax", "lme"),
+  backend = c(
+    "`rstanarm`", "`rstanemax`", "`rstanarm`", "`rstanemax`", "`rstanarm`"
+  ),
   reference =
     c(
       "https://mc-stan.org/rstanarm/reference/stan_glm.html",
       "https://yoshidk6.github.io/rstanemax/reference/stan_emax.html",
       "https://mc-stan.org/rstanarm/reference/stan_glm.html",
-      "https://yoshidk6.github.io/rstanemax/reference/stan_emax_binary.html"
+      "https://yoshidk6.github.io/rstanemax/reference/stan_emax_binary.html",
+      "https://mc-stan.org/rstanarm/reference/stan_glmer.html"
     ),
-  `develop model` = c("✅", "✅", "✅", "✅"),
-  `simulate & plot ER` = c("✅", "✅", "✅", "✅"),
-  `exposure metrics selection` = c("✅", "✅", "✅", "✅"),
-  `covariate selection` = c("✅", "❌", "✅", "❌"),
-  `covariate forest plot` = c("✅", "❌", "✅", "❌")
+  `develop model` = c("✅", "✅", "✅", "✅", "✅"),
+  `simulate & plot ER` = c("✅", "✅", "✅", "✅", "✅"),
+  `exposure metrics selection` = c("✅", "✅", "✅", "✅", "✅"),
+  `covariate selection` = c("✅", "❌", "✅", "❌", "❌"),
+  `covariate forest plot` = c("✅", "❌", "✅", "❌", "✅")
 )
 
 # Transpose the table for display
@@ -100,7 +103,7 @@ tab_mod |>
   ) |>
   tab_spanner(
     label = "Continuous endpoint",
-    columns = c(linear, emax)
+    columns = c(linear, emax, lme)
   ) |>
   cols_label(
     feature_name = "",
@@ -108,6 +111,7 @@ tab_mod |>
     emax_logit = md("E<sub/>max</sub> (logit)"),
     linear = "Linear",
     emax = md("E<sub/>max</sub>"),
+    lme = "Linear mixed-effects",
   ) |>
   tab_style(
     style = cell_text(v_align = "top", align = "center"),

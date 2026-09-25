@@ -1,8 +1,8 @@
-feature_name,lin_logit,emax_logit,linear,emax,.row_id
-backend,`rstanarm`,`rstanemax`,`rstanarm`,`rstanemax`,1
-reference,https://mc-stan.org/rstanarm/reference/stan_glm.html,https://yoshidk6.github.io/rstanemax/reference/stan_emax.html,https://mc-stan.org/rstanarm/reference/stan_glm.html,https://yoshidk6.github.io/rstanemax/reference/stan_emax_binary.html,2
-develop model,✅,✅,✅,✅,3
-simulate & plot ER,✅,✅,✅,✅,4
-exposure metrics selection,✅,✅,✅,✅,5
-covariate selection,✅,❌,✅,❌,6
-covariate forest plot,✅,❌,✅,❌,7
+feature_name,lin_logit,emax_logit,linear,emax,lme,.row_id
+backend,`rstanarm`,`rstanemax`,`rstanarm`,`rstanemax`,`rstanarm`,1
+reference,https://mc-stan.org/rstanarm/reference/stan_glm.html,https://yoshidk6.github.io/rstanemax/reference/stan_emax.html,https://mc-stan.org/rstanarm/reference/stan_glm.html,https://yoshidk6.github.io/rstanemax/reference/stan_emax_binary.html,https://mc-stan.org/rstanarm/reference/stan_glmer.html,2
+develop model,✅,✅,✅,✅,✅,3
+simulate & plot ER,✅,✅,✅,✅,✅,4
+exposure metrics selection,✅,✅,✅,✅,✅,5
+covariate selection,✅,❌,✅,❌,❌,6
+covariate forest plot,✅,❌,✅,❌,✅,7

@@ -47,3 +47,6 @@
 ^codecov\.yml$
 
 RPlots.pdf
+
+^vignettes/articles$
+^\.claude$

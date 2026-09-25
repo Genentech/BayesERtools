@@ -49,7 +49,7 @@ tab_mod |>
   ) |>
   tab_spanner(
     label = "Continuous endpoint",
-    columns = c(linear, emax)
+    columns = c(linear, emax, lme)
   ) |>
   cols_label(
     feature_name = "",
@@ -57,6 +57,7 @@ tab_mod |>
     emax_logit = md("E<sub/>max</sub> (logit)"),
     linear = "Linear",
     emax = md("E<sub/>max</sub>"),
+    lme = "Linear mixed-effects",
   ) |>
   tab_style(
     style = cell_text(v_align = "top", align = "center"),
@@ -100,6 +101,10 @@ The following functions are available:
   - `dev_ermod_lin()`, `dev_ermod_lin_exp_sel()`, `dev_ermod_lin_cov_sel()`
 - E~max~ model: 
   - `dev_ermod_emax()`, `dev_ermod_emax_exp_sel()`
+- Linear mixed-effects model (for repeated measurements per subject): 
+  - `dev_ermod_lme()`, `dev_ermod_lme_exp_sel()`
+  - `dev_ermod_cqt()` for concentration-QTc (C-QT) analysis; see the
+    [C-QT analysis article](https://genentech.github.io/BayesERtools/articles/cqt_analysis.html)
 
 ![Figure: dev_ermod_*() 
 functions](img/fig_overview_dev_ermod.png){width=100%}
@@ -112,6 +117,11 @@ The following functions are available for simulation from developed ER models:
 - `sim_er()`
 - `sim_er_new_exp()`, `sim_er_curve()`
 - `sim_er_new_exp_marg()`, `sim_er_curve_marg()`
+
+For mixed-effects models, `sim_er()`, `sim_er_new_exp()`, and
+`sim_er_curve()` can simulate population-level predictions (default),
+new subjects with between-subject variability, or existing subjects with
+their posterior random effects, controlled by the `re_type` argument.
 
 ![Figure: sim_er_*() functions](img/fig_overview_sim_er.png){width=100%}
 <br />

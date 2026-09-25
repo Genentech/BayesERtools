@@ -1,3 +1,30 @@
+# BayesERtools (development version)
+
+## Major changes
+
+* Added linear mixed-effects ER models for continuous endpoints with repeated
+  measurements per subject, `dev_ermod_lme()` and `dev_ermod_lme_exp_sel()`,
+  fitted with `rstanarm::stan_glmer()` (precompiled Stan models). Random
+  intercept and/or random slope on the exposure are supported
+  (`random_effect_type`). Simulation, ER plots, covariate forest plots,
+  `loo()`, `kfold()` (subject-wise folds), and `eval_ermod()` are supported.
+* Added `re_type` argument to `sim_er()`, `sim_er_new_exp()`, and
+  `sim_er_curve()` for mixed-effects models: population-level prediction
+  (`"population"`, default), simulation of new subjects with between-subject
+  variability (`"new_subject"`), and individual prediction with each subject's
+  posterior random effects (`"existing_subject"`).
+* Added concentration-QTc (C-QT) analysis functions following the
+  pre-specified linear mixed-effects model of the scientific white paper
+  (Garnett et al. 2018): `dev_ermod_cqt()` for model development,
+  `sim_cqt_ddqtc()` for the predicted placebo-adjusted change from baseline
+  QTc (with the posterior probability of exceeding a threshold, e.g. 10 ms),
+  and `plot_cqt_gof()` and `plot_cqt_hysteresis()` for model assessment.
+* Added simulated C-QT dataset `d_sim_cqt` and an article on C-QT analysis.
+
+## Minor changes
+
+* Added `extract_var_random()` to extract the random effect grouping variable.
+
 # BayesERtools 0.2.7
 
 ## Bug fixes
