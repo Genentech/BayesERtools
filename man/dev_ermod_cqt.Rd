@@ -149,7 +149,11 @@ plot_cqt_gof(ermod_cqt, exposure_to_mark = c("200 mg" = 0.95, "800 mg" = 4.52))
 Garnett C, et al. Scientific white paper on concentration-QTc modeling.
 J Pharmacokinet Pharmacodyn. 2018;45(3):383-397.
 \doi{10.1007/s10928-017-9558-5}
+
+Garnett C, et al. Correction to: Scientific white paper on
+concentration-QTc modeling. J Pharmacokinet Pharmacodyn. 2018;45(3):399.
+\doi{10.1007/s10928-017-9565-6}
 }
 \seealso{
-\code{\link[=sim_cqt_ddqtc]{sim_cqt_ddqtc()}}, \code{\link[=plot_cqt_gof]{plot_cqt_gof()}}, \code{\link[=plot_cqt_hysteresis]{plot_cqt_hysteresis()}}
+\code{\link[=sim_cqt_ddqtc]{sim_cqt_ddqtc()}}, \code{\link[=plot_cqt_gof]{plot_cqt_gof()}}
 }

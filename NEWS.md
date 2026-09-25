@@ -18,7 +18,7 @@
   (Garnett et al. 2018): `dev_ermod_cqt()` for model development,
   `sim_cqt_ddqtc()` for the predicted placebo-adjusted change from baseline
   QTc (with the posterior probability of exceeding a threshold, e.g. 10 ms),
-  and `plot_cqt_gof()` and `plot_cqt_hysteresis()` for model assessment.
+  and `plot_cqt_gof()` for the goodness-of-fit plot.
 * Added simulated C-QT dataset `d_sim_cqt` and an article on C-QT analysis.
 
 ## Minor changes

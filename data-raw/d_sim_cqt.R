@@ -10,7 +10,9 @@
 # PK (metabolite): formed from the parent, 1-compartment elimination
 # QTc: linear direct effect of the parent concentration, following the
 # structure of the pre-specified linear mixed-effects model in
-# Garnett et al. (2018) J Pharmacokinet Pharmacodyn 45:383-397:
+# Garnett et al. (2018) J Pharmacokinet Pharmacodyn 45:383-397
+# (correction: J Pharmacokinet Pharmacodyn 45:399,
+# doi:10.1007/s10928-017-9565-6):
 #
 # dQTcF_ij = (theta_0 + eta_0,i) + theta_trt * TRT_i +
 #            (theta_conc + eta_conc,i) * CONC_ij + diurnal(t_j) +

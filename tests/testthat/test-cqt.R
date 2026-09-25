@@ -187,7 +187,7 @@ test_that("calc_obs_ddqtc performs time-matched placebo adjustment", {
   expect_true(all(d_bin$.mean_lower < d_bin$.mean & d_bin$.mean < d_bin$.mean_upper))
 })
 
-test_that("plot_cqt_gof and plot_cqt_hysteresis", {
+test_that("plot_cqt_gof", {
   gg <- plot_cqt_gof(ermod_cqt, n_draws_sim = 100)
   expect_s3_class(gg, "ggplot")
   expect_no_error(ggplot2::ggplot_build(gg))
@@ -211,20 +211,9 @@ test_that("plot_cqt_gof and plot_cqt_hysteresis", {
   f_pdf <- tempfile(fileext = ".pdf")
   grDevices::pdf(f_pdf)
   expect_no_error(print(gg_mark))
-  expect_no_error(print(plot_cqt_hysteresis(ermod_cqt)))
+  expect_no_error(print(gg_no_pbo))
   grDevices::dev.off()
   unlink(f_pdf)
-
-  gg_hyst <- plot_cqt_hysteresis(ermod_cqt)
-  expect_s3_class(gg_hyst, "ggplot")
-  expect_no_error(ggplot2::ggplot_build(gg_hyst))
-  expect_no_error(ggplot2::ggplot_build(
-    plot_cqt_hysteresis(ermod_cqt, var_group = "DOSE", show_time_label = FALSE)
-  ))
-  expect_error(
-    plot_cqt_hysteresis(ermod_cqt_no_pbo),
-    "`var_time` needs to be specified"
-  )
 })
 
 test_that("general ermod_lme functions work with ermod_cqt", {

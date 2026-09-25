@@ -93,6 +93,47 @@ ggplot(d_mean_time, aes(NTIME, value, color = DOSE)) +
   labs(x = "Nominal time (h)", y = "Mean value", color = "Dose (mg)")
 ```
 
+### Hysteresis
+
+The pre-specified model assumes a direct effect of concentration on QTc,
+which should be assessed before model fitting. A hysteresis plot shows the
+mean placebo-adjusted $\Delta QTcF$ ($\Delta\Delta QTcF$) against the mean
+concentration of the active treatment at each time point, connected in the
+order of time (the numbers show the nominal time). Here, $\Delta\Delta QTcF$
+is calculated by subtracting the mean $\Delta QTcF$ of placebo at the
+matching time point.
+
+```{r hysteresis}
+d_placebo_mean <-
+  d_sim_cqt |>
+  filter(TRT == "Placebo") |>
+  summarize(DQTCF_PBO = mean(DQTCF), .by = NTIME)
+
+d_hysteresis <-
+  d_sim_cqt |>
+  filter(TRT == "Active") |>
+  left_join(d_placebo_mean, by = "NTIME") |>
+  summarize(
+    CONC_1000 = mean(CONC_1000),
+    DDQTCF = mean(DQTCF - DQTCF_PBO),
+    .by = NTIME
+  ) |>
+  arrange(NTIME)
+
+ggplot(d_hysteresis, aes(CONC_1000, DDQTCF)) +
+  geom_hline(yintercept = 0, color = "grey50") +
+  geom_path(arrow = arrow(length = unit(0.1, "inches"), type = "closed")) +
+  geom_point() +
+  geom_text(aes(label = NTIME), vjust = -0.8, size = 3) +
+  labs(x = "Mean CONC_1000 (ug/mL)", y = "Mean \u0394\u0394QTcF (ms)")
+```
+
+A systematic counter-clockwise loop would indicate a delayed effect. With
+only 6 subjects on active treatment per dose the means are noisy, but there
+is no such loop here: $\Delta\Delta QTcF$ peaks around the time of peak
+concentration (1 to 3 hours), supporting the direct-effect model. Adding
+`DOSE` to `.by` (and `color = factor(DOSE)`) shows the plot by dose.
+
 ## Model development
 
 `dev_ermod_cqt()` builds the model above from the specified variables.
@@ -130,21 +171,6 @@ prior_summary(ermod_cqt)
 ```
 
 ## Model assessment
-
-### Hysteresis
-
-The model assumes a direct effect of concentration on QTc. A hysteresis plot
-shows the mean placebo-adjusted $\Delta QTcF$ ($\Delta\Delta QTcF$) against
-the mean concentration at each time point, connected in the order of time
-(the numbers show the nominal time). A systematic counter-clockwise loop
-would indicate a delayed effect. With only 6 subjects per dose the means are
-noisy, but there is no such loop here: $\Delta\Delta QTcF$ peaks around the
-time of peak concentration (1 to 3 hours). Use `var_group` (e.g.
-`var_group = "DOSE"`) to show the plot by dose.
-
-```{r hysteresis}
-plot_cqt_hysteresis(ermod_cqt)
-```
 
 ### Goodness-of-fit
 
@@ -347,8 +373,11 @@ choice of the random effects structure:
 sim_cqt_ddqtc(ermod_cqt_int, cmax_to_eval[c("200 mg", "800 mg")])
 ```
 
-## Reference
+## References
 
-Garnett C, Bonate PL, Dang Q, et al. Scientific white paper on
-concentration-QTc modeling. J Pharmacokinet Pharmacodyn. 2018;45(3):383-397.
-<https://doi.org/10.1007/s10928-017-9558-5>
+- Garnett C, Bonate PL, Dang Q, et al. Scientific white paper on
+  concentration-QTc modeling. J Pharmacokinet Pharmacodyn.
+  2018;45(3):383-397. <https://doi.org/10.1007/s10928-017-9558-5>
+- Garnett C, Bonate PL, Dang Q, et al. Correction to: Scientific white paper
+  on concentration-QTc modeling. J Pharmacokinet Pharmacodyn.
+  2018;45(3):399. <https://doi.org/10.1007/s10928-017-9565-6>

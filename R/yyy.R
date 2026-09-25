@@ -219,7 +219,8 @@ if (getRversion() >= "2.15.1") {
 #' intercept (0.5 ms), between-subject variability on the intercept and slope,
 #' diurnal variation, and a regression-to-the-mean effect of the baseline
 #' QTcF, following the structure of the pre-specified model in
-#' Garnett et al. (2018) <doi:10.1007/s10928-017-9558-5>.
+#' Garnett et al. (2018) \doi{10.1007/s10928-017-9558-5}
+#' (correction: \doi{10.1007/s10928-017-9565-6}).
 #' The metabolite does not have an effect on QTcF.
 #'
 #' You can find the data generating code in the package source code,

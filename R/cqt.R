@@ -58,8 +58,12 @@
 #' J Pharmacokinet Pharmacodyn. 2018;45(3):383-397.
 #' \doi{10.1007/s10928-017-9558-5}
 #'
+#' Garnett C, et al. Correction to: Scientific white paper on
+#' concentration-QTc modeling. J Pharmacokinet Pharmacodyn. 2018;45(3):399.
+#' \doi{10.1007/s10928-017-9565-6}
+#'
 #' @return An object of class `ermod_cqt`, which is a subclass of `ermod_lme`.
-#' @seealso [sim_cqt_ddqtc()], [plot_cqt_gof()], [plot_cqt_hysteresis()]
+#' @seealso [sim_cqt_ddqtc()], [plot_cqt_gof()]
 #'
 #' @examples
 #' \donttest{
@@ -427,105 +431,6 @@ plot_cqt_gof <- function(
       ggplot2::labs(caption = paste(lines, collapse = "\n")) +
       ggplot2::theme(
         plot.caption = ggplot2::element_text(family = "mono", hjust = 0)
-      )
-  }
-
-  gg
-}
-
-
-#' Hysteresis plot for concentration-QTc analysis
-#'
-#' Plot the mean observed placebo-adjusted change from baseline QTc
-#' (\eqn{\Delta\Delta QTc}) against the mean concentration at each nominal
-#' time point, connected in the order of time. A counter-clockwise loop
-#' suggests a delay between the concentration and the QTc effect
-#' (hysteresis), in which case the direct-effect model from [dev_ermod_cqt()]
-#' may not be appropriate.
-#'
-#' @export
-#' @param ermod An object of class `ermod_cqt`, from [dev_ermod_cqt()].
-#' `var_time` needs to have been specified.
-#' @param var_group Name of the variable to group the active treatment data
-#' (e.g. dose) in character. Default is `NULL` (all active treatment data
-#' pooled).
-#' @param show_time_label Logical, whether to label each point with the
-#' nominal time. Default is `TRUE`.
-#'
-#' @return A ggplot object
-#' @examples
-#' \donttest{
-#' data(d_sim_cqt)
-#'
-#' ermod_cqt <- dev_ermod_cqt(
-#'   data = d_sim_cqt,
-#'   var_resp = "DQTCF",
-#'   var_exposure = "CONC_1000",
-#'   var_random = "ID",
-#'   var_trt = "TRT",
-#'   var_time = "NTIME",
-#'   var_baseline = "QTCFBL",
-#'   chains = 2,
-#'   iter = 1000
-#' )
-#'
-#' plot_cqt_hysteresis(ermod_cqt, var_group = "DOSE")
-#' }
-#'
-plot_cqt_hysteresis <- function(
-    ermod, var_group = NULL, show_time_label = TRUE) {
-  stopifnot(inherits(ermod, "ermod_cqt"))
-
-  var_time <- ermod$spec_cqt$var_time
-  if (is.null(var_time)) {
-    stop("`var_time` needs to be specified in `dev_ermod_cqt()`.")
-  }
-  var_exposure <- extract_var_exposure(ermod)
-  has_placebo <- !is.null(ermod$spec_cqt$var_trt_model)
-  label_y <- label_y_cqt(has_placebo)
-
-  d_obs <- calc_obs_ddqtc(ermod)
-  if (!is.null(var_group)) {
-    check_columns_exist(d_obs, var_group, "group")
-    d_obs[[var_group]] <- factor(d_obs[[var_group]])
-  }
-
-  d_mean <-
-    d_obs |>
-    dplyr::summarize(
-      .exposure_mean = mean(.data[[var_exposure]]),
-      .ddqtc_mean = mean(.data$.ddqtc_obs),
-      .by = dplyr::all_of(c(var_group, var_time))
-    ) |>
-    dplyr::arrange(dplyr::across(dplyr::all_of(c(var_group, var_time))))
-
-  aes_group <- if (is.null(var_group)) {
-    ggplot2::aes()
-  } else {
-    ggplot2::aes(color = .data[[var_group]], group = .data[[var_group]])
-  }
-
-  gg <-
-    ggplot2::ggplot(
-      d_mean,
-      ggplot2::aes(x = .data$.exposure_mean, y = .data$.ddqtc_mean)
-    ) +
-    ggplot2::geom_hline(yintercept = 0, color = "grey50") +
-    ggplot2::geom_path(
-      aes_group,
-      arrow = grid::arrow(length = grid::unit(0.1, "inches"), type = "closed")
-    ) +
-    ggplot2::geom_point(aes_group) +
-    ggplot2::labs(
-      x = paste0(var_exposure, " (mean)"),
-      y = bquote(.(label_y) ~ "(mean)")
-    )
-
-  if (show_time_label) {
-    gg <- gg +
-      ggplot2::geom_text(
-        ggplot2::aes(label = .data[[var_time]]),
-        vjust = -0.8, size = 3, show.legend = FALSE
       )
   }
 
