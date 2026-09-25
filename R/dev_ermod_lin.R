@@ -777,7 +777,7 @@ NULL
 check_data_columns <- function(
     data, var_resp = NULL, var_exp_candidates = NULL,
     var_exposure = NULL, var_cov_candidates = NULL, var_cov = NULL,
-    is_binary = FALSE) {
+    var_random = NULL, is_binary = FALSE) {
   if (!is.data.frame(data)) {
     stop("data should be a data frame")
   }
@@ -799,11 +799,13 @@ check_data_columns <- function(
   check_columns_exist(data, var_exposure, "exposure metric")
   check_columns_exist(data, var_cov_candidates, "covariate")
   check_columns_exist(data, var_cov, "covariate")
+  check_columns_exist(data, var_random, "random effect grouping")
 
   check_na_values(data, c(var_exp_candidates, var_exposure), "exposure metric")
   check_na_values(data, var_cov_candidates, "covariate")
   check_na_values(data, var_cov, "covariate")
   check_na_values(data, var_resp, "response")
+  check_na_values(data, var_random, "random effect grouping")
 }
 
 check_columns_exist <- function(data, cols, column_type) {

@@ -843,7 +843,7 @@ check_group_col <- function(origdata, show_orig_data, var_group) {
 
 
 calc_coef_exp <- function(x, show_coef_exp, options_coef_exp) {
-  if (any(c("ermod_bin", "ermod_lin") %in% attr(x, "ermod_class"))) {
+  if (any(c("ermod_bin", "ermod_lin", "ermod_lme") %in% attr(x, "ermod_class"))) {
     qi_width <- options_coef_exp$qi_width
     coef_exp_draws <- attr(x, "coef_exp_draws")
     coef_exp <-

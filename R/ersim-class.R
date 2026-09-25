@@ -21,6 +21,7 @@ new_ersim <- function(simdata, ermod, nrow_cov_data) {
   attr(ersim, "var_exposure") <- ermod$var_exposure
   attr(ersim, "var_resp") <- ermod$var_resp
   attr(ersim, "var_cov") <- ermod$var_cov
+  attr(ersim, "var_random") <- ermod$var_random
   attr(ersim, "origdata") <- origdata
   attr(ersim, "nrow_cov_data") <- nrow_cov_data
   attr(ersim, "coef_exp_draws") <- ermod$coef_exp_draws

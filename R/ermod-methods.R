@@ -15,7 +15,11 @@ NULL
 
 
 get_mod_type_name <- function(mod) {
-  if (inherits(mod, "ermod_bin")) {
+  if (inherits(mod, "ermod_cqt")) {
+    return("Concentration-QTc linear mixed-effects model")
+  } else if (inherits(mod, "ermod_lme")) {
+    return("Linear mixed-effects ER model")
+  } else if (inherits(mod, "ermod_bin")) {
     return("Binary ER model")
   } else if (inherits(mod, "ermod_lin")) {
     return("Linear ER model")
@@ -35,9 +39,16 @@ print.ermod <- function(x, digits = 2, ...) {
 
   cli::cli({
     cli::cli_h1(mod_type_name)
-    cli::cli_alert_info(paste(
-      "Use `plot_er()` to visualize ER curve"
-    ))
+    if (inherits(x, "ermod_cqt")) {
+      cli::cli_alert_info(paste(
+        "Use `sim_cqt_ddqtc()` to calculate predicted placebo-adjusted",
+        "change from baseline QTc and `plot_cqt_gof()` to visualize the model fit"
+      ))
+    } else {
+      cli::cli_alert_info(paste(
+        "Use `plot_er()` to visualize ER curve"
+      ))
+    }
     cli::cli_h2("Developed model")
     print(x$mod, digits = digits, ...) |>
       utils::capture.output() |>
@@ -55,8 +66,13 @@ plot.ermod_bin <- function(x, show_orig_data = FALSE, ...) {
 #' @export
 #' @rdname ermod_method
 coef.ermod <- function(object, ...) {
-  if (!inherits(object, c("ermod_bin", "ermod_lin"))) {
+  if (!inherits(object, c("ermod_bin", "ermod_lin", "ermod_lme"))) {
     stop("coef() only supported for linear models")
+  }
+
+  # For mixed-effects models, return the population-level (fixed) effects
+  if (inherits(object, "ermod_lme")) {
+    return(rstanarm::fixef(object$mod, ...))
   }
 
   stats::coef(object$mod, ...)
@@ -65,7 +81,7 @@ coef.ermod <- function(object, ...) {
 #' @export
 #' @rdname ermod_method
 summary.ermod <- function(object, ...) {
-  if (!inherits(object, c("ermod_bin", "ermod_lin"))) {
+  if (!inherits(object, c("ermod_bin", "ermod_lin", "ermod_lme"))) {
     stop("summary() only supported for linear models")
   }
 
@@ -189,17 +205,21 @@ extract_var_exposure.ermod <- function(x) x$var_exposure
 #' @export
 #' @rdname extract_ermod
 extract_var_cov.ermod <- function(x) {
-  if (inherits(x, c("ermod_bin", "ermod_lin"))) {
+  if (inherits(x, c("ermod_bin", "ermod_lin", "ermod_lme"))) {
     return(x$var_cov)
   } else if (inherits(x, c("ermod_emax", "ermod_bin_emax"))) {
     return(x$l_var_cov |> unlist())
   } else {
     stop(
-      "extract_var_cov() only supported for `ermod_bin`, `ermod_lin`",
-      "`ermod_emax`, and `ermod_bin_emax`, and their subclasses"
+      "extract_var_cov() only supported for `ermod_bin`, `ermod_lin`, ",
+      "`ermod_lme`, `ermod_emax`, and `ermod_bin_emax`, and their subclasses"
     )
   }
 }
+
+#' @export
+#' @rdname extract_ermod
+extract_var_random.ermod <- function(x) x$var_random
 
 #' @export
 #' @rdname extract_ermod
@@ -217,7 +237,7 @@ extract_var_selected.ermod_cov_sel <- function(x) x$var_selected
 #' Extract credible interval of the exposure coefficient
 #'
 #' @export
-#' @param x An object of class `ermod_bin` or `ermod_lin`
+#' @param x An object of class `ermod_bin`, `ermod_lin`, or `ermod_lme`
 #' @param ci_width Width of the credible interval
 #' @param exp_candidates Logical, whether to extract the credible interval for
 #' all exposure candidates. Default is `FALSE`. Only supported for models with
@@ -231,7 +251,7 @@ extract_var_selected.ermod_cov_sel <- function(x) x$var_selected
 extract_coef_exp_ci <- function(
     x, ci_width = 0.95, exp_candidates = FALSE) {
   # Check that input x is linear ermod object
-  if (!inherits(x, c("ermod_bin", "ermod_lin"))) {
+  if (!inherits(x, c("ermod_bin", "ermod_lin", "ermod_lme"))) {
     stop("extract_coef_exp_ci() only supported for linear models")
   }
   if (exp_candidates && !inherits(x, "ermod_exp_sel")) {
@@ -367,7 +387,7 @@ rstanarm::prior_summary
 #'
 prior_summary.ermod <- function(object, ...) {
   # Check that input x is linear ermod object
-  if (!inherits(object, c("ermod_bin", "ermod_lin"))) {
+  if (!inherits(object, c("ermod_bin", "ermod_lin", "ermod_lme"))) {
     stop("prior_summary.ermod() only supported for linear models")
   }
 

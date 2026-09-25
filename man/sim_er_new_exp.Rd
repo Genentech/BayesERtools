@@ -12,7 +12,8 @@ sim_er_new_exp(
   n_draws_sim = NULL,
   seed_sample_draws = NULL,
   output_type = c("draws", "median_qi"),
-  qi_width = 0.95
+  qi_width = 0.95,
+  re_type = c("population", "new_subject", "existing_subject")
 )
 
 sim_er_curve(
@@ -23,7 +24,8 @@ sim_er_curve(
   n_draws_sim = NULL,
   seed_sample_draws = NULL,
   output_type = c("draws", "median_qi"),
-  qi_width = 0.95
+  qi_width = 0.95,
+  re_type = c("population", "new_subject", "existing_subject")
 )
 }
 \arguments{
@@ -44,6 +46,26 @@ simulation, and "median_qi" returns the median and quantile interval.}
 
 \item{qi_width}{Width of the quantile interval. Default is 0.95. Only
 used when \code{output_type = "median_qi"}.}
+
+\item{re_type}{Type of random effects to use for simulation. Only
+relevant for mixed-effects models (\code{ermod_lme}, \code{ermod_cqt}); other models
+only accept the default \code{"population"}.
+\itemize{
+\item \code{"population"} (default): random effects are set to zero, i.e.
+predictions for a typical subject (population-level prediction).
+\item \code{"new_subject"}: random effects are sampled from the estimated
+between-subject distribution, independently for each unique value of
+the random effect grouping variable (e.g. \code{ID}) in \code{newdata}, and for
+each posterior draw. Rows with the same ID share the same random
+effects. IDs are always treated as new subjects, even if they exist
+in the data used for model development.
+\item \code{"existing_subject"}: each subject's own posterior draws of the random
+effects are used (individual predictions). All IDs in \code{newdata} must
+exist in the data used for model development.
+}
+
+\code{newdata} needs to contain the random effect grouping variable for
+\code{"new_subject"} and \code{"existing_subject"}.}
 
 \item{exposure_range}{Range of exposure values to simulate. If NULL
 (default), it is set to the range of the exposure variable in the original
@@ -77,6 +99,11 @@ so the run time can become very long if \code{data_cov} has many rows.
 \code{data_cov} has to be supplied if \code{ermod} is a model with covariates.
 It is recommended that \code{data_cov} contains subject identifiers such as
 \code{ID} for post-processing.
+
+For mixed-effects models with \code{re_type} other than \code{"population"},
+\code{data_cov} has to be supplied and contain the random effect grouping
+variable (e.g. \code{data_cov = data.frame(ID = 1:100)} to simulate 100 new
+subjects with \code{re_type = "new_subject"}).
 
 Exposure values in \code{data_cov} will be ignored.
 

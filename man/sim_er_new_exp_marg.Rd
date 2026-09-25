@@ -45,7 +45,10 @@ Set to NULL to use all subjects in \code{data_cov} without resampling;
 in this case, be mindful of the computation time.}
 
 \item{n_draws_sim}{Number of draws for simulation. Default is set to 500
-to reduce computation time for marginal response calculation.}
+to reduce computation time for marginal response calculation.
+
+For mixed-effects models (\code{ermod_lme}), population-level predictions
+(random effects set to zero) are used for marginalization.}
 
 \item{seed_sample_draws}{Seed for sampling draws. Default is NULL.}
 

@@ -59,6 +59,14 @@ extract_var_cov.ersim <- function(x) attr(x, "var_cov")
 #' @rdname extract_ersim
 extract_var_cov.ersim_med_qi <- function(x) attr(x, "var_cov")
 
+#' @export
+#' @rdname extract_ersim
+extract_var_random.ersim <- function(x) attr(x, "var_random")
+
+#' @export
+#' @rdname extract_ersim
+extract_var_random.ersim_med_qi <- function(x) attr(x, "var_random")
+
 
 #' Calculate median and quantile intervals from ersim object
 #'
@@ -93,19 +101,22 @@ calc_ersim_med_qi <- function(x, qi_width = 0.95) {
         var_resp = attr(x, "var_resp"),
         var_exposure = attr(x, "var_exposure"),
         var_cov = attr(x, "var_cov"),
+        var_random = attr(x, "var_random"),
         endpoint_type = attr(x, "endpoint_type")
       ),
       class = c("ermod")
     )
   if (inherits(x, "ersim_marg")) {
-    return(new_ersim_marg_med_qi(simdata_med_qi, ermod,
+    out <- new_ersim_marg_med_qi(simdata_med_qi, ermod,
       nrow_cov_data = attr(x, "nrow_cov_data"),
       qi_width = qi_width
-    ))
+    )
   } else if (inherits(x, "ersim")) {
-    return(new_ersim_med_qi(simdata_med_qi, ermod,
+    out <- new_ersim_med_qi(simdata_med_qi, ermod,
       nrow_cov_data = attr(x, "nrow_cov_data"),
       qi_width = qi_width
-    ))
+    )
   }
+  attr(out, "re_type") <- attr(x, "re_type")
+  return(out)
 }

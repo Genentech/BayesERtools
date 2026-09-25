@@ -8,7 +8,7 @@
 \description{
 \if{html}{\figure{logo.png}{options: style='float: right' alt='logo' width='120'}}
 
-Suite of tools that facilitate exposure-response analysis using Bayesian methods. The package provides a streamlined workflow for fitting types of models that are commonly used in exposure-response analysis - linear and Emax for continuous endpoints, logistic linear and logistic Emax for binary endpoints, as well as performing simulation and visualization. Learn more about the workflow at \url{https://genentech.github.io/BayesERbook/}.
+Suite of tools that facilitate exposure-response analysis using Bayesian methods. The package provides a streamlined workflow for fitting types of models that are commonly used in exposure-response analysis - linear and Emax for continuous endpoints, logistic linear and logistic Emax for binary endpoints, and linear mixed-effects models for continuous endpoints with repeated measurements such as concentration-QTc analysis, as well as performing simulation and visualization. Learn more about the workflow at \url{https://genentech.github.io/BayesERbook/}.
 }
 \seealso{
 Useful links:

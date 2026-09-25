@@ -56,6 +56,12 @@ loo.ermod_bin_emax <- function(x, ...) {
 #' @rdname kfold
 #' @param x An `ermod` object containing the model and data.
 #' @param k The number of folds for cross-validation. Default is 5.
+#' For mixed-effects models (`ermod_lme`), folds are formed by the random
+#' effect grouping variable (e.g. subject), so that all observations from
+#' the same subject are held out together. Holdout predictions (`d_sim`) are
+#' population-level predictions (random effects set to zero), and the
+#' pointwise log-likelihood of the held-out observations is evaluated with
+#' random effects drawn from the estimated between-subject distribution.
 #' @param newdata Optional new dataset to use instead of the original data.
 #' Default is NULL.
 #' @param seed Random seed for reproducibility. Default is NULL.
@@ -107,7 +113,11 @@ kfold.ermod <- function(x, k = 5, newdata = NULL, seed = NULL, ...) {
     dplyr::mutate(.row_orig = dplyr::row_number())
 
   # Determine the model development function based on the class of the ermod
-  if (inherits(ermod, "ermod_emax")) {
+  if (inherits(ermod, "ermod_lme")) {
+    # Also used for ermod_cqt; the derived covariate columns are already
+    # present in the data stored in the ermod object
+    model_dev_fun <- dev_ermod_lme
+  } else if (inherits(ermod, "ermod_emax")) {
     model_dev_fun <- dev_ermod_emax
   } else if (inherits(ermod, "ermod_bin_emax")) {
     model_dev_fun <- dev_ermod_bin_emax
@@ -120,7 +130,21 @@ kfold.ermod <- function(x, k = 5, newdata = NULL, seed = NULL, ...) {
   }
 
   # Create k-fold cross-validation splits manually
-  fold_ids <- sample(rep(1:k, length.out = nrow(data)))
+  if (inherits(ermod, "ermod_lme")) {
+    # Split by subject for mixed-effects models
+    id_subj <- as.character(data[[ermod$var_random]])
+    id_unique <- unique(id_subj)
+    if (length(id_unique) < k) {
+      stop(
+        "Number of unique `", ermod$var_random, "` values (",
+        length(id_unique), ") is smaller than k (", k, ")."
+      )
+    }
+    fold_ids_subj <- sample(rep(1:k, length.out = length(id_unique)))
+    fold_ids <- fold_ids_subj[match(id_subj, id_unique)]
+  } else {
+    fold_ids <- sample(rep(1:k, length.out = nrow(data)))
+  }
 
   fit_and_sim <- function(fold_id) {
     train_data <- data[fold_ids != fold_id, ]
@@ -132,7 +156,9 @@ kfold.ermod <- function(x, k = 5, newdata = NULL, seed = NULL, ...) {
         var_resp = ermod$var_resp,
         var_exposure = ermod$var_exposure
       ),
-      if (inherits(ermod, "ermod_lin") || inherits(ermod, "ermod_bin")) {
+      if (inherits(ermod, "ermod_lme")) {
+        list(var_cov = ermod$var_cov, var_random = ermod$var_random)
+      } else if (inherits(ermod, "ermod_lin") || inherits(ermod, "ermod_bin")) {
         list(var_cov = ermod$var_cov)
       } else {
         list(l_var_cov = ermod$l_var_cov)

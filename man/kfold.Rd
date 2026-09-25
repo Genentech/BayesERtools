@@ -15,7 +15,13 @@ extract_kfold_loo(kfold_ermod)
 \arguments{
 \item{x}{An \code{ermod} object containing the model and data.}
 
-\item{k}{The number of folds for cross-validation. Default is 5.}
+\item{k}{The number of folds for cross-validation. Default is 5.
+For mixed-effects models (\code{ermod_lme}), folds are formed by the random
+effect grouping variable (e.g. subject), so that all observations from
+the same subject are held out together. Holdout predictions (\code{d_sim}) are
+population-level predictions (random effects set to zero), and the
+pointwise log-likelihood of the held-out observations is evaluated with
+random effects drawn from the estimated between-subject distribution.}
 
 \item{newdata}{Optional new dataset to use instead of the original data.
 Default is NULL.}

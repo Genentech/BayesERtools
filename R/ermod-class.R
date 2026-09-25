@@ -315,6 +315,82 @@ new_ermod_bin_emax_exp_sel <- function(l_ermod_exp_sel) {
   )
 }
 
+# ermod_lme -------------------------------------------------------------------
+
+#' Class constructors for the linear mixed-effects exposure-response models
+#'
+#' @name ermod_lme-class
+#' @noRd
+#' @param mod A stanreg object (fitted with `rstanarm::stan_lmer()`)
+#' @param data Data frame used to fit the model
+#' @param var_resp Name of the response variable
+#' @param var_exposure Name of the exposure variable
+#' @param var_cov Name of the covariate variable
+#' @param var_random Name of the grouping variable for random effects
+#' @param random_effect_type Type of random effects
+#' ("both", "intercept", "slope")
+new_ermod_lme <- function(
+    mod,
+    data,
+    var_resp = character(),
+    var_exposure = character(),
+    var_cov = NULL,
+    var_random = character(),
+    random_effect_type = c("both", "intercept", "slope"),
+    input_args = list()) {
+  random_effect_type <- match.arg(random_effect_type)
+  coef_exp_draws <- .get_coef_exp_draws(mod, var_exposure)
+
+  check_input_new_ermod(
+    mod = mod, data = data, var_resp = var_resp,
+    var_exposure = var_exposure, var_cov = var_cov,
+    input_args = input_args, coef_exp_draws = coef_exp_draws,
+    basemodclass = "stanreg"
+  )
+  check_input_lme(mod, var_random)
+
+  structure(
+    list(
+      mod = mod,
+      data = data,
+      var_resp = var_resp,
+      var_exposure = var_exposure,
+      var_cov = var_cov,
+      var_random = var_random,
+      random_effect_type = random_effect_type,
+      input_args = input_args,
+      coef_exp_draws = coef_exp_draws,
+      endpoint_type = "continuous"
+    ),
+    class = c("ermod_lme", "ermod")
+  )
+}
+
+
+#' @rdname ermod_lme-class
+#' @noRd
+new_ermod_lme_exp_sel <- function(l_ermod_exp_sel) {
+  check_l_ermod_exp_sel(l_ermod_exp_sel)
+  check_input_lme(l_ermod_exp_sel$mod, l_ermod_exp_sel$var_random)
+
+  coef_exp_draws <-
+    .get_coef_exp_draws(l_ermod_exp_sel$mod, l_ermod_exp_sel$var_exposure)
+
+  l_ermod_exp_sel$var_cov <- NULL
+  l_ermod_exp_sel$coef_exp_draws <- coef_exp_draws
+  l_ermod_exp_sel$endpoint_type <- "continuous"
+
+  structure(
+    l_ermod_exp_sel,
+    class = c("ermod_lme_exp_sel", "ermod_exp_sel", "ermod_lme", "ermod")
+  )
+}
+
+check_input_lme <- function(mod, var_random) {
+  stopifnot(inherits(mod, "lmerMod"))
+  stopifnot(is.character(var_random), length(var_random) == 1)
+}
+
 # utils -----------------------------------------------------------------------
 
 check_input_new_ermod <- function(

@@ -14,7 +14,8 @@ build_spec_coveff(
 )
 }
 \arguments{
-\item{ermod}{an object of class \code{ermod} (supports \code{ermod_bin} and \code{ermod_lin})}
+\item{ermod}{an object of class \code{ermod} (supports \code{ermod_bin}, \code{ermod_lin},
+and \code{ermod_lme})}
 
 \item{data}{an optional data frame to derive the covariate values for
 forest plots. If NULL (default), the data used to fit the model is used.}

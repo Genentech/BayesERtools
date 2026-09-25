@@ -11,6 +11,8 @@
 #' - [extract_var_resp()] extracts the response variable name
 #' - [extract_var_exposure()] extracts the exposure metric name
 #' - [extract_var_cov()] extracts the covariates name
+#' - [extract_var_random()] extracts the name of the grouping variable for
+#'   random effects (only for mixed-effects models, `NULL` otherwise)
 #' - [extract_exp_sel_list_model()] extracts the list of fitted models for
 #'   each exposure metrics.
 #' - [extract_exp_sel_comp()] extracts the comparison results of the exposure
@@ -38,6 +40,10 @@ extract_var_exposure <- function(x) UseMethod("extract_var_exposure")
 #' @export
 #' @rdname extract_method
 extract_var_cov <- function(x) UseMethod("extract_var_cov")
+
+#' @export
+#' @rdname extract_method
+extract_var_random <- function(x) UseMethod("extract_var_random")
 
 #' @export
 #' @rdname extract_method

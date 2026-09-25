@@ -1,7 +1,8 @@
 #' Perform simulation of covariate effects for ER model
 #'
 #' @export
-#' @param ermod an object of class `ermod` (supports `ermod_bin` and `ermod_lin`)
+#' @param ermod an object of class `ermod` (supports `ermod_bin`, `ermod_lin`,
+#' and `ermod_lme`)
 #' @param data an optional data frame to derive the covariate values for
 #' forest plots. If NULL (default), the data used to fit the model is used.
 #' @param spec_coveff you can supply spec_coveff to [sim_coveff()] or
@@ -16,7 +17,9 @@
 #' covariate effect at their 5th and 95th percentile values).
 #' @return A data frame with class `coveffsim` containing the median and
 #' quantile interval of the covariate effects. For binary models (`ermod_bin`),
-#' returns odds ratios. For linear models (`ermod_lin`), returns response differences.
+#' returns odds ratios. For linear models (`ermod_lin`) and linear
+#' mixed-effects models (`ermod_lme`), returns response differences
+#' (population-level, i.e. random effects set to zero).
 #'
 #' @examplesIf BayesERtools:::.if_run_ex_coveff()
 #' \donttest{
@@ -64,11 +67,21 @@ sim_coveff <- function(
 
   df_for_sim <- spec_coveff_to_df_sim(spec_coveff)
 
-  linpred_draws <-
-    .pp_matrix_to_draws_tbl(
-      rstantools::posterior_linpred(extract_mod(ermod), newdata = df_for_sim),
-      df_for_sim, ".linpred"
+  # Population-level prediction (random effects set to zero) for
+  # mixed-effects models; the random effects cancel out in the difference
+  # from the reference anyway
+  if (inherits(ermod, "ermod_lme")) {
+    mat_linpred <- rstantools::posterior_linpred(
+      extract_mod(ermod),
+      newdata = df_for_sim, re.form = NA
     )
+  } else {
+    mat_linpred <-
+      rstantools::posterior_linpred(extract_mod(ermod), newdata = df_for_sim)
+  }
+
+  linpred_draws <-
+    .pp_matrix_to_draws_tbl(mat_linpred, df_for_sim, ".linpred")
 
   linpred_draws_ref <-
     linpred_draws |>
@@ -87,15 +100,16 @@ sim_coveff <- function(
       linpred_draws_2 |>
       dplyr::mutate(.odds_ratio = exp(.delta_linpred)) |>
       dplyr::select(-.linpred, -.linpred_ref, -.delta_linpred)
-  } else if (inherits(ermod, "ermod_lin")) {
+  } else if (inherits(ermod, c("ermod_lin", "ermod_lme"))) {
     linpred_draws_3 <-
       linpred_draws_2 |>
       dplyr::mutate(.response_diff = .delta_linpred) |>
       dplyr::select(-.linpred, -.linpred_ref, -.delta_linpred)
   } else {
     stop(
-      "Only binary E-R model (`ermod_bin`) and linear E-R model ",
-      "(`ermod_lin`) are supported for now"
+      "Only binary E-R model (`ermod_bin`), linear E-R model ",
+      "(`ermod_lin`), and linear mixed-effects E-R model (`ermod_lme`) ",
+      "are supported for now"
     )
   }
 

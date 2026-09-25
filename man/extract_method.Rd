@@ -7,6 +7,7 @@
 \alias{extract_var_resp}
 \alias{extract_var_exposure}
 \alias{extract_var_cov}
+\alias{extract_var_random}
 \alias{extract_exp_sel_list_model}
 \alias{extract_exp_sel_comp}
 \alias{extract_var_selected}
@@ -21,6 +22,8 @@ extract_var_resp(x)
 extract_var_exposure(x)
 
 extract_var_cov(x)
+
+extract_var_random(x)
 
 extract_exp_sel_list_model(x)
 
@@ -38,6 +41,8 @@ extract_var_selected(x)
 \item \code{\link[=extract_var_resp]{extract_var_resp()}} extracts the response variable name
 \item \code{\link[=extract_var_exposure]{extract_var_exposure()}} extracts the exposure metric name
 \item \code{\link[=extract_var_cov]{extract_var_cov()}} extracts the covariates name
+\item \code{\link[=extract_var_random]{extract_var_random()}} extracts the name of the grouping variable for
+random effects (only for mixed-effects models, \code{NULL} otherwise)
 \item \code{\link[=extract_exp_sel_list_model]{extract_exp_sel_list_model()}} extracts the list of fitted models for
 each exposure metrics.
 \item \code{\link[=extract_exp_sel_comp]{extract_exp_sel_comp()}} extracts the comparison results of the exposure

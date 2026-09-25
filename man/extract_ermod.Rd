@@ -7,6 +7,7 @@
 \alias{extract_var_resp.ermod}
 \alias{extract_var_exposure.ermod}
 \alias{extract_var_cov.ermod}
+\alias{extract_var_random.ermod}
 \alias{extract_exp_sel_list_model.ermod_exp_sel}
 \alias{extract_exp_sel_comp.ermod_exp_sel}
 \alias{extract_var_selected.ermod_cov_sel}
@@ -21,6 +22,8 @@
 \method{extract_var_exposure}{ermod}(x)
 
 \method{extract_var_cov}{ermod}(x)
+
+\method{extract_var_random}{ermod}(x)
 
 \method{extract_exp_sel_list_model}{ermod_exp_sel}(x)
 
@@ -38,6 +41,8 @@
 \item \code{\link[=extract_var_resp]{extract_var_resp()}} extracts the response variable name
 \item \code{\link[=extract_var_exposure]{extract_var_exposure()}} extracts the exposure metric name
 \item \code{\link[=extract_var_cov]{extract_var_cov()}} extracts the covariates name
+\item \code{\link[=extract_var_random]{extract_var_random()}} extracts the name of the grouping variable for
+random effects (only for mixed-effects models, \code{NULL} otherwise)
 \item \code{\link[=extract_exp_sel_list_model]{extract_exp_sel_list_model()}} extracts the list of fitted models for
 each exposure metrics.
 \item \code{\link[=extract_exp_sel_comp]{extract_exp_sel_comp()}} extracts the comparison results of the exposure

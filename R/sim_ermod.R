@@ -12,6 +12,23 @@
 #' simulation, and "median_qi" returns the median and quantile interval.
 #' @param qi_width Width of the quantile interval. Default is 0.95. Only
 #' used when `output_type = "median_qi"`.
+#' @param re_type Type of random effects to use for simulation. Only
+#' relevant for mixed-effects models (`ermod_lme`, `ermod_cqt`); other models
+#' only accept the default `"population"`.
+#'   - `"population"` (default): random effects are set to zero, i.e.
+#'     predictions for a typical subject (population-level prediction).
+#'   - `"new_subject"`: random effects are sampled from the estimated
+#'     between-subject distribution, independently for each unique value of
+#'     the random effect grouping variable (e.g. `ID`) in `newdata`, and for
+#'     each posterior draw. Rows with the same ID share the same random
+#'     effects. IDs are always treated as new subjects, even if they exist
+#'     in the data used for model development.
+#'   - `"existing_subject"`: each subject's own posterior draws of the random
+#'     effects are used (individual predictions). All IDs in `newdata` must
+#'     exist in the data used for model development.
+#'
+#' `newdata` needs to contain the random effect grouping variable for
+#' `"new_subject"` and `"existing_subject"`.
 #' @param .nrow_cov_data Number of rows in the covariate data,
 #' used for internal purposes. Users should not set this argument.
 #'
@@ -66,9 +83,12 @@ sim_er <- function(
     seed_sample_draws = NULL,
     output_type = c("draws", "median_qi"),
     qi_width = 0.95,
+    re_type = c("population", "new_subject", "existing_subject"),
     .nrow_cov_data = NULL) {
   stopifnot(inherits(ermod, "ermod"))
   output_type <- match.arg(output_type)
+  re_type <- match.arg(re_type)
+  check_re_type(ermod, re_type)
 
   if (is.null(seed_sample_draws)) {
     seed_sample_draws <- sample.int(.Machine$integer.max, 1)
@@ -77,7 +97,8 @@ sim_er <- function(
   if (is.null(newdata)) newdata <- extract_data(ermod)
   check_data_columns(newdata,
     var_exposure = ermod$var_exposure,
-    var_cov = ermod$var_cov
+    var_cov = ermod$var_cov,
+    var_random = if (re_type != "population") ermod$var_random
   )
   if (is.null(.nrow_cov_data)) {
     .nrow_cov_data <- nrow(newdata)
@@ -86,28 +107,31 @@ sim_er <- function(
   mod <- extract_mod(ermod)
   n_draws_sim <- chech_ndraws(mod, n_draws_sim)
 
-  simdata_epred <-
-    .pp_matrix_to_draws_tbl(
-      .posterior_draws(rstantools::posterior_epred, mod, newdata,
-        n_draws_sim, seed_sample_draws
-      ),
-      newdata, ".epred"
+  if (inherits(ermod, "ermod_lme")) {
+    l_mat <- .sim_draws_lme(
+      ermod, newdata, n_draws_sim, seed_sample_draws, re_type
     )
-  simdata_linpred <-
-    .pp_matrix_to_draws_tbl(
-      .posterior_draws(rstantools::posterior_linpred, mod, newdata,
+  } else {
+    l_mat <- list(
+      epred = .posterior_draws(rstantools::posterior_epred, mod, newdata,
         n_draws_sim, seed_sample_draws
       ),
-      newdata, ".linpred"
-    ) |>
+      linpred = .posterior_draws(rstantools::posterior_linpred, mod, newdata,
+        n_draws_sim, seed_sample_draws
+      ),
+      prediction = .posterior_draws(rstantools::posterior_predict, mod,
+        newdata, n_draws_sim, seed_sample_draws
+      )
+    )
+  }
+
+  simdata_epred <-
+    .pp_matrix_to_draws_tbl(l_mat$epred, newdata, ".epred")
+  simdata_linpred <-
+    .pp_matrix_to_draws_tbl(l_mat$linpred, newdata, ".linpred") |>
     dplyr::select(.draw, .row, .linpred)
   simdata_predicted <-
-    .pp_matrix_to_draws_tbl(
-      .posterior_draws(rstantools::posterior_predict, mod, newdata,
-        n_draws_sim, seed_sample_draws
-      ),
-      newdata, ".prediction"
-    ) |>
+    .pp_matrix_to_draws_tbl(l_mat$prediction, newdata, ".prediction") |>
     dplyr::select(.draw, .row, .prediction)
 
   simdata <-
@@ -116,11 +140,13 @@ sim_er <- function(
     dplyr::left_join(simdata_predicted, by = dplyr::join_by(.draw, .row))
 
   if (output_type == "draws") {
-    return(new_ersim(
+    ersim <- new_ersim(
       simdata,
       ermod,
       nrow_cov_data = .nrow_cov_data
-    ))
+    )
+    attr(ersim, "re_type") <- re_type
+    return(ersim)
   }
 
   simdata_med_qi <-
@@ -137,10 +163,12 @@ sim_er <- function(
       dplyr::select(-dplyr::starts_with(".prediction"))
   }
 
-  return(new_ersim_med_qi(simdata_med_qi, ermod,
+  ersim_med_qi <- new_ersim_med_qi(simdata_med_qi, ermod,
     nrow_cov_data = .nrow_cov_data,
     qi_width = qi_width
-  ))
+  )
+  attr(ersim_med_qi, "re_type") <- re_type
+  return(ersim_med_qi)
 }
 
 
@@ -162,6 +190,11 @@ sim_er <- function(
 #' `data_cov` has to be supplied if `ermod` is a model with covariates.
 #' It is recommended that `data_cov` contains subject identifiers such as
 #' `ID` for post-processing.
+#'
+#' For mixed-effects models with `re_type` other than `"population"`,
+#' `data_cov` has to be supplied and contain the random effect grouping
+#' variable (e.g. `data_cov = data.frame(ID = 1:100)` to simulate 100 new
+#' subjects with `re_type = "new_subject"`).
 #'
 #' Exposure values in `data_cov` will be ignored.
 #'
@@ -197,26 +230,38 @@ sim_er_new_exp <- function(
     n_draws_sim = NULL,
     seed_sample_draws = NULL,
     output_type = c("draws", "median_qi"),
-    qi_width = 0.95) {
+    qi_width = 0.95,
+    re_type = c("population", "new_subject", "existing_subject")) {
   stopifnot(inherits(ermod, "ermod"))
   output_type <- match.arg(output_type)
+  re_type <- match.arg(re_type)
+  check_re_type(ermod, re_type)
 
   var_exposure_sym <- rlang::sym(extract_var_exposure(ermod))
 
   newdata <- dplyr::tibble(!!var_exposure_sym := exposure_to_sim_vec)
 
   var_cov <- extract_var_cov(ermod)
+  # data_cov is needed for covariates and/or random effects grouping variable
+  use_data_cov <- !is.null(var_cov) || re_type != "population"
 
   # Handle data_cov
   ## No need to use data_cov if there are no covariates in the model
-  if (is.null(var_cov)) {
+  if (!use_data_cov) {
     .nrow_cov_data <- 0
   }
   if (!is.null(var_cov) && is.null(data_cov)) {
     stop("data_cov must be supplied for models with covariates.")
   }
+  if (use_data_cov && is.null(data_cov)) {
+    stop(
+      "data_cov with the random effect grouping variable `",
+      extract_var_random(ermod), "` must be supplied when `re_type = \"",
+      re_type, "\"`."
+    )
+  }
   ## This is the only situation where data_cov is used
-  if (!is.null(var_cov) && !is.null(data_cov)) {
+  if (use_data_cov && !is.null(data_cov)) {
     .nrow_cov_data <- nrow(data_cov)
 
     # remove exposure column from data_cov, if it exists
@@ -233,6 +278,7 @@ sim_er_new_exp <- function(
     seed_sample_draws = seed_sample_draws,
     output_type = output_type,
     qi_width = qi_width,
+    re_type = re_type,
     .nrow_cov_data = .nrow_cov_data
   )
 }
@@ -258,7 +304,8 @@ sim_er_curve <- function(
     n_draws_sim = NULL,
     seed_sample_draws = NULL,
     output_type = c("draws", "median_qi"),
-    qi_width = 0.95) {
+    qi_width = 0.95,
+    re_type = c("population", "new_subject", "existing_subject")) {
   if (is.null(exposure_range)) {
     exposure_range <-
       range(extract_data(ermod)[[extract_var_exposure(ermod)]])
@@ -276,7 +323,8 @@ sim_er_curve <- function(
     n_draws_sim = n_draws_sim,
     seed_sample_draws = seed_sample_draws,
     output_type = output_type,
-    qi_width = qi_width
+    qi_width = qi_width,
+    re_type = re_type
   )
 }
 
@@ -303,6 +351,9 @@ sim_er_curve <- function(
 #' in this case, be mindful of the computation time.
 #' @param n_draws_sim Number of draws for simulation. Default is set to 500
 #' to reduce computation time for marginal response calculation.
+#'
+#' For mixed-effects models (`ermod_lme`), population-level predictions
+#' (random effects set to zero) are used for marginalization.
 #'
 #' @return `ersim_marg` object, which is a tibble with the simulated marginal
 #' expected response with some additional information in object attributes.
@@ -467,6 +518,17 @@ sim_er_curve_marg <- function(
   )
 }
 
+
+# Check that re_type is compatible with the model
+check_re_type <- function(ermod, re_type) {
+  if (re_type != "population" && !inherits(ermod, "ermod_lme")) {
+    stop(
+      "`re_type = \"", re_type, "\"` is only available for ",
+      "mixed-effects models (`ermod_lme`)."
+    )
+  }
+  invisible()
+}
 
 # Check and set the number of draws for simulation
 chech_ndraws <- function(mod, n_draws_sim) {

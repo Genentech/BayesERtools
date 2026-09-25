@@ -7,7 +7,7 @@
 extract_coef_exp_ci(x, ci_width = 0.95, exp_candidates = FALSE)
 }
 \arguments{
-\item{x}{An object of class \code{ermod_bin} or \code{ermod_lin}}
+\item{x}{An object of class \code{ermod_bin}, \code{ermod_lin}, or \code{ermod_lme}}
 
 \item{ci_width}{Width of the credible interval}
 

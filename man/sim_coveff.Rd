@@ -14,7 +14,8 @@ sim_coveff(
 )
 }
 \arguments{
-\item{ermod}{an object of class \code{ermod} (supports \code{ermod_bin} and \code{ermod_lin})}
+\item{ermod}{an object of class \code{ermod} (supports \code{ermod_bin}, \code{ermod_lin},
+and \code{ermod_lme})}
 
 \item{data}{an optional data frame to derive the covariate values for
 forest plots. If NULL (default), the data used to fit the model is used.}
@@ -36,7 +37,9 @@ covariate effect at their 5th and 95th percentile values).}
 \value{
 A data frame with class \code{coveffsim} containing the median and
 quantile interval of the covariate effects. For binary models (\code{ermod_bin}),
-returns odds ratios. For linear models (\code{ermod_lin}), returns response differences.
+returns odds ratios. For linear models (\code{ermod_lin}) and linear
+mixed-effects models (\code{ermod_lme}), returns response differences
+(population-level, i.e. random effects set to zero).
 }
 \description{
 Perform simulation of covariate effects for ER model

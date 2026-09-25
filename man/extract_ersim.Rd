@@ -10,6 +10,8 @@
 \alias{extract_var_exposure.ersim_med_qi}
 \alias{extract_var_cov.ersim}
 \alias{extract_var_cov.ersim_med_qi}
+\alias{extract_var_random.ersim}
+\alias{extract_var_random.ersim_med_qi}
 \title{Extract elements from objects of the classes \verb{ersim_*} and `ersim_med_qi_*``}
 \usage{
 \method{extract_data}{ersim}(x)
@@ -27,6 +29,10 @@
 \method{extract_var_cov}{ersim}(x)
 
 \method{extract_var_cov}{ersim_med_qi}(x)
+
+\method{extract_var_random}{ersim}(x)
+
+\method{extract_var_random}{ersim_med_qi}(x)
 }
 \arguments{
 \item{x}{An object of class \code{ersim_*}}
@@ -38,6 +44,8 @@
 \item \code{\link[=extract_var_resp]{extract_var_resp()}} extracts the response variable name
 \item \code{\link[=extract_var_exposure]{extract_var_exposure()}} extracts the exposure metric name
 \item \code{\link[=extract_var_cov]{extract_var_cov()}} extracts the covariates name
+\item \code{\link[=extract_var_random]{extract_var_random()}} extracts the name of the grouping variable for
+random effects (only for mixed-effects models, \code{NULL} otherwise)
 \item \code{\link[=extract_exp_sel_list_model]{extract_exp_sel_list_model()}} extracts the list of fitted models for
 each exposure metrics.
 \item \code{\link[=extract_exp_sel_comp]{extract_exp_sel_comp()}} extracts the comparison results of the exposure
