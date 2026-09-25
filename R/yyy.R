@@ -36,6 +36,11 @@ if (getRversion() >= "2.15.1") {
     "truth", "pred", "fold_id", ".row_orig"
   ))
 
+  # C-QT
+  utils::globalVariables(c(
+    ".ddqtc", ".ddqtc_obs", ".label", ".prob_exceed"
+  ))
+
   # sim data gen
   utils::globalVariables(c(
     "exposure", "cnt_a", "cnt_b", "cnt_c", "bin_d", "bin_pred", "bin_prob"
@@ -176,3 +181,50 @@ if (getRversion() >= "2.15.1") {
 #' @examples
 #' d_sim_placebo
 "d_sim_placebo"
+
+
+#' Sample simulated data for concentration-QTc (C-QT) analysis
+#'
+#' @name d_sim_cqt
+#' @format A data frame with 480 rows (48 subjects x 10 time points) and
+#' columns:
+#' \describe{
+#' \item{ID}{Subject ID}
+#' \item{COHORT}{Dose cohort: 1-6}
+#' \item{DOSE}{Dose in mg: 0 (placebo), 25, 50, 100, 200, 400, 800}
+#' \item{TRT}{Treatment: Active or Placebo}
+#' \item{NTIME}{Nominal time after dose in hours}
+#' \item{CONC}{Parent drug concentration in ng/mL (0 for placebo and below
+#' the lower limit of quantification of 1 ng/mL)}
+#' \item{CONC_1000}{CONC/1000, i.e. parent drug concentration in ug/mL}
+#' \item{MCONC}{Metabolite concentration in ng/mL}
+#' \item{MCONC_1000}{MCONC/1000, i.e. metabolite concentration in ug/mL}
+#' \item{QTCFBL}{Baseline (pre-dose) QTcF in ms}
+#' \item{QTCF}{QTcF in ms}
+#' \item{DQTCF}{Change from baseline in QTcF in ms}
+#' }
+#' @details
+#'
+#' This simulated dataset mimics a single ascending dose study with placebo
+#' and intensive ECG monitoring. Six dose cohorts (25 to 800 mg) each have six
+#' subjects on active drug and two subjects on placebo, with time-matched PK
+#' and ECG (QTcF) measurements at 10 nominal time points up to 24 hours
+#' post-dose. Assume that 200 mg is the therapeutic dose and 800 mg is the
+#' supratherapeutic dose.
+#'
+#' PK of the parent drug follows a one-compartment model with first-order
+#' absorption, and the metabolite is formed from the parent. The change from
+#' baseline QTcF is generated with a linear mixed-effects model with a direct
+#' effect of the parent concentration (2 ms per ug/mL), a treatment-specific
+#' intercept (0.5 ms), between-subject variability on the intercept and slope,
+#' diurnal variation, and a regression-to-the-mean effect of the baseline
+#' QTcF, following the structure of the pre-specified model in
+#' Garnett et al. (2018) <doi:10.1007/s10928-017-9558-5>.
+#' The metabolite does not have an effect on QTcF.
+#'
+#' You can find the data generating code in the package source code,
+#' under `data-raw/d_sim_cqt.R`.
+#'
+#' @examples
+#' d_sim_cqt
+"d_sim_cqt"
