@@ -20,7 +20,6 @@ articles:
     navbar: ~
     contents:
     - overview_of_the_package
-    - articles/cqt_analysis
 
 reference:
 - title: 'Step 1: Develop ER models'
@@ -36,21 +35,18 @@ reference:
 - subtitle: Linear mixed-effects model
   contents:
   - dev_ermod_lme
-  - dev_ermod_cqt
 - title: 'Step 2: Simulate responses'
 - contents:
   - sim_er
   - sim_er_new_exp
   - sim_er_new_exp_marg
   - calc_ersim_med_qi
-  - sim_cqt_ddqtc
 - title: 'Step 3: Plot ER'
 - contents:
   - plot_er
   - plot_er_gof
   - combine_er_components
   - plot_er_exp_sel
-  - plot_cqt_gof
 - title: 'Step 4: Model evaluation'
 - contents:
   - eval_ermod

@@ -13,13 +13,8 @@
   (`"population"`, default), simulation of new subjects with between-subject
   variability (`"new_subject"`), and individual prediction with each subject's
   posterior random effects (`"existing_subject"`).
-* Added concentration-QTc (C-QT) analysis functions following the
-  pre-specified linear mixed-effects model of the scientific white paper
-  (Garnett et al. 2018): `dev_ermod_cqt()` for model development,
-  `sim_cqt_ddqtc()` for the predicted placebo-adjusted change from baseline
-  QTc (with the posterior probability of exceeding a threshold, e.g. 10 ms),
-  and `plot_cqt_gof()` for the goodness-of-fit plot.
-* Added simulated C-QT dataset `d_sim_cqt` and an article on C-QT analysis.
+* Added simulated repeated-measures dataset `d_sim_cqt`, mimicking a
+  concentration-QTc study with placebo.
 
 ## Minor changes
 

@@ -13,7 +13,7 @@
 #' @param qi_width Width of the quantile interval. Default is 0.95. Only
 #' used when `output_type = "median_qi"`.
 #' @param re_type Type of random effects to use for simulation. Only
-#' relevant for mixed-effects models (`ermod_lme`, `ermod_cqt`); other models
+#' relevant for mixed-effects models (`ermod_lme`); other models
 #' only accept the default `"population"`.
 #'   - `"population"` (default): random effects are set to zero, i.e.
 #'     predictions for a typical subject (population-level prediction).

@@ -53,6 +53,12 @@ test_that("dev_ermod_lme returns ermod_lme object", {
     c("(Intercept)", "CONC_1000")
   )
   expect_equal(extract_mod(ermod_lme_int)$glmod$reTrms$cnms$ID, "(Intercept)")
+
+  # adapt_delta default (0.99) is passed to Stan and kept for kfold refits
+  expect_equal(
+    extract_mod(ermod_lme)$stanfit@stan_args[[1]]$control$adapt_delta, 0.99
+  )
+  expect_equal(ermod_lme$input_args$adapt_delta, 0.99)
 })
 
 test_that("build_formula_lme builds random effects terms", {
@@ -96,7 +102,8 @@ test_that("S3 methods for ermod_lme", {
   expect_s3_class(summary(ermod_lme), "summary.stanreg")
   expect_s3_class(prior_summary(ermod_lme), "prior_summary.stanreg")
   expect_equal(names(extract_coef_exp_ci(ermod_lme)), c(".lower", ".upper"))
-  expect_s3_class(loo(ermod_lme), "loo")
+  # Short test fit, so Pareto k warnings are expected
+  expect_s3_class(suppressWarnings(loo(ermod_lme)), "loo")
   expect_equal(get_mod_type_name(ermod_lme), "Linear mixed-effects ER model")
 })
 

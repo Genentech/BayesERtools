@@ -48,5 +48,4 @@
 
 RPlots.pdf
 
-^vignettes/articles$
 ^\.claude$

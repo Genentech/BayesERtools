@@ -39,7 +39,7 @@ dev_ermod_lme_exp_sel(
   prior_intercept = rstanarm::default_prior_intercept(stats::gaussian()),
   prior_aux = rstanarm::exponential(autoscale = TRUE),
   prior_covariance = rstanarm::decov(),
-  adapt_delta = NULL,
+  adapt_delta = 0.99,
   verbosity_level = 1,
   chains = 4,
   iter = 2000
@@ -78,9 +78,10 @@ exposure, i.e. \code{(1 + exposure | ID)}
 effects. See \code{\link[rstanarm:priors]{rstanarm::decov()}} and \code{\link[rstanarm:stan_glmer]{rstanarm::stan_glmer()}}.}
 
 \item{adapt_delta}{Target average acceptance probability for the NUTS
-sampler. If \code{NULL} (default), the default of \code{\link[rstanarm:stan_glmer]{rstanarm::stan_glmer()}}
-(0.95) is used. Increase it (e.g. to 0.99) if there are warnings about
-divergent transitions. See \link[rstanarm:adapt_delta]{rstanarm::adapt_delta} for details.}
+sampler. Default is 0.99, higher than the default of
+\code{\link[rstanarm:stan_glmer]{rstanarm::stan_glmer()}} (0.95), as occasional divergent transitions were
+observed with random slopes at 0.95. Lower values make sampling faster.
+See \link[rstanarm:adapt_delta]{rstanarm::adapt_delta} for details.}
 }
 \value{
 An object of class \code{ermod_bin_exp_sel}.or \code{ermod_lin_exp_sel}
@@ -124,8 +125,7 @@ ermod_lme_exp_sel <- dev_ermod_lme_exp_sel(
   var_resp = "DQTCF",
   var_exp_candidates = c("CONC_1000", "MCONC_1000"),
   var_random = "ID",
-  chains = 2,
-  iter = 1000
+  random_effect_type = "intercept"
 )
 
 ermod_lme_exp_sel

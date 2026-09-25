@@ -33,7 +33,7 @@ simulation, and "median_qi" returns the median and quantile interval.}
 used when \code{output_type = "median_qi"}.}
 
 \item{re_type}{Type of random effects to use for simulation. Only
-relevant for mixed-effects models (\code{ermod_lme}, \code{ermod_cqt}); other models
+relevant for mixed-effects models (\code{ermod_lme}); other models
 only accept the default \code{"population"}.
 \itemize{
 \item \code{"population"} (default): random effects are set to zero, i.e.

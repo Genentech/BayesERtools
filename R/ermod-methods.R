@@ -15,9 +15,7 @@ NULL
 
 
 get_mod_type_name <- function(mod) {
-  if (inherits(mod, "ermod_cqt")) {
-    return("Concentration-QTc linear mixed-effects model")
-  } else if (inherits(mod, "ermod_lme")) {
+  if (inherits(mod, "ermod_lme")) {
     return("Linear mixed-effects ER model")
   } else if (inherits(mod, "ermod_bin")) {
     return("Binary ER model")
@@ -39,16 +37,9 @@ print.ermod <- function(x, digits = 2, ...) {
 
   cli::cli({
     cli::cli_h1(mod_type_name)
-    if (inherits(x, "ermod_cqt")) {
-      cli::cli_alert_info(paste(
-        "Use `sim_cqt_ddqtc()` to calculate predicted placebo-adjusted",
-        "change from baseline QTc and `plot_cqt_gof()` to visualize the model fit"
-      ))
-    } else {
-      cli::cli_alert_info(paste(
-        "Use `plot_er()` to visualize ER curve"
-      ))
-    }
+    cli::cli_alert_info(paste(
+      "Use `plot_er()` to visualize ER curve"
+    ))
     cli::cli_h2("Developed model")
     print(x$mod, digits = digits, ...) |>
       utils::capture.output() |>

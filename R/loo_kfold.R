@@ -114,8 +114,6 @@ kfold.ermod <- function(x, k = 5, newdata = NULL, seed = NULL, ...) {
 
   # Determine the model development function based on the class of the ermod
   if (inherits(ermod, "ermod_lme")) {
-    # Also used for ermod_cqt; the derived covariate columns are already
-    # present in the data stored in the ermod object
     model_dev_fun <- dev_ermod_lme
   } else if (inherits(ermod, "ermod_emax")) {
     model_dev_fun <- dev_ermod_emax

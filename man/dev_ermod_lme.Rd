@@ -15,7 +15,7 @@ dev_ermod_lme(
   prior_intercept = rstanarm::default_prior_intercept(stats::gaussian()),
   prior_aux = rstanarm::exponential(autoscale = TRUE),
   prior_covariance = rstanarm::decov(),
-  adapt_delta = NULL,
+  adapt_delta = 0.99,
   verbosity_level = 1,
   chains = 4,
   iter = 2000
@@ -48,9 +48,10 @@ exposure, i.e. \code{(1 + exposure | ID)}
 effects. See \code{\link[rstanarm:priors]{rstanarm::decov()}} and \code{\link[rstanarm:stan_glmer]{rstanarm::stan_glmer()}}.}
 
 \item{adapt_delta}{Target average acceptance probability for the NUTS
-sampler. If \code{NULL} (default), the default of \code{\link[rstanarm:stan_glmer]{rstanarm::stan_glmer()}}
-(0.95) is used. Increase it (e.g. to 0.99) if there are warnings about
-divergent transitions. See \link[rstanarm:adapt_delta]{rstanarm::adapt_delta} for details.}
+sampler. Default is 0.99, higher than the default of
+\code{\link[rstanarm:stan_glmer]{rstanarm::stan_glmer()}} (0.95), as occasional divergent transitions were
+observed with random slopes at 0.95. Lower values make sampling faster.
+See \link[rstanarm:adapt_delta]{rstanarm::adapt_delta} for details.}
 
 \item{verbosity_level}{Verbosity level. 0: No output, 1: Display steps,
 2: Display progress in each step, 3: Display MCMC sampling.}
@@ -64,8 +65,7 @@ An object of class \code{ermod_lme}.
 }
 \description{
 This function is used to develop a linear mixed-effects ER model with
-continuous endpoint, for data with repeated measurements per subject
-(e.g. concentration-QTc analysis; see \code{\link[=dev_ermod_cqt]{dev_ermod_cqt()}}).
+continuous endpoint, for data with repeated measurements per subject.
 The model is fitted with \code{\link[rstanarm:stan_glmer]{rstanarm::stan_glmer()}} with Gaussian family
 (equivalent to \code{\link[rstanarm:stan_glmer]{rstanarm::stan_lmer()}}), which uses precompiled Stan
 models.
@@ -88,13 +88,30 @@ ermod_lme <- dev_ermod_lme(
   var_resp = "DQTCF",
   var_exposure = "CONC_1000",
   var_cov = "TRT",
-  var_random = "ID",
-  # Settings to make the example run faster
-  chains = 2,
-  iter = 1000
+  var_random = "ID"
 )
 
 ermod_lme
+
+# Population-level prediction (random effects set to zero)
+sim_er_curve(
+  ermod_lme,
+  data_cov = data.frame(TRT = "Active"),
+  num_exposures = 5,
+  n_draws_sim = 500,
+  output_type = "median_qi"
+)
+
+# Prediction for new subjects, with random effects sampled from the
+# estimated between-subject distribution
+sim_er_curve(
+  ermod_lme,
+  data_cov = data.frame(ID = 1:3, TRT = "Active"),
+  num_exposures = 5,
+  n_draws_sim = 500,
+  re_type = "new_subject",
+  output_type = "median_qi"
+)
 }
 
 }

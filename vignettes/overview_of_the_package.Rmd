@@ -103,8 +103,6 @@ The following functions are available:
   - `dev_ermod_emax()`, `dev_ermod_emax_exp_sel()`
 - Linear mixed-effects model (for repeated measurements per subject): 
   - `dev_ermod_lme()`, `dev_ermod_lme_exp_sel()`
-  - `dev_ermod_cqt()` for concentration-QTc (C-QT) analysis; see the
-    [C-QT analysis article](https://genentech.github.io/BayesERtools/articles/cqt_analysis.html)
 
 ![Figure: dev_ermod_*() 
 functions](img/fig_overview_dev_ermod.png){width=100%}
